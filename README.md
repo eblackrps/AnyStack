@@ -1,6 +1,9 @@
 # AnyStack Enterprise Module Suite
 **Version:** 1.0.0 | **Author:** The Any Stack Architect
 
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/AnyStack.vSphere?style=flat-square&logo=powershell&label=AnyStack.vSphere)](https://www.powershellgallery.com/packages/AnyStack.vSphere)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
 AnyStack is a production-ready, enterprise-grade PowerShell automation suite for VMware vSphere 8.0 U3 and VMware Cloud Foundation (VCF). It transforms imperative "click-ops" into scalable, declarative infrastructure management.
 
 ## 📸 Screenshots
@@ -16,6 +19,14 @@ AnyStack is a production-ready, enterprise-grade PowerShell automation suite for
 - **Security Auditing:** Run STIG compliance checks and remediate drift.
 
 ## 📦 Installation
+
+### From PowerShell Gallery (Recommended)
+You can install the core AnyStack module directly from the PowerShell Gallery:
+```powershell
+Install-Module -Name AnyStack.vSphere -Scope CurrentUser
+```
+
+### From Source
 Run the included setup script to install the modules into your local PowerShell path:
 ```powershell
 .\Install-AnyStack.ps1 -Force
