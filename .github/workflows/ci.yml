@@ -1,0 +1,28 @@
+name: AnyStack CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Run Syntax Check
+      shell: pwsh
+      run: |
+        ./test-syntax.ps1
+
+    - name: Run Build & Manifest Validation
+      shell: pwsh
+      run: |
+        ./build.ps1
+
+    - name: Run Pester Tests
+      shell: pwsh
+      run: |
+        Invoke-Pester ./VCF.DRValidator/Tests/VCF.DRValidator.Tests.ps1 -Output Detailed

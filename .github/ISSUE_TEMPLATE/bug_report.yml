@@ -1,0 +1,34 @@
+name: Bug report
+description: Create a report to help us improve AnyStack
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug!
+  - type: input
+    id: vsphere-version
+    attributes:
+      label: vSphere Version
+      placeholder: e.g., 8.0 Update 3 (8.0.3)
+    validations:
+      required: true
+  - type: input
+    id: powercli-version
+    attributes:
+      label: PowerCLI Version
+      placeholder: e.g., 13.3.0
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: What steps did you take to trigger the bug?
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Message
+      description: Please paste the full error message if available.

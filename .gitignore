@@ -1,0 +1,14 @@
+# PowerShell
+*.ps1xml
+*.pssc
+*.clixml
+TestResults.xml
+coverage.xml
+*.log
+
+# VS Code
+.vscode/
+
+# Build
+*.zip
+*.tar.gz

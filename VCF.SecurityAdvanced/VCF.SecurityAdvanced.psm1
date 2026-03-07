@@ -1,0 +1,10 @@
+$PublicPath  = Join-Path -Path $PSScriptRoot -ChildPath 'Public'
+$PrivatePath = Join-Path -Path $PSScriptRoot -ChildPath 'Private'
+
+$ImportPaths = @($PrivatePath, $PublicPath)
+foreach ($Path in $ImportPaths) {
+    if (Test-Path -Path $Path) {
+        $Files = Get-ChildItem -Path $Path -Filter *.ps1 -File
+        foreach ($File in $Files) { . $File.FullName }
+    }
+}
