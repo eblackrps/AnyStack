@@ -11,3 +11,4 @@
         OutputPath = 'coverage.xml'
     }
 }
+ 

@@ -17,3 +17,4 @@ Get-AnyStackZombieVm -Server $vi -ClusterName $ClusterName
 Get-AnyStackDatastoreGrowthRate -Server $vi -DatastoreName $DatastoreName
 Get-AnyStackOrphanedVmdk -Server $vi -DatastoreName $DatastoreName
 Set-AnyStackRightSizeRecommendation -Server $vi -VmName 'DB-01' -WhatIf
+ 

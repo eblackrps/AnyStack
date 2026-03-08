@@ -10,3 +10,4 @@ GitHub repo → Settings → Secrets and variables → Actions → New repositor
 ## Rotating Secrets
 PSGallery API keys should be rotated annually. After rotation, update the
 GitHub secret and verify the publish workflow succeeds on next tag push.
+ 

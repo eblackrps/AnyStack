@@ -21,3 +21,4 @@ if ($errors.Count -gt 0) {
 } else {
     Write-Host 'All files passed syntax check.'
 }
+ 

@@ -41,3 +41,4 @@ foreach ($mod in $Modules) {
 Write-Output "Final Gallery Sync Complete! Your modules now point to your GitHub repository." -ForegroundColor Green
 
 
+ 

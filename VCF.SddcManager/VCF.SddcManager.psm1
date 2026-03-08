@@ -7,3 +7,4 @@ foreach ($Path in @($PrivatePath, $PublicPath)) {
         foreach ($File in $Files) { . $File.FullName }
     }
 }
+ 

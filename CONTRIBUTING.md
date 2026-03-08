@@ -30,3 +30,4 @@ All public functions must include Comment-Based Help with at least:
 3.  Ensure the test suite passes (`./test-syntax.ps1` and `./build.ps1`).
 4.  Ensure your code passes `PSScriptAnalyzer` checks with no Error or Warning severity issues.
 5.  Update the `CHANGELOG.md` with a brief summary of your changes.
+ 

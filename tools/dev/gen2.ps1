@@ -1312,3 +1312,4 @@ foreach ($path in $cmdlets.Keys) {
     Set-Content -Path $path -Value $content -Encoding UTF8
 }
 Write-Host "Generated part 2 files."
+ 

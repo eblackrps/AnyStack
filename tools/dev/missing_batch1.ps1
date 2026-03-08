@@ -226,3 +226,4 @@ foreach ($path in $cmdlets.Keys) {
     Set-Content -Path $path -Value $content -Encoding UTF8
 }
 Write-Host "Generated batch 1 of missing cmdlets."
+ 

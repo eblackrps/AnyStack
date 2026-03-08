@@ -10,3 +10,4 @@
         PSUseConsistentIndentation = @{ Enable = $true; IndentationSize = 4 }
     }
 }
+ 

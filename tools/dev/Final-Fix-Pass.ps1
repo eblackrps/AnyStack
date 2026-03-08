@@ -36,3 +36,4 @@ foreach ($mod in $modules) {
     $content += "}`n"
     Set-Content -Path $testFile -Value $content -Encoding UTF8
 }
+ 
