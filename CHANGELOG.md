@@ -1,3 +1,11 @@
+## [1.6.1] - 2026-03-08
+### Fixed
+* Cleaned RequiredModules in all manifests.
+* Fixed StorageAdvanced exports.
+* Resolved truthiness bug in NotImplementedException check.
+### Changed
+* Synchronized all modules to 1.6.1.
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
