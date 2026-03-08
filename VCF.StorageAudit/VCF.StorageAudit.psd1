@@ -1,13 +1,13 @@
 ﻿@{
     RootModule = 'VCF.StorageAudit.psm1'
-    ModuleVersion = '1.2.0'
+    ModuleVersion = '1.4.0'
     GUID = '4b043d6e-a2c6-40a9-b2ec-15bd2518b3fb'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.StorageAudit automation and management.'
     PowerShellVersion = '7.2'
-    
+    RequiredModules = @(
         'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
@@ -23,6 +23,8 @@
         }
     }
 }
+
+
 
 
 

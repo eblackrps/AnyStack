@@ -5,13 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.0] - 2026-03-08
+## [1.4.0] - 2026-03-08
 ### Added
-- Production-ready logic applied to all 113 cmdlets via `apply_real_logic.ps1`.
-- VCF.StorageAdvanced module expanded with full NVMe cmdlet implementations.
+- Full implementation of all 117 enterprise cmdlets with real vSphere API logic.
+- Standardized "Gold Standard" pattern applied across the entire suite (resilience, typing, metadata).
+- Explicit `VMware.VimAutomation.Core` dependency added to all manifests for improved reliability.
+- New `examples/` directory with production workflow scripts.
+### Fixed
+- All previously null-returning stubs replaced with authentic PowerCLI/REST implementations.
+- Corrected internal function names for `Restart-AnyStackVmTools`, `Remove-AnyStackOldTemplates`, and `Update-AnyStackVmTools`.
+- Fixed `RequiredModules` parsing errors in multiple manifests.
+- Cleaned up mangled characters and metadata in `README.md`.
 ### Changed
-- All module versions incremented to 1.2.0.
-- Manifests updated to reflect new versions and dependencies.
+- All module versions incremented to 1.4.0.
+- Development scripts consolidated into `tools/dev/`.
 
 ## [1.1.0] - 2026-03-07
 ### Added

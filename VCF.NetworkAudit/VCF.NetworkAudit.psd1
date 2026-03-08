@@ -1,13 +1,13 @@
 ﻿@{
     RootModule = 'VCF.NetworkAudit.psm1'
-    ModuleVersion = '1.2.0'
+    ModuleVersion = '1.4.0'
     GUID = 'df84f8f4-61b7-435e-b2d9-04018f369b87'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.NetworkAudit automation and management.'
     PowerShellVersion = '7.2'
-    
+    RequiredModules = @(
         'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
@@ -23,6 +23,8 @@
         }
     }
 }
+
+
 
 
 

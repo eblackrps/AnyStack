@@ -1,13 +1,13 @@
 ﻿@{
     RootModule = 'VCF.ApplianceManager.psm1'
-    ModuleVersion = '1.2.0'
+    ModuleVersion = '1.4.0'
     GUID = 'f65b0300-962a-42bb-b14f-705f88cdf65f'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.ApplianceManager automation and management.'
     PowerShellVersion = '7.2'
-    
+    RequiredModules = @(
         'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
@@ -23,6 +23,8 @@
         }
     }
 }
+
+
 
 
 

@@ -1,13 +1,13 @@
 ﻿@{
     RootModule = 'VCF.ComplianceAuditor.psm1'
-    ModuleVersion = '1.2.0'
+    ModuleVersion = '1.4.0'
     GUID = 'c93bd47c-49fb-4ec2-afd6-8e8b24df8f7d'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.ComplianceAuditor automation and management.'
     PowerShellVersion = '7.2'
-    
+    RequiredModules = @(
         'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
@@ -23,6 +23,8 @@
         }
     }
 }
+
+
 
 
 
