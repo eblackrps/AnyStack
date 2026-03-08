@@ -1,16 +1,15 @@
 <#
 .SYNOPSIS
-    CI/CD Build Pipeline for the AnyStack Enterprise Module Suite.
+    CI/CD Build Pipeline for the AnyStack Enterprise Module Suite v1.4.0.
 .DESCRIPTION
-    Round 10: VCF.Deployment. Compiles, tests, and prepares all sub-modules 
-    for deployment to a PowerShell Gallery or internal NuGet feed.
+    Compiles, tests, and prepares all sub-modules for deployment.
 #>
 $ErrorActionPreference = 'Stop'
 
 $Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
 
 Write-Output "=========================================" -ForegroundColor Green
-Write-Output "Starting AnyStack Enterprise Build Pipeline" -ForegroundColor Green
+Write-Output "Starting AnyStack Enterprise Build Pipeline v1.4.0" -ForegroundColor Green
 Write-Output "=========================================" -ForegroundColor Green
 
 foreach ($mod in $Modules) {
@@ -28,18 +27,6 @@ foreach ($mod in $Modules) {
         Test-ModuleManifest -Path $psd1Path | Out-Null
         Write-Output "    [OK] Manifest Validated" -ForegroundColor DarkGreen
         
-        # 2. Module Signing Placeholder
-        # If ($SigningCert) {
-        #     $AllScripts = Get-ChildItem -Path (Join-Path $PSScriptRoot $mod) -Include *.ps1,*.psm1 -Recurse
-        #     Set-AuthenticodeSignature -FilePath $AllScripts.FullName -Certificate $SigningCert
-        # }
-
-        # 3. Publish Module Placeholder
-        # If ($PublishKey) {
-        #     Publish-Module -Path (Join-Path $PSScriptRoot $mod) -NuGetApiKey $PublishKey
-        # }
-
-        # 4. Mock Pester Test Execution
         $testPath = Join-Path $PSScriptRoot "$mod\Tests"
         if (Test-Path $testPath) {
             Write-Output "    [RUNNING] Pester Tests for $mod..." -ForegroundColor DarkCyan
@@ -55,4 +42,3 @@ foreach ($mod in $Modules) {
 Write-Output "=========================================" -ForegroundColor Green
 Write-Output "Build Complete. Modules are ready for distribution." -ForegroundColor Green
 Write-Output "=========================================" -ForegroundColor Green
-

@@ -1,3 +1,4 @@
+﻿# AnyStack Enterprise Module Map v1.4.0
 ### AnyStack.ConfigurationAsCode
 - Export-AnyStackConfiguration
 - Sync-AnyStackConfiguration
@@ -164,5 +165,6 @@
 - Remove-AnyStackStaleTag
 - Set-AnyStackResourceTag
 - Sync-AnyStackTagCategory
+
 
 

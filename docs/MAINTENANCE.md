@@ -35,6 +35,6 @@ After each new vSphere/VCF release, prioritize testing:
 | `Get-AnyStackWorkloadDomain` | HIGH | SDDC Manager REST versioned |
 
 ## Versioning Policy
-- **Patch (1.1.x):** Bug fixes, no new cmdlets.
+- **Patch (1.4.x):** Bug fixes, no new cmdlets.
 - **Minor (1.x.0):** New cmdlets added, no breaking changes.
 - **Major (x.0.0):** Breaking changes (renames, dropped version support).
