@@ -8,7 +8,7 @@
     Description = 'Meta-module that installs the complete AnyStack Enterprise Suite for VMware vSphere 8.0 U3 and VCF'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        'VMware.VimAutomation.Core',
+        'VMware.PowerCLI',
         @{ModuleName='AnyStack.ConfigurationAsCode'; ModuleVersion = '1.5.0'},
         @{ModuleName='AnyStack.Reporting'; ModuleVersion = '1.5.0'},
         @{ModuleName='AnyStack.vSphere'; ModuleVersion = '1.5.0'},
@@ -49,7 +49,4 @@
         }
     }
 }
-
- 
-
 

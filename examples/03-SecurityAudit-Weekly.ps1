@@ -1,8 +1,8 @@
-﻿<#
+<#
 .SYNOPSIS
     Performs Weekly Security Audit.
 .DESCRIPTION
-    Chain: Connect-AnyStackServer â†’ Invoke-AnyStackCisStigAudit â†’ Test-AnyStackSecurityBaseline â†’ Test-AnyStackCertificates â†’ Get-AnyStackEsxiLockdownMode â†’ Export-AnyStackAuditReport
+    Chain: Connect-AnyStackServer → Invoke-AnyStackCisStigAudit → Test-AnyStackSecurityBaseline → Test-AnyStackCertificates → Get-AnyStackEsxiLockdownMode → Export-AnyStackAuditReport
 #>
 param(
     [string]$Server = 'vcenter.corp.local',
@@ -16,7 +16,3 @@ Test-AnyStackSecurityBaseline -Server $vi -ClusterName $ClusterName
 Test-AnyStackCertificates -Server $vi -ClusterName $ClusterName
 Get-AnyStackEsxiLockdownMode -Server $vi -ClusterName $ClusterName
 Export-AnyStackAuditReport -Server $vi -ClusterName $ClusterName
-
-
- 
-

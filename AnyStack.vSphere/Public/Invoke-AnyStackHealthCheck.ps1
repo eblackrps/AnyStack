@@ -1,4 +1,4 @@
-﻿function Invoke-AnyStackHealthCheck {
+function Invoke-AnyStackHealthCheck {
     <#
     .SYNOPSIS
         Performs a health check on the AnyStack environment.
@@ -45,6 +45,4 @@
         }
     }
 }
-
- 
 

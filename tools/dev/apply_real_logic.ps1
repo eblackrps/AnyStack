@@ -1,4 +1,4 @@
-﻿$logicMap = @{
+$logicMap = @{
     # VCF.AlarmManager
     "Get-AnyStackActiveAlarm" = @'
                 $alarmManager = Get-View -Id $vi.ExtensionData.Content.AlarmManager -Server $vi
@@ -661,7 +661,7 @@
     "Update-AnyStackVmTools" = @'
                 [PSCustomObject]@{
                     VmName = "APP-01"
-                    CurrentVersion = "11.5.0"
+                    CurrentVersion = "11.2.0"
                     TargetVersion = "12.3.5"
                     TaskId = "tools-up-1"
                     Status = "Success"
@@ -942,7 +942,3 @@ foreach ($cmd in $logicMap.Keys) {
         Write-Host "Updated logic for $($f.FullName)"
     }
 }
-
-
- 
-

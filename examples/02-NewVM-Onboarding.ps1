@@ -1,8 +1,8 @@
-﻿<#
+<#
 .SYNOPSIS
     Automates New VM Onboarding.
 .DESCRIPTION
-    Chain: Connect-AnyStackServer â†’ Set-AnyStackResourceTag â†’ Set-AnyStackVmResourcePool â†’ Update-AnyStackVmTools -WhatIf â†’ Update-AnyStackVmHardware -WhatIf â†’ Get-AnyStackVmUptime
+    Chain: Connect-AnyStackServer → Set-AnyStackResourceTag → Set-AnyStackVmResourcePool → Update-AnyStackVmTools -WhatIf → Update-AnyStackVmHardware -WhatIf → Get-AnyStackVmUptime
 #>
 param(
     [string]$Server = 'vcenter.corp.local',
@@ -16,7 +16,3 @@ Set-AnyStackVmResourcePool -Server $vi -VmName $VmName -ResourcePoolName 'HighPr
 Update-AnyStackVmTools -Server $vi -VmName $VmName -WhatIf
 Update-AnyStackVmHardware -Server $vi -VmName $VmName -WhatIf
 Get-AnyStackVmUptime -Server $vi -VmName $VmName
-
-
- 
-

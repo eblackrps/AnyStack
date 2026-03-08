@@ -8,10 +8,9 @@
     Description = 'Enterprise module for VCF.StorageAdvanced automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        'VMware.VimAutomation.Core',
-        @{ModuleName='VMware.PowerCLI'; ModuleVersion = '1.5.0'}
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
-    FunctionsToExport = @('Add-AnyStackNvmeInterface')
+    FunctionsToExport = @('Add-AnyStackNvmeInterface','Get-AnyStackNvmeDevice','Remove-AnyStackNvmeInterface','Set-AnyStackNvmeQueueDepth','Test-AnyStackNvmeConnectivity')
     CmdletsToExport = @()
     VariablesToExport = @()
     AliasesToExport = @()
@@ -29,8 +28,5 @@
 
 
 
-
-
- 
 
 

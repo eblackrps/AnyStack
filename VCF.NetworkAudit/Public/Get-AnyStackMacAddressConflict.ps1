@@ -1,4 +1,4 @@
-﻿function Get-AnyStackMacAddressConflict {
+function Get-AnyStackMacAddressConflict {
     <#
     .SYNOPSIS
         Detects duplicate MAC addresses in the environment.
@@ -57,6 +57,4 @@
         }
     }
 }
-
- 
 

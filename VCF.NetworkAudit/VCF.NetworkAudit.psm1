@@ -1,4 +1,4 @@
-﻿# VCF.NetworkAudit Module Script (.psm1)
+# VCF.NetworkAudit Module Script (.psm1)
 # Author: The Any Stack Architect
 
 $PublicPath  = Join-Path -Path $PSScriptRoot -ChildPath 'Public'
@@ -13,6 +13,3 @@ foreach ($Path in $ImportPaths) {
 }
 
 Write-Verbose "VCF.NetworkAudit module loaded successfully."
-
- 
-

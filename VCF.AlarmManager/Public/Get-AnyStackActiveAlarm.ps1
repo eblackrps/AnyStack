@@ -1,4 +1,4 @@
-﻿function Get-AnyStackActiveAlarm {
+function Get-AnyStackActiveAlarm {
     <#
     .SYNOPSIS
         Retrieves active alarms from the connected vCenter.
@@ -50,6 +50,4 @@
         }
     }
 }
-
- 
 

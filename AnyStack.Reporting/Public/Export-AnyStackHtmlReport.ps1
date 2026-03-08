@@ -1,4 +1,4 @@
-﻿function Export-AnyStackHtmlReport {
+function Export-AnyStackHtmlReport {
     <#
     .SYNOPSIS
         Exports a consolidated HTML report of the AnyStack environment.
@@ -52,6 +52,4 @@
         }
     }
 }
-
- 
 

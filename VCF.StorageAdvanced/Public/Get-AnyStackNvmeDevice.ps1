@@ -1,4 +1,4 @@
-﻿function Get-AnyStackNvmeDevice {
+function Get-AnyStackNvmeDevice {
     <#
     .SYNOPSIS
         Gets NVMe devices.
@@ -59,6 +59,4 @@
         }
     }
 }
-
- 
 

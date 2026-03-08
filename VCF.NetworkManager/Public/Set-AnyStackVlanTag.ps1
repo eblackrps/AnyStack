@@ -1,4 +1,4 @@
-﻿function Set-AnyStackVlanTag {
+function Set-AnyStackVlanTag {
     <#
     .SYNOPSIS
         Updates VLAN ID on an existing portgroup.
@@ -64,6 +64,4 @@
         }
     }
 }
-
- 
 

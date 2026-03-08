@@ -1,4 +1,4 @@
-﻿function Get-OldSnapshot {
+function Get-OldSnapshot {
     <#
     .SYNOPSIS
         Internal helper to recursively find the oldest snapshot.
@@ -16,7 +16,3 @@
     }
     return $oldest
 }
-
-
- 
-

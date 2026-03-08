@@ -1,4 +1,4 @@
-﻿function Get-AnyStackHostMemoryUsage {
+function Get-AnyStackHostMemoryUsage {
     <#
     .SYNOPSIS
         Gets host memory usage.
@@ -52,6 +52,4 @@
         }
     }
 }
-
- 
 

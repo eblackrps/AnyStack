@@ -1,4 +1,4 @@
-﻿function Remove-AnyStackNvmeInterface {
+function Remove-AnyStackNvmeInterface {
     <#
     .SYNOPSIS
         Removes an NVMe adapter.
@@ -57,6 +57,4 @@
         }
     }
 }
-
- 
 

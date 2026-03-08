@@ -1,4 +1,4 @@
-﻿function Get-AnyStackNonCompliantHost {
+function Get-AnyStackNonCompliantHost {
     <#
     .SYNOPSIS
         Gets non-compliant hosts.
@@ -61,6 +61,4 @@
         }
     }
 }
-
- 
 

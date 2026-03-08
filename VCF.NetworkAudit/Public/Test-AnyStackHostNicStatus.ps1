@@ -1,4 +1,4 @@
-﻿function Test-AnyStackHostNicStatus {
+function Test-AnyStackHostNicStatus {
     <#
     .SYNOPSIS
         Tests status of host physical NICs.
@@ -60,6 +60,4 @@
         }
     }
 }
-
- 
 

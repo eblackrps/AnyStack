@@ -1,4 +1,4 @@
-﻿function New-AnyStackScheduledSnapshot {
+function New-AnyStackScheduledSnapshot {
     <#
     .SYNOPSIS
         Creates a scheduled task for recurring VM snapshots.
@@ -88,6 +88,4 @@
         }
     }
 }
-
- 
 

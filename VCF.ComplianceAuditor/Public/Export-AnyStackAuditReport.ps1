@@ -1,4 +1,4 @@
-﻿function Export-AnyStackAuditReport {
+function Export-AnyStackAuditReport {
     <#
     .SYNOPSIS
         Exports an audit report.
@@ -68,6 +68,4 @@
         }
     }
 }
-
- 
 

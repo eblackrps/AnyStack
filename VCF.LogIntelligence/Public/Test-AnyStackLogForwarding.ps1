@@ -1,4 +1,4 @@
-﻿function Test-AnyStackLogForwarding {
+function Test-AnyStackLogForwarding {
     <#
     .SYNOPSIS
         Tests log forwarding configuration.
@@ -59,6 +59,4 @@
         }
     }
 }
-
- 
 

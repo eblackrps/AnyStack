@@ -1,4 +1,4 @@
-﻿function Test-AnyStackVsanCapacity {
+function Test-AnyStackVsanCapacity {
     <#
     .SYNOPSIS
         Tests vSAN capacity limits.
@@ -58,6 +58,4 @@
         }
     }
 }
-
- 
 

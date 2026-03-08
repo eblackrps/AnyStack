@@ -1,4 +1,4 @@
-﻿function Update-AnyStackVmHardware {
+function Update-AnyStackVmHardware {
     <#
     .SYNOPSIS
         Upgrades VM hardware compatibility.
@@ -63,6 +63,4 @@
         }
     }
 }
-
- 
 

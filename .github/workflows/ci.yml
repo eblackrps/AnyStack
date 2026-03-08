@@ -1,4 +1,4 @@
-﻿# AnyStack Enterprise v1.5.0 CI
+﻿# AnyStack Enterprise v1.4.0 CI
 name: CI
 on: [push, pull_request]
 jobs:
@@ -22,7 +22,4 @@ jobs:
         with:
           name: test-results
           path: test-results.xml
-
-
- 
 

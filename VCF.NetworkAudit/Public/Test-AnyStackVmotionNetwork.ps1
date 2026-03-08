@@ -1,4 +1,4 @@
-﻿function Test-AnyStackVmotionNetwork {
+function Test-AnyStackVmotionNetwork {
     <#
     .SYNOPSIS
         Tests vMotion network connectivity.
@@ -56,6 +56,4 @@
         }
     }
 }
-
- 
 

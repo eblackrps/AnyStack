@@ -1,4 +1,4 @@
-﻿function Get-AnyStackOrphanedVmdk {
+function Get-AnyStackOrphanedVmdk {
     <#
     .SYNOPSIS
         Finds orphaned VMDK files.
@@ -53,6 +53,4 @@
         }
     }
 }
-
- 
 

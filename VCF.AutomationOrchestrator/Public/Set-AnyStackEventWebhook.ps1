@@ -1,4 +1,4 @@
-﻿function Set-AnyStackEventWebhook {
+function Set-AnyStackEventWebhook {
     <#
     .SYNOPSIS
         Configures an event webhook in vCenter.
@@ -61,6 +61,4 @@
         }
     }
 }
-
- 
 

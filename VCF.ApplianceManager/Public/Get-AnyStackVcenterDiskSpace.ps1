@@ -1,4 +1,4 @@
-﻿function Get-AnyStackVcenterDiskSpace {
+function Get-AnyStackVcenterDiskSpace {
     <#
     .SYNOPSIS
         Retrieves disk space usage for vCenter partitions via VAMI API.
@@ -61,6 +61,4 @@
         }
     }
 }
-
- 
 

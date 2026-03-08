@@ -1,4 +1,4 @@
-﻿function Sync-AnyStackConfiguration {
+function Sync-AnyStackConfiguration {
     <#
     .SYNOPSIS
         Synchronizes vCenter configuration from a JSON file.
@@ -51,6 +51,4 @@
         }
     }
 }
-
- 
 

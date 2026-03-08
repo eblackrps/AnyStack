@@ -1,4 +1,4 @@
-﻿function Enable-AnyStackHostSsh {
+function Enable-AnyStackHostSsh {
     <#
     .SYNOPSIS
         Enables host SSH.
@@ -55,6 +55,4 @@
         }
     }
 }
-
- 
 

@@ -1,4 +1,4 @@
-﻿function Clear-AnyStackStaleLogs {
+function Clear-AnyStackStaleLogs {
     <#
     .SYNOPSIS
         Clears stale logs from ESXi hosts.
@@ -55,6 +55,4 @@
         }
     }
 }
-
- 
 

@@ -1,4 +1,4 @@
-﻿function Add-AnyStackNvmeInterface {
+function Add-AnyStackNvmeInterface {
     <#
     .SYNOPSIS
         Adds an NVMe adapter.
@@ -66,6 +66,4 @@
         }
     }
 }
-
- 
 

@@ -1,4 +1,4 @@
-﻿function Set-AnyStackNvmeQueueDepth {
+function Set-AnyStackNvmeQueueDepth {
     <#
     .SYNOPSIS
         Sets NVMe queue depth.
@@ -67,6 +67,4 @@
         }
     }
 }
-
- 
 

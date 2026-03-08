@@ -1,4 +1,4 @@
-﻿function Remove-AnyStackStaleTag {
+function Remove-AnyStackStaleTag {
     <#
     .SYNOPSIS
         Removes unused tags.
@@ -58,6 +58,4 @@
         }
     }
 }
-
- 
 

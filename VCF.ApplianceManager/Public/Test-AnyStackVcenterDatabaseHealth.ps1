@@ -1,4 +1,4 @@
-﻿function Test-AnyStackVcenterDatabaseHealth {
+function Test-AnyStackVcenterDatabaseHealth {
     <#
     .SYNOPSIS
         Tests the health of the vCenter Server database.
@@ -44,6 +44,4 @@
         }
     }
 }
-
- 
 

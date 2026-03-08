@@ -1,4 +1,4 @@
-﻿function Get-AnyStackHostSensors {
+function Get-AnyStackHostSensors {
     <#
     .SYNOPSIS
         Retrieves hardware sensors for a host.
@@ -57,6 +57,4 @@
         }
     }
 }
-
- 
 

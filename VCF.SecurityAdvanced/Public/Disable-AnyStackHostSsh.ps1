@@ -1,4 +1,4 @@
-﻿function Disable-AnyStackHostSsh {
+function Disable-AnyStackHostSsh {
     <#
     .SYNOPSIS
         Disables host SSH.
@@ -55,6 +55,4 @@
         }
     }
 }
-
- 
 

@@ -1,4 +1,4 @@
-﻿function Get-AnyStackEsxiLockdownMode {
+function Get-AnyStackEsxiLockdownMode {
     <#
     .SYNOPSIS
         Retrieves the current Lockdown Mode status for ESXi hosts.
@@ -50,6 +50,4 @@
         }
     }
 }
-
- 
 

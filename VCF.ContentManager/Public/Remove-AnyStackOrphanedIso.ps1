@@ -1,4 +1,4 @@
-﻿function Remove-AnyStackOrphanedIso {
+function Remove-AnyStackOrphanedIso {
     <#
     .SYNOPSIS
         Removes orphaned ISOs.
@@ -64,6 +64,4 @@
         }
     }
 }
-
- 
 

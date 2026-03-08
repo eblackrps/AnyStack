@@ -1,4 +1,4 @@
-﻿function Set-AnyStackVclsRetreatMode {
+function Set-AnyStackVclsRetreatMode {
     <#
     .SYNOPSIS
         Toggles vCLS retreat mode for a cluster.
@@ -61,6 +61,4 @@
         }
     }
 }
-
- 
 

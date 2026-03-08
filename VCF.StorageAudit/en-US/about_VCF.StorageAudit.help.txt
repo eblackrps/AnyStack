@@ -1,4 +1,4 @@
-﻿TOPIC
+TOPIC
     about_VCF.StorageAudit
 
 SHORT DESCRIPTION
@@ -17,7 +17,3 @@ EXAMPLES
 
 SEE ALSO
     https://github.com/eblackrps/AnyStack
-
-
- 
-

@@ -1,4 +1,4 @@
-﻿function Repair-AnyStackNetworkConfiguration {
+function Repair-AnyStackNetworkConfiguration {
     <#
     .SYNOPSIS
         Repairs network configuration.
@@ -69,6 +69,4 @@
         }
     }
 }
-
- 
 

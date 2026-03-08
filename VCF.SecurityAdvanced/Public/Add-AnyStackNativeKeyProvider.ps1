@@ -1,4 +1,4 @@
-﻿function Add-AnyStackNativeKeyProvider {
+function Add-AnyStackNativeKeyProvider {
     <#
     .SYNOPSIS
         Registers a Native Key Provider.
@@ -55,6 +55,4 @@
         }
     }
 }
-
- 
 

@@ -1,4 +1,4 @@
-﻿BeforeAll {
+BeforeAll {
     function global:Get-AnyStackConnection { param($Server) return [PSCustomObject]@{Name='MockVC'} }
     function global:Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock }
     Import-Module "$PSScriptRoot\..\VCF.NetworkManager.psd1" -Force
@@ -33,6 +33,4 @@ Describe "VCF.NetworkManager Suite" {
         }
     }
 }
-
- 
 

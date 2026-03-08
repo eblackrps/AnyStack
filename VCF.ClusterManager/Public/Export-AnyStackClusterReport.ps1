@@ -1,4 +1,4 @@
-﻿function Export-AnyStackClusterReport {
+function Export-AnyStackClusterReport {
     <#
     .SYNOPSIS
         Exports a cluster summary report.
@@ -63,6 +63,4 @@
         }
     }
 }
-
- 
 

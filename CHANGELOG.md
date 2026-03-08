@@ -1,8 +1,8 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.5.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.5.0] - 2026-03-08
@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Test-AnyStackSecurityBaseline`: Expanded checks to match described behavior (SSH, NTP, Syslog).
 - `Pester Tests`: Replaced all fake Pester tests with real mocked unit tests across all 27 modules.
 
-## [1.5.0] - 2026-03-08
+## [1.4.0] - 2026-03-08
 ### Added
 - Full implementation of all 117 enterprise cmdlets with real vSphere API logic.
 - Standardized "Gold Standard" pattern applied across the entire suite (resilience, typing, metadata).
@@ -25,10 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `RequiredModules` parsing errors in multiple manifests.
 - Cleaned up mangled characters and metadata in `README.md`.
 ### Changed
-- All module versions incremented to 1.5.0.
+- All module versions incremented to 1.4.0.
 - Development scripts consolidated into `tools/dev/`.
 
-## [1.5.0] - 2026-03-07
+## [1.1.0] - 2026-03-07
 ### Added
 - Full implementation of all 79 previously-stubbed cmdlets
 - VCF.StorageAdvanced expanded with 4 new NVMe cmdlets
@@ -47,13 +47,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - FixAndPublish.ps1 replaced by GitHub Actions publish workflow
 - PSGallery API key moved to GitHub repository secret
 
-## [1.5.0] - 2026-03-07
+## [1.0.0] - 2026-03-07
 
 ### Added
 - Initial release of the AnyStack Enterprise PowerShell Module Suite.
 - Comprehensive suite of 113 cmdlets for VMware vSphere 8.0 U3 / VCF automation.
 - Production-grade hardening, pipeline support, structured error handling, and robust Pester 5 test coverage.
-
-
- 
-

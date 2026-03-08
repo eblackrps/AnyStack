@@ -1,4 +1,4 @@
-﻿function Test-AnyStackHostSyslog {
+function Test-AnyStackHostSyslog {
     <#
     .SYNOPSIS
         Tests host syslog configuration.
@@ -61,6 +61,4 @@
         }
     }
 }
-
- 
 

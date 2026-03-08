@@ -1,4 +1,4 @@
-﻿function Export-AnyStackAccessMatrix {
+function Export-AnyStackAccessMatrix {
     <#
     .SYNOPSIS
         Exports an access matrix.
@@ -52,6 +52,4 @@
         }
     }
 }
-
- 
 

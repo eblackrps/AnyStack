@@ -8,8 +8,7 @@
     Description = 'Enterprise module for VCF.TagManager automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        'VMware.VimAutomation.Core',
-        @{ModuleName='VMware.PowerCLI'; ModuleVersion = '1.5.0'}
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Get-AnyStackUntaggedVm','Remove-AnyStackStaleTag','Set-AnyStackResourceTag','Sync-AnyStackTagCategory')
     CmdletsToExport = @()
@@ -28,8 +27,5 @@
 
 
 
-
-
- 
 
 

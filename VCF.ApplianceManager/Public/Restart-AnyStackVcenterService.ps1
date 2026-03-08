@@ -1,4 +1,4 @@
-﻿function Restart-AnyStackVcenterService {
+function Restart-AnyStackVcenterService {
     <#
     .SYNOPSIS
         Restarts a vCenter service.
@@ -52,6 +52,4 @@
         }
     }
 }
-
- 
 

@@ -1,8 +1,8 @@
-﻿<#
+<#
 .SYNOPSIS
     Performs Monthly Capacity Review.
 .DESCRIPTION
-    Chain: Connect-AnyStackServer â†’ Export-AnyStackCapacityForecast â†’ Get-AnyStackZombieVm â†’ Get-AnyStackDatastoreGrowthRate â†’ Get-AnyStackOrphanedVmdk â†’ Set-AnyStackRightSizeRecommendation -WhatIf
+    Chain: Connect-AnyStackServer → Export-AnyStackCapacityForecast → Get-AnyStackZombieVm → Get-AnyStackDatastoreGrowthRate → Get-AnyStackOrphanedVmdk → Set-AnyStackRightSizeRecommendation -WhatIf
 #>
 param(
     [string]$Server = 'vcenter.corp.local',
@@ -17,7 +17,3 @@ Get-AnyStackZombieVm -Server $vi -ClusterName $ClusterName
 Get-AnyStackDatastoreGrowthRate -Server $vi -DatastoreName $DatastoreName
 Get-AnyStackOrphanedVmdk -Server $vi -DatastoreName $DatastoreName
 Set-AnyStackRightSizeRecommendation -Server $vi -VmName 'DB-01' -WhatIf
-
-
- 
-

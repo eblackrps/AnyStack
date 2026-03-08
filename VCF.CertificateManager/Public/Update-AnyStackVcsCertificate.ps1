@@ -1,4 +1,4 @@
-﻿function Update-AnyStackVcsCertificate {
+function Update-AnyStackVcsCertificate {
     <#
     .SYNOPSIS
         Updates vCenter Server TLS certificate.
@@ -58,6 +58,4 @@
         }
     }
 }
-
- 
 

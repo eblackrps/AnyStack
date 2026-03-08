@@ -1,4 +1,4 @@
-﻿$specs = Get-Content -Path "C:\Gem\specs.txt" -Raw
+$specs = Get-Content -Path "C:\Gem\specs.txt" -Raw
 $modules = $specs -split "(?m)^(?=VCF\.|AnyStack\.)"
 
 foreach ($mod in $modules) {
@@ -143,7 +143,3 @@ function $cmdName {
 }
 
 Write-Output "Generation Complete."
-
-
- 
-

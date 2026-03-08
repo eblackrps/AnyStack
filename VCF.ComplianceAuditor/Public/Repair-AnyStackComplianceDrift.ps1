@@ -1,4 +1,4 @@
-﻿function Repair-AnyStackComplianceDrift {
+function Repair-AnyStackComplianceDrift {
     <#
     .SYNOPSIS
         Repairs compliance drift based on audit.
@@ -71,6 +71,4 @@
         }
     }
 }
-
- 
 

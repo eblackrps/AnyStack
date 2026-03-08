@@ -1,4 +1,4 @@
-﻿function Get-AnyStackDistributedPortgroup {
+function Get-AnyStackDistributedPortgroup {
     <#
     .SYNOPSIS
         Lists Distributed Portgroups and their configuration.
@@ -47,6 +47,4 @@
         }
     }
 }
-
- 
 

@@ -1,4 +1,4 @@
-﻿function Get-AnyStackLibraryItem {
+function Get-AnyStackLibraryItem {
     <#
     .SYNOPSIS
         Lists items in a Content Library.
@@ -52,6 +52,4 @@
         }
     }
 }
-
- 
 

@@ -1,4 +1,4 @@
-﻿# AnyStack Maintenance Guide
+# AnyStack Maintenance Guide
 
 ## Broadcom/VMware Release Cadence
 As of 2024, VMware products are under Broadcom ownership. VCF and vSphere releases are less predictable. Monitor:
@@ -13,8 +13,8 @@ After each new vSphere/VCF release, prioritize testing:
 - **VMware HCL API:** verify URL and authentication requirements.
 
 ## Quarterly Maintenance Tasks
-1. Run `Invoke-Pester -Recurse` â€” ensure no regressions.
-2. Run `Invoke-ScriptAnalyzer -Recurse -Severity Error` â€” catch new rule violations.
+1. Run `Invoke-Pester -Recurse` — ensure no regressions.
+2. Run `Invoke-ScriptAnalyzer -Recurse -Severity Error` — catch new rule violations.
 3. Check `Test-AnyStackCertificates` against latest TLS standards.
 4. Rotate `PSGALLERY_API_KEY` GitHub secret annually.
 
@@ -38,6 +38,3 @@ After each new vSphere/VCF release, prioritize testing:
 - **Patch (1.4.x):** Bug fixes, no new cmdlets.
 - **Minor (1.x.0):** New cmdlets added, no breaking changes.
 - **Major (x.0.0):** Breaking changes (renames, dropped version support).
-
- 
-

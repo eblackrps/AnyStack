@@ -1,4 +1,4 @@
-﻿function Repair-AnyStackDisasterRecoveryReadiness {
+function Repair-AnyStackDisasterRecoveryReadiness {
     <#
     .SYNOPSIS
         Repairs DR readiness gaps.
@@ -56,6 +56,4 @@
         }
     }
 }
-
- 
 

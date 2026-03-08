@@ -1,4 +1,4 @@
-﻿function Test-AnyStackStorageConfiguration {
+function Test-AnyStackStorageConfiguration {
     <#
     .SYNOPSIS
         Tests overall storage config.
@@ -59,6 +59,4 @@
         }
     }
 }
-
- 
 

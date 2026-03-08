@@ -1,4 +1,4 @@
-﻿function Invoke-AnyStackDatastoreUnmount {
+function Invoke-AnyStackDatastoreUnmount {
     <#
     .SYNOPSIS
         Unmounts a datastore.
@@ -59,6 +59,4 @@
         }
     }
 }
-
- 
 

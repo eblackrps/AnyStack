@@ -8,8 +8,7 @@
     Description = 'Enterprise module for VCF.CapacityPlanner automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        'VMware.VimAutomation.Core',
-        @{ModuleName='VMware.PowerCLI'; ModuleVersion = '1.5.0'}
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Export-AnyStackCapacityForecast','Get-AnyStackDatastoreGrowthRate','Get-AnyStackZombieVm','Set-AnyStackRightSizeRecommendation')
     CmdletsToExport = @()
@@ -28,8 +27,5 @@
 
 
 
-
-
- 
 
 

@@ -1,6 +1,6 @@
-﻿<#
+<#
 .SYNOPSIS
-    Installs the AnyStack Enterprise Module Suite v1.5.0 into your local PowerShell environment.
+    Installs the AnyStack Enterprise Module Suite v1.4.0 into your local PowerShell environment.
 #>
 [CmdletBinding()]
 param(
@@ -32,7 +32,7 @@ if (-not (Get-Module -ListAvailable VMware.PowerCLI)) {
 }
 
 Write-Output "=========================================" -ForegroundColor Green
-Write-Output "Installing AnyStack Enterprise Suite v1.5.0" -ForegroundColor Green
+Write-Output "Installing AnyStack Enterprise Suite v1.4.0" -ForegroundColor Green
 Write-Output "=========================================" -ForegroundColor Green
 
 $Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
@@ -59,14 +59,10 @@ foreach ($mod in $Modules) {
         }
     }
     Copy-Item -Path (Join-Path $PSScriptRoot $mod) -Destination $targetPathBase -Recurse -Force
-    Write-Output "  [OK] Installed $mod v1.5.0" -ForegroundColor DarkCyan
+    Write-Output "  [OK] Installed $mod v1.4.0" -ForegroundColor DarkCyan
 }
 
 Write-Output "=========================================" -ForegroundColor Green
 Write-Output "Installation Complete!" -ForegroundColor Green
 Write-Output "Run 'Import-Module AnyStack.vSphere' to begin." -ForegroundColor Green
 Write-Output "=========================================" -ForegroundColor Green
-
-
- 
-

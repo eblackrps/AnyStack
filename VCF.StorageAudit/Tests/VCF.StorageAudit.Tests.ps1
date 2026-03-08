@@ -1,4 +1,4 @@
-﻿BeforeAll {
+BeforeAll {
     function global:Get-AnyStackConnection { param($Server) return [PSCustomObject]@{Name='MockVC'} }
     function global:Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock }
     Import-Module "$PSScriptRoot\..\VCF.StorageAudit.psd1" -Force
@@ -87,6 +87,4 @@ Describe "VCF.StorageAudit Suite" {
         }
     }
 }
-
- 
 

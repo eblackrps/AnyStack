@@ -1,4 +1,4 @@
-﻿function Get-AnyStackUntaggedVm {
+function Get-AnyStackUntaggedVm {
     <#
     .SYNOPSIS
         Identifies VMs with no tags assigned.
@@ -48,6 +48,4 @@
         }
     }
 }
-
- 
 

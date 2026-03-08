@@ -1,4 +1,4 @@
-﻿function Set-AnyStackSyslogServer {
+function Set-AnyStackSyslogServer {
     <#
     .SYNOPSIS
         Sets the syslog server for a host.
@@ -62,6 +62,4 @@
         }
     }
 }
-
- 
 

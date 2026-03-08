@@ -1,4 +1,4 @@
-﻿function Set-AnyStackResourceTag {
+function Set-AnyStackResourceTag {
     <#
     .SYNOPSIS
         Applies a tag to an object.
@@ -75,6 +75,4 @@
         }
     }
 }
-
- 
 

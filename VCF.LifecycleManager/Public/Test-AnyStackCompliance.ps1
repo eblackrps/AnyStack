@@ -1,4 +1,4 @@
-﻿function Test-AnyStackCompliance {
+function Test-AnyStackCompliance {
     <#
     .SYNOPSIS
         Tests host compliance against Host Profiles.
@@ -62,6 +62,4 @@
         }
     }
 }
-
- 
 

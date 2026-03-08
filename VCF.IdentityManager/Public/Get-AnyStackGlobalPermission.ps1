@@ -1,4 +1,4 @@
-﻿function Get-AnyStackGlobalPermission {
+function Get-AnyStackGlobalPermission {
     <#
     .SYNOPSIS
         Retrieves global permissions in vCenter.
@@ -49,6 +49,4 @@
         }
     }
 }
-
- 
 

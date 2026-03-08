@@ -1,4 +1,4 @@
-﻿function Get-AnyStackConnection {
+function Get-AnyStackConnection {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
@@ -23,6 +23,4 @@
 
     throw "Invalid Server parameter. Must be a string or VIServer object."
 }
-
- 
 

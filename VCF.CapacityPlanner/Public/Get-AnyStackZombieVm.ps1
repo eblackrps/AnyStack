@@ -1,4 +1,4 @@
-﻿function Get-AnyStackZombieVm {
+function Get-AnyStackZombieVm {
     <#
     .SYNOPSIS
         Identifies zombie VMs.
@@ -60,6 +60,4 @@
         }
     }
 }
-
- 
 

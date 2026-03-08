@@ -1,4 +1,4 @@
-﻿function Set-AnyStackVmResourcePool {
+function Set-AnyStackVmResourcePool {
     <#
     .SYNOPSIS
         Moves VM to a resource pool.
@@ -59,6 +59,4 @@
         }
     }
 }
-
- 
 

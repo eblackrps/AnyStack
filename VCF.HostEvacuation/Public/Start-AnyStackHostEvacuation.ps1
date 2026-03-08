@@ -1,4 +1,4 @@
-﻿function Start-AnyStackHostEvacuation {
+function Start-AnyStackHostEvacuation {
     <#
     .SYNOPSIS
         Starts host evacuation (Maintenance Mode).
@@ -68,6 +68,4 @@
         }
     }
 }
-
- 
 

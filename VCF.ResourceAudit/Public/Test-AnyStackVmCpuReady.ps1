@@ -1,4 +1,4 @@
-﻿function Test-AnyStackVmCpuReady {
+function Test-AnyStackVmCpuReady {
     <#
     .SYNOPSIS
         Tests VM CPU Ready time.
@@ -67,6 +67,4 @@
         }
     }
 }
-
- 
 

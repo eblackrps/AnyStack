@@ -1,4 +1,4 @@
-﻿function Get-AnyStackDatastoreGrowthRate {
+function Get-AnyStackDatastoreGrowthRate {
     <#
     .SYNOPSIS
         Gets datastore growth rates.
@@ -72,6 +72,4 @@
         }
     }
 }
-
- 
 

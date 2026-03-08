@@ -1,4 +1,4 @@
-﻿function Set-AnyStackVmAffinityRule {
+function Set-AnyStackVmAffinityRule {
     <#
     .SYNOPSIS
         Sets VM-Host affinity rule.
@@ -81,6 +81,4 @@
         }
     }
 }
-
- 
 

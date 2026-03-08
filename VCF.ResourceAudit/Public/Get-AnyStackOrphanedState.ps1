@@ -1,4 +1,4 @@
-﻿function Get-AnyStackOrphanedState {
+function Get-AnyStackOrphanedState {
     <#
     .SYNOPSIS
         Finds orphaned VMs.
@@ -48,6 +48,4 @@
         }
     }
 }
-
- 
 

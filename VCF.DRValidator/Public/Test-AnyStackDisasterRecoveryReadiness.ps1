@@ -1,4 +1,4 @@
-﻿function Test-AnyStackDisasterRecoveryReadiness {
+function Test-AnyStackDisasterRecoveryReadiness {
     <#
     .SYNOPSIS
         Tests disaster recovery readiness.
@@ -67,6 +67,4 @@
         }
     }
 }
-
- 
 

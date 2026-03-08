@@ -1,4 +1,4 @@
-﻿function Invoke-AnyStackCisStigAudit {
+function Invoke-AnyStackCisStigAudit {
     <#
     .SYNOPSIS
         Audits ESXi host against CIS STIG.
@@ -72,6 +72,4 @@
         }
     }
 }
-
- 
 
