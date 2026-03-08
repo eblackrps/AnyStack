@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'VCF.IdentityManager.psm1'
     ModuleVersion = '1.2.0'
     GUID = 'bfd98cf4-0261-4e5f-ad55-b818f8e22ce5'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.IdentityManager automation and management.'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Export-AnyStackAccessMatrix','Get-AnyStackGlobalPermission','New-AnyStackCustomRole','Test-AnyStackSsoConfiguration')
@@ -22,6 +23,7 @@
         }
     }
 }
+
 
 
 

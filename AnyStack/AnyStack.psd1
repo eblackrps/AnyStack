@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'AnyStack.psm1'
     ModuleVersion = '1.2.0'
     GUID = 'dee0a564-e550-4cce-a916-eac3ebff45c2'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Meta-module that installs the complete AnyStack Enterprise Suite for VMware vSphere 8.0 U3 and VCF'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='AnyStack.ConfigurationAsCode'; ModuleVersion = '1.2.0'},
         @{ModuleName='AnyStack.Reporting'; ModuleVersion = '1.2.0'},
         @{ModuleName='AnyStack.vSphere'; ModuleVersion = '1.2.0'},
@@ -48,6 +49,7 @@
         }
     }
 }
+
 
 
 

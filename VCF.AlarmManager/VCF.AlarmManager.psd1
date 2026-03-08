@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'VCF.AlarmManager.psm1'
     ModuleVersion = '1.2.0'
     GUID = 'af0a8e65-7c68-4fea-96ae-65278bc5009e'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.AlarmManager automation and management.'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Get-AnyStackActiveAlarm')
@@ -22,6 +23,7 @@
         }
     }
 }
+
 
 
 

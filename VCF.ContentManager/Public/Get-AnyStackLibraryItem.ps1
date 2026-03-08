@@ -1,51 +1,54 @@
-function Get-AnyStackLibraryItem {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackLibraryItem {
     <#
     .SYNOPSIS
-        Lists all items stored in the vSphere Content Libraries.
+        Lists items in a Content Library.
     .DESCRIPTION
-        VCF.ContentManager. Implementation using Content Library service audit.
-    .INPUTS
-        VMware.VimAutomation.Types.VIServer. Accepts a connected VIServer object via pipeline.
+        Retrieves all items from the specified Content Library.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER LibraryName
+        Name of the library to query.
+    .EXAMPLE
+        PS> Get-AnyStackLibraryItem -LibraryName 'Templates'
     .OUTPUTS
-        PSCustomObject. Returns a result object with Timestamp, Status, and relevant data fields.
-    .LINK
-        https://github.com/eblackrps/AnyStack
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
         [ValidateNotNull()]
-        [VMware.VimAutomation.Types.VIServer]$Server
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$LibraryName
     )
     begin {
+        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            # Content Libraries are managed via the CIS/REST API in modern vSphere
-            $libraries = Get-ContentLibrary -Server $Server -ErrorAction SilentlyContinue
-
-            foreach ($lib in $libraries) {
-                $items = Get-ContentLibraryItem -ContentLibrary $lib -Server $Server -ErrorAction SilentlyContinue
-                foreach ($item in $items) {
-                    [PSCustomObject]@{
-                        Timestamp   = (Get-Date)
-                        Status      = 'Success'
-                        Library     = $lib.Name
-                        ItemName    = $item.Name
-                        ItemType    = $item.ItemType
-                        SizeGB      = [Math]::Round($item.SizeGB, 2)
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching library items from $LibraryName on $($vi.Name)"
+            $lib = Invoke-AnyStackWithRetry -ScriptBlock { Get-ContentLibrary -Name $LibraryName -Server $vi }
+            $items = Invoke-AnyStackWithRetry -ScriptBlock { Get-ContentLibraryItem -ContentLibrary $lib -Server $vi }
+            
+            foreach ($i in $items) {
+                [PSCustomObject]@{
+                    PSTypeName  = 'AnyStack.LibraryItem'
+                    Timestamp   = (Get-Date)
+                    Server      = $vi.Name
+                    LibraryName = $LibraryName
+                    ItemName    = $i.Name
+                    ItemType    = $i.ItemType
+                    SizeGB      = [Math]::Round($i.Size / 1GB, 2)
                 }
             }
         }
         catch {
-            Write-Error "Failed to list Content Library items: $($_.Exception.Message)" -Category InvalidOperation
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }

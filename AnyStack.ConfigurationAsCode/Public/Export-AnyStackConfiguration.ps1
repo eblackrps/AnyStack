@@ -1,38 +1,56 @@
-function Export-AnyStackConfiguration {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Export-AnyStackConfiguration {
     <#
     .SYNOPSIS
-        Executes Export-AnyStackConfiguration.
+        Exports vCenter configuration to a structured JSON file.
+    .DESCRIPTION
+        Retrieves settings like folders, clusters, and networks and saves them for Configuration as Code (CaC).
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER OutputPath
+        Path to the output JSON file.
     .EXAMPLE
-        PS> Export-AnyStackConfiguration -Server 'vcenter.corp.local'
-        Executes the Export-AnyStackConfiguration command.
+        PS> Export-AnyStackConfiguration -OutputPath 'C:\Backup\Config.json'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$OutputPath = ".\vCenterConfig-$(Get-Date -f yyyyMMdd).json"
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            Write-Verbose "Executing Export-AnyStackConfiguration"
-            $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                # Implementation
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Exporting configuration from $($vi.Name)"
+            $config = @{
+                Server = $vi.Name
+                ExportDate = (Get-Date)
+                Folders = Invoke-AnyStackWithRetry -ScriptBlock { Get-Folder -Server $vi | Select-Object Name, Type }
+                Clusters = Invoke-AnyStackWithRetry -ScriptBlock { Get-Cluster -Server $vi | Select-Object Name, DrsEnabled, HaEnabled }
             }
-            [PSCustomObject]@{ Status = 'Success' }
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'AuthenticationError', [System.Management.Automation.ErrorCategory]::AuthenticationError, $Server))
+            
+            $config | ConvertTo-Json -Depth 5 | Set-Content -Path $OutputPath -Encoding UTF8
+            
+            [PSCustomObject]@{
+                PSTypeName = 'AnyStack.ConfigurationExport'
+                Timestamp  = (Get-Date)
+                Status     = 'Success'
+                Server     = $vi.Name
+                OutputPath = (Resolve-Path $OutputPath).Path
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-

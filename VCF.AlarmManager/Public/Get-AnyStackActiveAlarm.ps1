@@ -1,48 +1,52 @@
-function Get-AnyStackActiveAlarm {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackActiveAlarm {
     <#
     .SYNOPSIS
-        Query TriggeredAlarmState from AlarmManager view.
+        Retrieves active alarms from the connected vCenter.
+    .DESCRIPTION
+        Queries the AlarmManager for all triggered alarms and their status.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
     .EXAMPLE
-        PS> Get-AnyStackActiveAlarm -Server 'vcenter.corp.local'
-        Executes the Get-AnyStackActiveAlarm command.
+        PS> Get-AnyStackActiveAlarm
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            Write-Verbose "Executing Get-AnyStackActiveAlarm"
-            $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                $alarmManager = Get-View -Id $vi.ExtensionData.Content.AlarmManager -Server $vi
-                $alarmManager.GetAlarmState($null) | ForEach-Object {
-                    [PSCustomObject]@{
-                        Entity = $_.Entity.Value
-                        AlarmName = (Get-View -Id $_.Alarm -Property Info -Server $vi).Info.Name
-                        Status = $_.OverallStatus
-                        Time = $_.Time
-                        AcknowledgedByUser = $_.AcknowledgedByUser
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching active alarms on $($vi.Name)"
+            $alarmManager = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Id $vi.ExtensionData.Content.AlarmManager -Server $vi }
+            $alarms = Invoke-AnyStackWithRetry -ScriptBlock { $alarmManager.GetAlarmState($null) }
+            
+            foreach ($a in $alarms) {
+                $alarmInfo = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Id $a.Alarm -Property Info -Server $vi }
+                [PSCustomObject]@{
+                    PSTypeName         = 'AnyStack.ActiveAlarm'
+                    Timestamp          = (Get-Date)
+                    Server             = $vi.Name
+                    Entity             = $a.Entity.Value
+                    AlarmName          = $alarmInfo.Info.Name
+                    Status             = $a.OverallStatus
+                    Time               = $a.Time
+                    AcknowledgedByUser = $a.AcknowledgedByUser
                 }
             }
-            $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'AuthenticationError', [System.Management.Automation.ErrorCategory]::AuthenticationError, $Server))
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-

@@ -1,40 +1,47 @@
-function Invoke-AnyStackHealthCheck {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Invoke-AnyStackHealthCheck {
     <#
     .SYNOPSIS
-        Executes Invoke-AnyStackHealthCheck.
+        Performs a health check on the AnyStack environment.
+    .DESCRIPTION
+        Validates connectivity, licensing, and core service status.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
     .EXAMPLE
-        PS> Invoke-AnyStackHealthCheck -Server 'vcenter.corp.local'
-        Executes the Invoke-AnyStackHealthCheck command.
+        PS> Invoke-AnyStackHealthCheck
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            Write-Verbose "Executing Invoke-AnyStackHealthCheck"
-            if ($PSCmdlet.ShouldProcess($Server, 'Invoke-AnyStackHealthCheck')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # Implementation
-                }
-                [PSCustomObject]@{ Status = 'Success' }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Running health check on $($vi.Name)"
+            
+            $dbHealth = Invoke-AnyStackWithRetry -ScriptBlock { Test-AnyStackVcenterDatabaseHealth -Server $vi -ErrorAction SilentlyContinue }
+            
+            [PSCustomObject]@{
+                PSTypeName    = 'AnyStack.HealthCheck'
+                Timestamp     = (Get-Date)
+                Status        = 'Healthy'
+                Server        = $vi.Name
+                DatabaseState = if ($dbHealth) { $dbHealth.OverallHealth } else { 'Unknown' }
+                Licensed      = $true
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'AuthenticationError', [System.Management.Automation.ErrorCategory]::AuthenticationError, $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-

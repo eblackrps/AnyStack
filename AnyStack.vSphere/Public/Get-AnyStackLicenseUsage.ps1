@@ -1,9 +1,5 @@
-function Get-AnyStackLicenseUsage {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
-    <#
+﻿function Get-AnyStackLicenseUsage {
+        <#
     .SYNOPSIS
         Get-AnyStackLicenseUsage - A VMWare admin utility.
     .DESCRIPTION
@@ -56,5 +52,6 @@ function Get-AnyStackLicenseUsage {
         }
     }
 }
+
 
 

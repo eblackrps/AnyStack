@@ -1,40 +1,60 @@
-function Set-AnyStackEsxiLockdownMode {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Set-AnyStackEsxiLockdownMode {
     <#
     .SYNOPSIS
-        Executes Set-AnyStackEsxiLockdownMode.
+        Configures Lockdown Mode on an ESXi host.
+    .DESCRIPTION
+        Sets lockdown mode to disabled, normal, or strict.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER HostName
+        Name of the host.
+    .PARAMETER Mode
+        Lockdown mode: lockdownDisabled, lockdownNormal, lockdownStrict.
     .EXAMPLE
-        PS> Set-AnyStackEsxiLockdownMode -Server 'vcenter.corp.local'
-        Executes the Set-AnyStackEsxiLockdownMode command.
+        PS> Set-AnyStackEsxiLockdownMode -HostName 'esx01' -Mode lockdownNormal
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$HostName,
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('lockdownDisabled','lockdownNormal','lockdownStrict')]
+        [string]$Mode
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            Write-Verbose "Executing Set-AnyStackEsxiLockdownMode"
-            if ($PSCmdlet.ShouldProcess($Server, 'Set-AnyStackEsxiLockdownMode')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # Implementation
+            if ($PSCmdlet.ShouldProcess($HostName, "Set Lockdown Mode to $Mode")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Updating lockdown mode on $($vi.Name)"
+                $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$HostName} }
+                $accessMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.HostAccessManager }
+                
+                Invoke-AnyStackWithRetry -ScriptBlock { $accessMgr.ChangeLockdownMode($Mode) }
+                
+                [PSCustomObject]@{
+                    PSTypeName = 'AnyStack.LockdownModeUpdate'
+                    Timestamp  = (Get-Date)
+                    Server     = $vi.Name
+                    Host       = $HostName
+                    NewMode    = $Mode
+                    Applied    = $true
                 }
-                [PSCustomObject]@{ Status = 'Success' }
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'AuthenticationError', [System.Management.Automation.ErrorCategory]::AuthenticationError, $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-

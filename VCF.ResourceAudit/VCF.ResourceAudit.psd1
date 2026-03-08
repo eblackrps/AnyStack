@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'VCF.ResourceAudit.psm1'
     ModuleVersion = '1.2.0'
     GUID = 'c4212e0c-bf47-4519-b333-aee9b0ed312e'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.ResourceAudit automation and management.'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Get-AnyStackHostMemoryUsage','Get-AnyStackOrphanedState','Get-AnyStackVmMigrationHistory','Get-AnyStackVmUptime','Move-AnyStackVmDatastore','Remove-AnyStackOldTemplates','Restart-AnyStackVmTools','Set-AnyStackVmResourcePool','Test-AnyStackVmCpuReady','Update-AnyStackVmHardware','Update-AnyStackVmTools')
@@ -22,6 +23,7 @@
         }
     }
 }
+
 
 
 

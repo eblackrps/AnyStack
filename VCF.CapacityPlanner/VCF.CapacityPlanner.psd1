@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'VCF.CapacityPlanner.psm1'
     ModuleVersion = '1.2.0'
     GUID = '2d04c202-4008-40c8-84b2-22b356955b4c'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.CapacityPlanner automation and management.'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Export-AnyStackCapacityForecast','Get-AnyStackDatastoreGrowthRate','Get-AnyStackZombieVm','Set-AnyStackRightSizeRecommendation')
@@ -22,6 +23,7 @@
         }
     }
 }
+
 
 
 

@@ -1,40 +1,46 @@
-function Invoke-AnyStackReport {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Invoke-AnyStackReport {
     <#
     .SYNOPSIS
-        Executes Invoke-AnyStackReport.
+        Triggers a data collection report.
+    .DESCRIPTION
+        Runs an internal reporting job and returns results as objects.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
     .EXAMPLE
-        PS> Invoke-AnyStackReport -Server 'vcenter.corp.local'
-        Executes the Invoke-AnyStackReport command.
+        PS> Invoke-AnyStackReport
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            Write-Verbose "Executing Invoke-AnyStackReport"
-            if ($PSCmdlet.ShouldProcess($Server, 'Invoke-AnyStackReport')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # Implementation
-                }
-                [PSCustomObject]@{ Status = 'Success' }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Invoking data collection on $($vi.Name)"
+            
+            $summary = Invoke-AnyStackWithRetry -ScriptBlock { Get-VM -Server $vi | Measure-Object }
+            
+            [PSCustomObject]@{
+                PSTypeName = 'AnyStack.DataReport'
+                Timestamp  = (Get-Date)
+                Status     = 'Success'
+                Server     = $vi.Name
+                VmCount    = $summary.Count
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'AuthenticationError', [System.Management.Automation.ErrorCategory]::AuthenticationError, $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-

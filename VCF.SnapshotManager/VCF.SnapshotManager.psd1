@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'VCF.SnapshotManager.psm1'
     ModuleVersion = '1.2.0'
     GUID = '6787a7ee-62f0-4167-9326-1f816aa6de6b'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.SnapshotManager automation and management.'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Clear-AnyStackOrphanedSnapshots','Optimize-AnyStackSnapshots')
@@ -22,6 +23,7 @@
         }
     }
 }
+
 
 
 

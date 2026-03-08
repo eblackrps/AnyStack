@@ -1,78 +1,47 @@
-function Disconnect-AnyStackServer {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Disconnect-AnyStackServer {
     <#
     .SYNOPSIS
-        Terminate existing sessions to vCenter Server or ESXi Host.
-
+        Disconnects from a vCenter Server or ESXi host.
     .DESCRIPTION
-        Safely closes one or more active VIServer connections, preventing session leakage and maintaining infrastructure security.
-    .INPUTS
-        VMware.VimAutomation.Types.VIServer. Accepts a connected VIServer object via pipeline.
-    .OUTPUTS
-        PSCustomObject. Returns a result object with Timestamp, Status, and relevant data fields.
-    .LINK
-        https://github.com/eblackrps/AnyStack
-        Optimized for multi-server environments.
-
+        Closes the active session using Disconnect-VIServer.
     .PARAMETER Server
-        Specifies the server(s) to disconnect. If omitted, all active sessions are terminated.
-
+        vCenter Server hostname or VIServer object. Uses all active connections if omitted.
     .EXAMPLE
-        Disconnect-AnyStackServer -Server 'vcenter.anystack.local'
-        Disconnects the specified server session.
-
-    .EXAMPLE
-        Disconnect-AnyStackServer
-        Disconnects all currently connected vSphere servers.
-
+        PS> Disconnect-AnyStackServer
+    .OUTPUTS
+        PSCustomObject
     .NOTES
-        Author: The Any Stack Architect
-        Version: 1.0.0.0
-        Namespace: AnyStack.vSphere
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
-        [string[]]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        $Server
     )
-
-    begin {
-        $ErrorActionPreference = 'Stop'
-    }
     process {
         try {
-            if ($PSBoundParameters.ContainsKey('Server')) {
-                foreach ($srv in $Server) {
-                    Write-Verbose "Disconnecting from server: $srv"
-                    Disconnect-VIServer -Server $srv -Confirm:$false -ErrorAction Stop
-                }
-            }
-            else {
-                Write-Verbose "Disconnecting from ALL vSphere servers."
-                Disconnect-VIServer -Server * -Confirm:$false -ErrorAction SilentlyContinue
-            }
+            $targets = if ($Server) { 
+                if ($Server -is [string]) { Get-VIServer -Name $Server } else { $Server }
+            } else { $global:DefaultVIServers }
 
-            # Return success object
-            [PSCustomObject]@{
-                Timestamp = (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
-                Operation = 'Disconnect'
-                Status    = 'Success'
+            foreach ($srv in $targets) {
+                if ($PSCmdlet.ShouldProcess($srv.Name, "Disconnect from vSphere")) {
+                    Write-Verbose "[$($MyInvocation.MyCommand.Name)] Disconnecting from $($srv.Name)"
+                    Invoke-AnyStackWithRetry -ScriptBlock { Disconnect-VIServer -Server $srv -Confirm:$false }
+                    
+                    [PSCustomObject]@{
+                        PSTypeName = 'AnyStack.Disconnection'
+                        Timestamp  = (Get-Date)
+                        Status     = 'Disconnected'
+                        Server     = $srv.Name
+                    }
+                }
             }
         }
         catch {
-            Write-Error "Failed to disconnect: $($_.Exception.Message)"
-            [PSCustomObject]@{
-                Timestamp = (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
-                Operation = 'Disconnect'
-                Status    = 'Failed'
-                Error     = $_.Exception.Message
-            }
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
-
-

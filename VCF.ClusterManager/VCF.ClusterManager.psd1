@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'VCF.ClusterManager.psm1'
     ModuleVersion = '1.2.0'
     GUID = '708bbcca-7018-4679-8365-001cd7e4fce4'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.ClusterManager automation and management.'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Export-AnyStackClusterReport','Get-AnyStackHostFirmware','Get-AnyStackHostSensors','New-AnyStackHostProfile','Set-AnyStackDrsRule','Set-AnyStackHostPowerPolicy','Set-AnyStackVclsRetreatMode','Set-AnyStackVmAffinityRule','Test-AnyStackHaFailover','Test-AnyStackHostNtp','Test-AnyStackProactiveHa')
@@ -22,6 +23,7 @@
         }
     }
 }
+
 
 
 

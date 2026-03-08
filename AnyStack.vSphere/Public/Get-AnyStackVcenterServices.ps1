@@ -1,47 +1,49 @@
-function Get-AnyStackVcenterService {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackVcenterServices {
     <#
     .SYNOPSIS
-        Lists core vCenter services and their status.
+        Lists vCenter services and their status.
     .DESCRIPTION
-        Round 9: Core Framework Enhancement. Standardizes console output,
-        JSON logging, and transcript management across the suite.
-    .INPUTS
-        VMware.VimAutomation.Types.VIServer. Accepts a connected VIServer object via pipeline.
+        Queries ServiceManager for all registered vCenter services.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .EXAMPLE
+        PS> Get-AnyStackVcenterServices
     .OUTPUTS
-        PSCustomObject. Returns a result object with Timestamp, Status, and relevant data fields.
-    .LINK
-        https://github.com/eblackrps/AnyStack
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
         [ValidateNotNull()]
-        [VMware.VimAutomation.Types.VIServer]$Server
+        $Server
     )
     begin {
+        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            $serviceInstance = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $Server -Id 'ServiceInstance' -Property Content.ServiceManager }
-            $serviceManager = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $Server -Id $serviceInstance.Content.ServiceManager -Property Service }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching vCenter services on $($vi.Name)"
+            $serviceInstance = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id 'ServiceInstance' -Property Content.ServiceManager }
+            $serviceManager = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $serviceInstance.Content.ServiceManager -Property Service }
 
             foreach ($s in $serviceManager.Service) {
                 [PSCustomObject]@{
+                    PSTypeName  = 'AnyStack.VcenterService'
                     Timestamp   = (Get-Date)
                     Status      = 'Success'
+                    Server      = $vi.Name
                     ServiceName = $s.ServiceName
                     Running     = $s.Running
                 }
             }
         }
         catch {
-            Write-Error "Failed to get vCenter services: $($_.Exception.Message)" -Category InvalidOperation
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }

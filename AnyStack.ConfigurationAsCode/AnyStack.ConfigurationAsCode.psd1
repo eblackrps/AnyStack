@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'AnyStack.ConfigurationAsCode.psm1'
     ModuleVersion = '1.2.0'
     GUID = 'b7d6c0fe-c4df-4761-b72d-dfdea8301311'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for AnyStack.ConfigurationAsCode automation and management.'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Export-AnyStackConfiguration','Sync-AnyStackConfiguration')
@@ -22,6 +23,7 @@
         }
     }
 }
+
 
 
 

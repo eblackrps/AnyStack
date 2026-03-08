@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'VCF.SecurityAdvanced.psm1'
     ModuleVersion = '1.2.0'
     GUID = '3cd79541-f1c6-43cf-9ab8-5eba8e46cc7a'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.SecurityAdvanced automation and management.'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Add-AnyStackNativeKeyProvider','Disable-AnyStackHostSsh','Enable-AnyStackHostSsh','Set-AnyStackEsxiLockdownMode')
@@ -22,6 +23,7 @@
         }
     }
 }
+
 
 
 

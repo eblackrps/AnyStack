@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'VCF.LifecycleManager.psm1'
     ModuleVersion = '1.2.0'
     GUID = 'b9926487-f43a-41c3-925f-34525f82ba52'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.LifecycleManager automation and management.'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Export-AnyStackHardwareCompatibility','Get-AnyStackClusterImage','Start-AnyStackHostRemediation','Test-AnyStackCompliance')
@@ -22,6 +23,7 @@
         }
     }
 }
+
 
 
 

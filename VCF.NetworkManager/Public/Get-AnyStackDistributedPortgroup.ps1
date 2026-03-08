@@ -1,47 +1,49 @@
-function Get-AnyStackDistributedPortgroup {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackDistributedPortgroup {
     <#
     .SYNOPSIS
-        Retrieves all Distributed Portgroups for the connected vCenter.
+        Lists Distributed Portgroups and their configuration.
     .DESCRIPTION
-        VCF.NetworkManager. Implementation using targeted property fetching for performance.
-    .INPUTS
-        VMware.VimAutomation.Types.VIServer. Accepts a connected VIServer object via pipeline.
+        Retrieves all portgroups from distributed switches.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .EXAMPLE
+        PS> Get-AnyStackDistributedPortgroup
     .OUTPUTS
-        PSCustomObject. Returns a result object with Timestamp, Status, and relevant data fields.
-    .LINK
-        https://github.com/eblackrps/AnyStack
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
         [ValidateNotNull()]
-        [VMware.VimAutomation.Types.VIServer]$Server
+        $Server
     )
     begin {
+        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            $pgs = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $Server -ViewType DistributedVirtualPortgroup -Property Name,Config.DefaultPortConfig.Vlan.VlanId,Key,Summary.PortgroupType }
-
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching portgroups on $($vi.Name)"
+            $pgs = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType DistributedVirtualPortgroup -Property Name,Config }
+            
             foreach ($pg in $pgs) {
                 [PSCustomObject]@{
-                    Timestamp   = (Get-Date)
-                    Status      = 'Success'
-                    Name        = $pg.Name
-                    VlanId      = $pg.Config.DefaultPortConfig.Vlan.VlanId
-                    Type        = $pg.Summary.PortgroupType
-                    Key         = $pg.Key
+                    PSTypeName    = 'AnyStack.Portgroup'
+                    Timestamp     = (Get-Date)
+                    Server        = $vi.Name
+                    PortgroupName = $pg.Name
+                    VlanId        = $pg.Config.DefaultPortConfig.Vlan.VlanId
+                    NumPorts      = $pg.Config.NumPorts
+                    Switch        = $pg.Config.DistributedVirtualSwitch.Value
                 }
             }
         }
         catch {
-            Write-Error "Failed to get distributed portgroups: $($_.Exception.Message)" -Category InvalidOperation
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }

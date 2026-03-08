@@ -1,45 +1,52 @@
-function Get-AnyStackEsxiLockdownMode {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackEsxiLockdownMode {
     <#
     .SYNOPSIS
-        Audits the lockdown mode status for all ESXi hosts.
+        Retrieves the current Lockdown Mode status for ESXi hosts.
     .DESCRIPTION
-        VCF.SecurityBaseline. Validates if hosts meet strict vSphere 8.0 security guidelines.
-    .INPUTS
-        VMware.VimAutomation.Types.VIServer. Accepts a connected VIServer object via pipeline.
+        Queries host configuration for lockdown mode status.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER HostName
+        Filter by host name.
+    .EXAMPLE
+        PS> Get-AnyStackEsxiLockdownMode
     .OUTPUTS
-        PSCustomObject. Returns a result object with Timestamp, Status, and relevant data fields.
-    .LINK
-        https://github.com/eblackrps/AnyStack
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
         [ValidateNotNull()]
-        [VMware.VimAutomation.Types.VIServer]$Server
+        $Server,
+        [Parameter(Mandatory=$false)]
+        [string]$HostName
     )
     begin {
+        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $Server -ViewType HostSystem -Property Name,Config.LockdownMode }
-
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching lockdown status on $($vi.Name)"
+            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name,Config.LockdownMode }
+            
             foreach ($h in $hosts) {
                 [PSCustomObject]@{
+                    PSTypeName   = 'AnyStack.LockdownStatus'
                     Timestamp    = (Get-Date)
-                    Status       = 'Success'
+                    Server       = $vi.Name
                     Host         = $h.Name
                     LockdownMode = $h.Config.LockdownMode
                 }
             }
         }
         catch {
-            Write-Error "Failed to get ESXi lockdown mode: $($_.Exception.Message)" -Category InvalidOperation
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }

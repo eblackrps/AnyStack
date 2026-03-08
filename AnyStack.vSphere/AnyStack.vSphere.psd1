@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'AnyStack.vSphere.psm1'
     ModuleVersion = '1.2.0'
     GUID = 'f5053a10-87a3-4e68-b568-ce9245938e94'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for AnyStack.vSphere automation and management.'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Connect-AnyStackServer','Disconnect-AnyStackServer','Get-AnyStackLicenseUsage','Get-AnyStackVcenterServices','Invoke-AnyStackHealthCheck','Write-AnyStackLog')
@@ -22,6 +23,7 @@
         }
     }
 }
+
 
 
 

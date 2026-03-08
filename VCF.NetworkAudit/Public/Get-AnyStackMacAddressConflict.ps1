@@ -1,58 +1,59 @@
-function Get-AnyStackMacAddressConflict {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackMacAddressConflict {
     <#
     .SYNOPSIS
-        Audits all VMs to identify duplicate MAC addresses on the network.
+        Detects duplicate MAC addresses in the environment.
     .DESCRIPTION
-        VCF.NetworkAudit. Scans all VM hardware configurations to detect MAC address conflicts.
-    .INPUTS
-        VMware.VimAutomation.Types.VIServer. Accepts a connected VIServer object via pipeline.
+        Scans all VM virtual NICs and identifies overlapping MAC addresses.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .EXAMPLE
+        PS> Get-AnyStackMacAddressConflict
     .OUTPUTS
-        PSCustomObject. Returns a result object with Timestamp, Status, and relevant data fields.
-    .LINK
-        https://github.com/eblackrps/AnyStack
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
         [ValidateNotNull()]
-        [VMware.VimAutomation.Types.VIServer]$Server
+        $Server
     )
     begin {
+        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $Server -ViewType VirtualMachine -Property Name,Config.Hardware.Device }
-
-            $macMap = @{}
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Scanning for MAC conflicts on $($vi.Name)"
+            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Property Name,Config.Hardware.Device }
+            
+            $macs = @{}
             foreach ($vm in $vms) {
                 $nics = $vm.Config.Hardware.Device | Where-Object { $_ -is [VMware.Vim.VirtualEthernetCard] }
                 foreach ($nic in $nics) {
-                    if (-not $macMap.ContainsKey($nic.MacAddress)) {
-                        $macMap[$nic.MacAddress] = New-Object System.Collections.Generic.List[string]
-                    }
-                    $macMap[$nic.MacAddress].Add($vm.Name)
+                    if (-not $macs.ContainsKey($nic.MacAddress)) { $macs[$nic.MacAddress] = @() }
+                    $macs[$nic.MacAddress] += $vm.Name
                 }
             }
-
-            foreach ($mac in $macMap.Keys) {
-                if ($macMap[$mac].Count -gt 1) {
+            
+            foreach ($mac in $macs.Keys) {
+                if ($macs[$mac].Count -gt 1) {
                     [PSCustomObject]@{
-                        Timestamp = (Get-Date)
-                        Status    = 'Conflict'
-                        MacAddress = $mac
-                        VMs       = $macMap[$mac] -join ', '
+                        PSTypeName   = 'AnyStack.MacConflict'
+                        Timestamp    = (Get-Date)
+                        Server       = $vi.Name
+                        MacAddress   = $mac
+                        AffectedVMs  = $macs[$mac] -join ','
+                        ConflictType = 'Duplicate'
                     }
                 }
             }
         }
         catch {
-            Write-Error "Failed to audit MAC address conflicts: $($_.Exception.Message)" -Category InvalidOperation
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }

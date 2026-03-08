@@ -1,4 +1,4 @@
-@{
+﻿@{
     RootModule = 'VCF.DRValidator.psm1'
     ModuleVersion = '1.2.0'
     GUID = '57327433-fb2f-4506-a6ac-67d48b016bf2'
@@ -7,7 +7,8 @@
     Copyright = '(c) 2026 AnyStack. All rights reserved.'
     Description = 'Enterprise module for VCF.DRValidator automation and management.'
     PowerShellVersion = '7.2'
-    RequiredModules = @(
+    
+        'VMware.VimAutomation.Core',
         @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
     FunctionsToExport = @('Export-AnyStackDRReadinessReport','Repair-AnyStackDisasterRecoveryReadiness','Start-AnyStackVmBackup','Test-AnyStackDisasterRecoveryReadiness')
@@ -22,6 +23,7 @@
         }
     }
 }
+
 
 
 

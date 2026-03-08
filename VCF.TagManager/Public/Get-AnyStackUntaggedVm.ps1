@@ -1,49 +1,50 @@
-function Get-AnyStackUntaggedVm {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackUntaggedVm {
     <#
     .SYNOPSIS
-        Identifies virtual machines that have no tags assigned.
+        Identifies VMs with no tags assigned.
     .DESCRIPTION
-        VCF.TagManager. Audits all VMs and cross-references with the tagging service.
-    .INPUTS
-        VMware.VimAutomation.Types.VIServer. Accepts a connected VIServer object via pipeline.
+        Compares all VMs against tag assignments and returns those without tags.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .EXAMPLE
+        PS> Get-AnyStackUntaggedVm
     .OUTPUTS
-        PSCustomObject. Returns a result object with Timestamp, Status, and relevant data fields.
-    .LINK
-        https://github.com/eblackrps/AnyStack
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
         [ValidateNotNull()]
-        [VMware.VimAutomation.Types.VIServer]$Server
+        $Server
     )
     begin {
+        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $Server -ViewType VirtualMachine -Property Name }
-
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Finding untagged VMs on $($vi.Name)"
+            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-VM -Server $vi }
+            $taggedIds = Invoke-AnyStackWithRetry -ScriptBlock { Get-TagAssignment -Server $vi | Select-Object -ExpandProperty Entity | Select-Object -ExpandProperty Id }
+            
             foreach ($vm in $vms) {
-                # Get-TagAssignment is the standard PowerCLI way for tags
-                $tags = Get-TagAssignment -Entity $vm.Name -Server $Server -ErrorAction SilentlyContinue
-
-                if ($null -eq $tags -or $tags.Count -eq 0) {
+                if ($vm.Id -notin $taggedIds) {
                     [PSCustomObject]@{
-                        Timestamp = (Get-Date)
-                        Status    = 'Untagged'
-                        VMName    = $vm.Name
+                        PSTypeName = 'AnyStack.UntaggedVm'
+                        Timestamp  = (Get-Date)
+                        Server     = $vi.Name
+                        VmName     = $vm.Name
+                        Tagged     = $false
                     }
                 }
             }
         }
         catch {
-            Write-Error "Failed to identify untagged VMs: $($_.Exception.Message)" -Category InvalidOperation
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
