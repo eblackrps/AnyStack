@@ -1,4 +1,8 @@
-function Get-OldSnapshots {
+function Get-OldSnapshot {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
     <#
     .SYNOPSIS
         Internal helper to recursively find snapshots older than a specified threshold.

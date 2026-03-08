@@ -14,7 +14,7 @@ Any function that modifies the environment (`Set-*`, `New-*`, `Remove-*`, `Start
 *   Wrap destructive actions in `if ($PSCmdlet.ShouldProcess($Target, $Action)) { ... }`.
 
 ### 3. Error Handling
-*   Set `$ErrorActionPreference = 'Stop'` within the `process` block.
+*   Set `$ErrorActionPreference = 'Stop'` within the `begin` block.
 *   Use `try/catch` blocks for all API calls to provide meaningful error messages.
 
 ### 4. Documentation
@@ -28,4 +28,5 @@ All public functions must include Comment-Based Help with at least:
 1.  Fork the repo and create your branch from `main`.
 2.  If you've added code that should be tested, add tests!
 3.  Ensure the test suite passes (`./test-syntax.ps1` and `./build.ps1`).
-4.  Update the `CHANGELOG.md` with a brief summary of your changes.
+4.  Ensure your code passes `PSScriptAnalyzer` checks with no Error or Warning severity issues.
+5.  Update the `CHANGELOG.md` with a brief summary of your changes.

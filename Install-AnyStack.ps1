@@ -10,23 +10,30 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-Write-Host "Checking for VMware.PowerCLI dependency..." -ForegroundColor Cyan
+if ($Global) {
+    $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    if (-not $isAdmin) {
+        throw 'The -Global flag requires an elevated PowerShell session. Please restart PowerShell as Administrator and try again.'
+    }
+}
+
+Write-Output "Checking for VMware.PowerCLI dependency..." -ForegroundColor Cyan
 if (-not (Get-Module -ListAvailable VMware.PowerCLI)) {
     Write-Warning "VMware.PowerCLI is required but not installed."
     $response = Read-Host "Would you like to install it now from the PSGallery? (Y/N)"
     if ($response -eq 'Y') {
-        Write-Host "Installing VMware.PowerCLI..." -ForegroundColor Cyan
+        Write-Output "Installing VMware.PowerCLI..." -ForegroundColor Cyan
         Install-Module -Name VMware.PowerCLI -AllowClobber -Scope CurrentUser -Force
     } else {
         Write-Error "Cannot continue without VMware.PowerCLI."
     }
 } else {
-    Write-Host "  [OK] VMware.PowerCLI found." -ForegroundColor DarkGreen
+    Write-Output "  [OK] VMware.PowerCLI found." -ForegroundColor DarkGreen
 }
 
-Write-Host "=========================================" -ForegroundColor Green
-Write-Host "Installing AnyStack Enterprise Suite" -ForegroundColor Green
-Write-Host "=========================================" -ForegroundColor Green
+Write-Output "=========================================" -ForegroundColor Green
+Write-Output "Installing AnyStack Enterprise Suite" -ForegroundColor Green
+Write-Output "=========================================" -ForegroundColor Green
 
 $Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
 
@@ -45,17 +52,18 @@ foreach ($mod in $Modules) {
     if (Test-Path $targetPath) {
         if ($Force) {
             Remove-Item -Path $targetPath -Recurse -Force
-            Write-Host "Overwriting existing $mod..." -ForegroundColor Yellow
+            Write-Output "Overwriting existing $mod..." -ForegroundColor Yellow
         } else {
             Write-Warning "Module $mod already exists. Use -Force to overwrite."
             continue
         }
     }
     Copy-Item -Path (Join-Path $PSScriptRoot $mod) -Destination $targetPathBase -Recurse -Force
-    Write-Host "  [OK] Installed $mod" -ForegroundColor DarkCyan
+    Write-Output "  [OK] Installed $mod" -ForegroundColor DarkCyan
 }
 
-Write-Host "=========================================" -ForegroundColor Green
-Write-Host "Installation Complete!" -ForegroundColor Green
-Write-Host "Run 'Import-Module AnyStack.vSphere' to begin." -ForegroundColor Green
-Write-Host "=========================================" -ForegroundColor Green
+Write-Output "=========================================" -ForegroundColor Green
+Write-Output "Installation Complete!" -ForegroundColor Green
+Write-Output "Run 'Import-Module AnyStack.vSphere' to begin." -ForegroundColor Green
+Write-Output "=========================================" -ForegroundColor Green
+

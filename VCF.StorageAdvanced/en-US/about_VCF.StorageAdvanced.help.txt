@@ -1,0 +1,19 @@
+TOPIC
+    about_VCF.StorageAdvanced
+
+SHORT DESCRIPTION
+    Provides automated infrastructure management for vSphere 8.0 U3.
+
+LONG DESCRIPTION
+    The VCF.StorageAdvanced module is part of the AnyStack Enterprise PowerShell Module Suite.
+    It relies on VMware.PowerCLI 13.0+ and PowerShell 7.2+.
+
+    Authentication Model:
+    Connect using Connect-AnyStackServer and pass the resulting VIServer object to functions.
+
+EXAMPLES
+    Import-Module VCF.StorageAdvanced
+    $server = Connect-AnyStackServer -Server 'vcenter.local'
+
+SEE ALSO
+    https://github.com/eblackrps/AnyStack

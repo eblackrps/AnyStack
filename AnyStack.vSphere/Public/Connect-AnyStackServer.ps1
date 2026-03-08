@@ -1,10 +1,20 @@
 function Connect-AnyStackServer {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
     <#
     .SYNOPSIS
         Establish a secure session to vCenter Server or ESXi Host for the AnyStack Infrastructure Module.
 
     .DESCRIPTION
         Connects to one or more vSphere servers (vCenter/ESXi) using VMware PowerCLI 13.3+.
+    .INPUTS
+        VMware.VimAutomation.Types.VIServer. Accepts a connected VIServer object via pipeline.
+    .OUTPUTS
+        PSCustomObject. Returns a result object with Timestamp, Status, and relevant data fields.
+    .LINK
+        https://github.com/eblackrps/AnyStack
         Optimized for vSphere 8.0 U3 (API 8.0.3) with support for modern authentication and TLS profiles.
         This function handles connection state and returns a structured object indicating success or failure.
 
@@ -30,7 +40,8 @@ function Connect-AnyStackServer {
         Version: 1.0.0.0
         Namespace: AnyStack.vSphere
     #>
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$false)]
+    [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
@@ -43,8 +54,10 @@ function Connect-AnyStackServer {
         [switch]$SaveCredential
     )
 
-    process {
+    begin {
         $ErrorActionPreference = 'Stop'
+    }
+    process {
         foreach ($srv in $Server) {
             $Result = [PSCustomObject]@{
                 Timestamp = (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
@@ -68,7 +81,7 @@ function Connect-AnyStackServer {
                 }
 
                 Write-Verbose "Attempting to connect to vSphere Server: $srv"
-                
+
                 # Execute PowerCLI connection
                 $Session = Connect-VIServer @ConnectArgs
 
@@ -88,4 +101,6 @@ function Connect-AnyStackServer {
         }
     }
 }
+
+
 

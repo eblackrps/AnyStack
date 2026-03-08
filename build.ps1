@@ -9,12 +9,12 @@ $ErrorActionPreference = 'Stop'
 
 $Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
 
-Write-Host "=========================================" -ForegroundColor Green
-Write-Host "Starting AnyStack Enterprise Build Pipeline" -ForegroundColor Green
-Write-Host "=========================================" -ForegroundColor Green
+Write-Output "=========================================" -ForegroundColor Green
+Write-Output "Starting AnyStack Enterprise Build Pipeline" -ForegroundColor Green
+Write-Output "=========================================" -ForegroundColor Green
 
 foreach ($mod in $Modules) {
-    Write-Host "--> Validating Module: $mod" -ForegroundColor Cyan
+    Write-Output "--> Validating Module: $mod" -ForegroundColor Cyan
     
     $psd1Path = Join-Path $PSScriptRoot "$mod\$mod.psd1"
     
@@ -26,7 +26,7 @@ foreach ($mod in $Modules) {
     try {
         # 1. Test Module Manifest
         Test-ModuleManifest -Path $psd1Path | Out-Null
-        Write-Host "    [OK] Manifest Validated" -ForegroundColor DarkGreen
+        Write-Output "    [OK] Manifest Validated" -ForegroundColor DarkGreen
         
         # 2. Module Signing Placeholder
         # If ($SigningCert) {
@@ -42,7 +42,7 @@ foreach ($mod in $Modules) {
         # 4. Mock Pester Test Execution
         $testPath = Join-Path $PSScriptRoot "$mod\Tests"
         if (Test-Path $testPath) {
-            Write-Host "    [RUNNING] Pester Tests for $mod..." -ForegroundColor DarkCyan
+            Write-Output "    [RUNNING] Pester Tests for $mod..." -ForegroundColor DarkCyan
             # Invoke-Pester -Path $testPath
         }
     }
@@ -52,6 +52,7 @@ foreach ($mod in $Modules) {
     }
 }
 
-Write-Host "=========================================" -ForegroundColor Green
-Write-Host "Build Complete. Modules are ready for distribution." -ForegroundColor Green
-Write-Host "=========================================" -ForegroundColor Green
+Write-Output "=========================================" -ForegroundColor Green
+Write-Output "Build Complete. Modules are ready for distribution." -ForegroundColor Green
+Write-Output "=========================================" -ForegroundColor Green
+

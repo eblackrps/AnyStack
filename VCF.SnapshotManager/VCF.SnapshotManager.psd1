@@ -1,13 +1,27 @@
 @{
-    RootModule           = 'VCF.SnapshotManager.psm1'
-    ModuleVersion        = '1.0.0.0'
+    RootModule = 'VCF.SnapshotManager.psm1'
+    ModuleVersion = '1.1.0'
     GUID = '6787a7ee-62f0-4167-9326-1f816aa6de6b'
-    Author               = 'The Any Stack Architect'
-    CompanyName          = 'AnyStack'
-    Description          = 'Advanced Infrastructure Module for vSphere 8.0 U3'
-    PowerShellVersion = '5.1'
-    RequiredModules      = @( @{ ModuleName = 'VMware.VimAutomation.Core'; ModuleVersion = '13.3.0.22683933'
-    GUID = '6787a7ee-62f0-4167-9326-1f816aa6de6b' } )
-    FunctionsToExport    = '*'
+    Author = 'The AnyStack Architect'
+    CompanyName = 'AnyStack'
+    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Description = 'Enterprise module for VCF.SnapshotManager automation and management.'
+    PowerShellVersion = '7.2'
+    RequiredModules = @(
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+    )
+    FunctionsToExport = @('Clear-AnyStackOrphanedSnapshots','Optimize-AnyStackSnapshots')
+    CmdletsToExport = @()
+    VariablesToExport = @()
+    AliasesToExport = @()
+    PrivateData = @{
+        PSData = @{
+            Tags = @('VMware','vSphere','VCF','Automation', 'VCF.SnapshotManager')
+            ProjectUri = 'https://github.com/eblackrps/AnyStack'
+            LicenseUri = 'https://github.com/eblackrps/AnyStack/blob/main/LICENSE'
+        }
+    }
 }
+
+
 

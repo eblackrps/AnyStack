@@ -1,0 +1,70 @@
+name: Publish to PSGallery
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Before Publish
+        shell: pwsh
+        run: .\tools\Validate-ForGallery.ps1
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+
+      - name: ScriptAnalyzer Check
+        shell: pwsh
+        run: |
+          $results = Invoke-ScriptAnalyzer -Recurse -Path .\ -Severity Error
+          if ($results.Count -gt 0) {
+            $results | Format-Table
+            exit 1
+          }
+
+      - name: Publish All Modules
+        shell: pwsh
+        env:
+          PSGALLERY_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
+        run: |
+          $publishOrder = @(
+            'AnyStack.vSphere',
+            'AnyStack.ConfigurationAsCode',
+            'AnyStack.Reporting',
+            'VCF.AlarmManager',
+            'VCF.ApplianceManager',
+            'VCF.AutomationOrchestrator',
+            'VCF.CapacityPlanner',
+            'VCF.CertificateManager',
+            'VCF.ClusterManager',
+            'VCF.ComplianceAuditor',
+            'VCF.ContentManager',
+            'VCF.DRValidator',
+            'VCF.HostEvacuation',
+            'VCF.IdentityManager',
+            'VCF.LifecycleManager',
+            'VCF.LogIntelligence',
+            'VCF.NetworkAudit',
+            'VCF.NetworkManager',
+            'VCF.PerformanceProfiler',
+            'VCF.ResourceAudit',
+            'VCF.SddcManager',
+            'VCF.SecurityAdvanced',
+            'VCF.SecurityBaseline',
+            'VCF.SnapshotManager',
+            'VCF.StorageAdvanced',
+            'VCF.StorageAudit',
+            'VCF.TagManager',
+            'AnyStack'
+          )
+          foreach ($module in $publishOrder) {
+            Write-Host "Publishing $module..."
+            Publish-Module -Path ".\$module" `
+                           -NuGetApiKey $env:PSGALLERY_API_KEY `
+                           -Confirm:$false
+            Start-Sleep -Seconds 5
+          }

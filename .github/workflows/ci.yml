@@ -1,28 +1,23 @@
-name: AnyStack CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
+name: CI
+on: [push, pull_request]
 jobs:
-  test:
+  validate:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Run Syntax Check
-      shell: pwsh
-      run: |
-        ./test-syntax.ps1
-
-    - name: Run Build & Manifest Validation
-      shell: pwsh
-      run: |
-        ./build.ps1
-
-    - name: Run Pester Tests
-      shell: pwsh
-      run: |
-        Invoke-Pester ./VCF.DRValidator/Tests/VCF.DRValidator.Tests.ps1 -Output Detailed
+      - uses: actions/checkout@v4
+      - name: Syntax Check
+        shell: pwsh
+        run: .\test-syntax.ps1
+      - name: Build
+        shell: pwsh
+        run: .\build.ps1
+      - name: Pester Tests
+        shell: pwsh
+        run: |
+          Import-Module Pester -MinimumVersion 5.0
+          Invoke-Pester .\* -Recurse -CI -OutputFormat JUnitXml -OutputFile test-results.xml
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.xml

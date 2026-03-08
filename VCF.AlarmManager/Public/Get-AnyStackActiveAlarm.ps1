@@ -1,40 +1,47 @@
 function Get-AnyStackActiveAlarm {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
     <#
     .SYNOPSIS
-        Retrieves actively triggered vCenter Alarms across the hierarchy.
-    .DESCRIPTION
-        Round 8: VCF.AlarmManager. Uses the vCenter AlarmManager ExtensionData to 
-        rapidly fetch triggered alarms (Red/Yellow states) without crawling individual entities.
+        Query TriggeredAlarmState from AlarmManager view.
+    .EXAMPLE
+        PS> Get-AnyStackActiveAlarm -Server 'vcenter.corp.local'
+        Executes the Get-AnyStackActiveAlarm command.
     #>
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding()]
+    [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$true)] $Server
+        [Parameter(Mandatory=$false)]
+        [string]$Server
     )
+    begin {
+        $vi = Get-AnyStackConnection -Server $Server
+    }
     process {
-        $ErrorActionPreference = 'Stop'
-        Write-Verbose "Fetching triggered alarms from AlarmManager..."
-        
-        # Access the root folder and AlarmManager
-        $si = Get-View ServiceInstance -Server $Server
-        $alarmManager = Get-View $si.Content.AlarmManager -Server $Server
-        
-        # Get alarmed entities starting from Root
-        $triggered = $alarmManager.GetAlarmState($si.Content.RootFolder)
-        
-        foreach ($alarmState in $triggered) {
-            if ($alarmState.OverallStatus -ne "green") {
-                $entity = Get-View -Id $alarmState.Entity -Property Name
-                $alarmDef = Get-View -Id $alarmState.Alarm -Property Info
-                
-                [PSCustomObject]@{
-                    EntityName   = $entity.Name
-                    EntityType   = $alarmState.Entity.Type
-                    AlarmName    = $alarmDef.Info.Name
-                    Status       = $alarmState.OverallStatus
-                    TriggerTime  = $alarmState.Time
-                    Acknowledged = $alarmState.Acknowledged
+        try {
+            Write-Verbose "Executing Get-AnyStackActiveAlarm"
+            $result = Invoke-AnyStackWithRetry -ScriptBlock {
+                $alarmManager = Get-View -Id $vi.ExtensionData.Content.AlarmManager -Server $vi
+                $alarmManager.GetAlarmState($null) | ForEach-Object {
+                    [PSCustomObject]@{
+                        Entity = $_.Entity.Value
+                        AlarmName = (Get-View -Id $_.Alarm -Property Info -Server $vi).Info.Name
+                        Status = $_.OverallStatus
+                        Time = $_.Time
+                        AcknowledgedByUser = $_.AcknowledgedByUser
+                    }
                 }
             }
+            $result
+        }
+        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'AuthenticationError', [System.Management.Automation.ErrorCategory]::AuthenticationError, $Server))
+        }
+        catch {
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $Server))
         }
     }
 }
+

@@ -1,11 +1,26 @@
 @{
-    RootModule           = 'VCF.TagManager.psm1'
-    ModuleVersion        = '1.0.0.0'
+    RootModule = 'VCF.TagManager.psm1'
+    ModuleVersion = '1.1.0'
     GUID = '1c7dc7a6-a1ad-4bf2-bdb0-885ce8089e53'
-    Author               = 'The Any Stack Architect'
-    CompanyName          = 'AnyStack'
-    Description          = 'Enterprise extension module for vSphere 8.0 U3'
-    PowerShellVersion = '5.1'
-    FunctionsToExport    = '*'
+    Author = 'The AnyStack Architect'
+    CompanyName = 'AnyStack'
+    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Description = 'Enterprise module for VCF.TagManager automation and management.'
+    PowerShellVersion = '7.2'
+    RequiredModules = @(
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+    )
+    FunctionsToExport = @('Get-AnyStackUntaggedVm','Remove-AnyStackStaleTag','Set-AnyStackResourceTag','Sync-AnyStackTagCategory')
+    CmdletsToExport = @()
+    VariablesToExport = @()
+    AliasesToExport = @()
+    PrivateData = @{
+        PSData = @{
+            Tags = @('VMware','vSphere','VCF','Automation', 'VCF.TagManager')
+            ProjectUri = 'https://github.com/eblackrps/AnyStack'
+            LicenseUri = 'https://github.com/eblackrps/AnyStack/blob/main/LICENSE'
+        }
+    }
 }
+
 

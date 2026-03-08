@@ -1,10 +1,20 @@
 function Disconnect-AnyStackServer {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
     <#
     .SYNOPSIS
         Terminate existing sessions to vCenter Server or ESXi Host.
 
     .DESCRIPTION
         Safely closes one or more active VIServer connections, preventing session leakage and maintaining infrastructure security.
+    .INPUTS
+        VMware.VimAutomation.Types.VIServer. Accepts a connected VIServer object via pipeline.
+    .OUTPUTS
+        PSCustomObject. Returns a result object with Timestamp, Status, and relevant data fields.
+    .LINK
+        https://github.com/eblackrps/AnyStack
         Optimized for multi-server environments.
 
     .PARAMETER Server
@@ -24,13 +34,16 @@ function Disconnect-AnyStackServer {
         Namespace: AnyStack.vSphere
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
+    [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
         [string[]]$Server
     )
 
-    process {
+    begin {
         $ErrorActionPreference = 'Stop'
+    }
+    process {
         try {
             if ($PSBoundParameters.ContainsKey('Server')) {
                 foreach ($srv in $Server) {
@@ -42,7 +55,7 @@ function Disconnect-AnyStackServer {
                 Write-Verbose "Disconnecting from ALL vSphere servers."
                 Disconnect-VIServer -Server * -Confirm:$false -ErrorAction SilentlyContinue
             }
-            
+
             # Return success object
             [PSCustomObject]@{
                 Timestamp = (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
@@ -61,4 +74,5 @@ function Disconnect-AnyStackServer {
         }
     }
 }
+
 

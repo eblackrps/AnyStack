@@ -1,11 +1,26 @@
 @{
-    RootModule           = 'VCF.IdentityManager.psm1'
-    ModuleVersion        = '1.0.0.0'
+    RootModule = 'VCF.IdentityManager.psm1'
+    ModuleVersion = '1.1.0'
     GUID = 'bfd98cf4-0261-4e5f-ad55-b818f8e22ce5'
-    Author               = 'The Any Stack Architect'
-    CompanyName          = 'AnyStack'
-    Description          = 'Enterprise extension module for vSphere 8.0 U3'
-    PowerShellVersion = '5.1'
-    FunctionsToExport    = '*'
+    Author = 'The AnyStack Architect'
+    CompanyName = 'AnyStack'
+    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Description = 'Enterprise module for VCF.IdentityManager automation and management.'
+    PowerShellVersion = '7.2'
+    RequiredModules = @(
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+    )
+    FunctionsToExport = @('Export-AnyStackAccessMatrix','Get-AnyStackGlobalPermission','New-AnyStackCustomRole','Test-AnyStackSsoConfiguration')
+    CmdletsToExport = @()
+    VariablesToExport = @()
+    AliasesToExport = @()
+    PrivateData = @{
+        PSData = @{
+            Tags = @('VMware','vSphere','VCF','Automation', 'VCF.IdentityManager')
+            ProjectUri = 'https://github.com/eblackrps/AnyStack'
+            LicenseUri = 'https://github.com/eblackrps/AnyStack/blob/main/LICENSE'
+        }
+    }
 }
+
 

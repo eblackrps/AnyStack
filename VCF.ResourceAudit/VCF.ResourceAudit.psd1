@@ -1,13 +1,26 @@
 @{
-    RootModule           = 'VCF.ResourceAudit.psm1'
-    ModuleVersion        = '1.0.0.0'
+    RootModule = 'VCF.ResourceAudit.psm1'
+    ModuleVersion = '1.1.0'
     GUID = 'c4212e0c-bf47-4519-b333-aee9b0ed312e'
-    Author               = 'The Any Stack Architect'
-    CompanyName          = 'AnyStack'
-    Description          = 'Advanced Infrastructure Module for vSphere 8.0 U3'
-    PowerShellVersion = '5.1'
-    RequiredModules      = @( @{ ModuleName = 'VMware.VimAutomation.Core'; ModuleVersion = '13.3.0.22683933'
-    GUID = 'c4212e0c-bf47-4519-b333-aee9b0ed312e' } )
-    FunctionsToExport    = '*'
+    Author = 'The AnyStack Architect'
+    CompanyName = 'AnyStack'
+    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Description = 'Enterprise module for VCF.ResourceAudit automation and management.'
+    PowerShellVersion = '7.2'
+    RequiredModules = @(
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+    )
+    FunctionsToExport = @('Get-AnyStackHostMemoryUsage','Get-AnyStackOrphanedState','Get-AnyStackVmMigrationHistory','Get-AnyStackVmUptime','Move-AnyStackVmDatastore','Remove-AnyStackOldTemplates','Restart-AnyStackVmTools','Set-AnyStackVmResourcePool','Test-AnyStackVmCpuReady','Update-AnyStackVmHardware','Update-AnyStackVmTools')
+    CmdletsToExport = @()
+    VariablesToExport = @()
+    AliasesToExport = @()
+    PrivateData = @{
+        PSData = @{
+            Tags = @('VMware','vSphere','VCF','Automation', 'VCF.ResourceAudit')
+            ProjectUri = 'https://github.com/eblackrps/AnyStack'
+            LicenseUri = 'https://github.com/eblackrps/AnyStack/blob/main/LICENSE'
+        }
+    }
 }
+
 

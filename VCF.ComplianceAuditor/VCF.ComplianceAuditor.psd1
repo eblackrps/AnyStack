@@ -1,11 +1,26 @@
 @{
-    RootModule           = 'VCF.ComplianceAuditor.psm1'
-    ModuleVersion        = '1.0.0.0'
+    RootModule = 'VCF.ComplianceAuditor.psm1'
+    ModuleVersion = '1.1.0'
     GUID = 'c93bd47c-49fb-4ec2-afd6-8e8b24df8f7d'
-    Author               = 'The Any Stack Architect'
-    CompanyName          = 'AnyStack'
-    Description          = 'Enterprise extension module for vSphere 8.0 U3'
-    PowerShellVersion = '5.1'
-    FunctionsToExport    = '*'
+    Author = 'The AnyStack Architect'
+    CompanyName = 'AnyStack'
+    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Description = 'Enterprise module for VCF.ComplianceAuditor automation and management.'
+    PowerShellVersion = '7.2'
+    RequiredModules = @(
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+    )
+    FunctionsToExport = @('Export-AnyStackAuditReport','Get-AnyStackNonCompliantHost','Invoke-AnyStackCisStigAudit','Repair-AnyStackComplianceDrift')
+    CmdletsToExport = @()
+    VariablesToExport = @()
+    AliasesToExport = @()
+    PrivateData = @{
+        PSData = @{
+            Tags = @('VMware','vSphere','VCF','Automation', 'VCF.ComplianceAuditor')
+            ProjectUri = 'https://github.com/eblackrps/AnyStack'
+            LicenseUri = 'https://github.com/eblackrps/AnyStack/blob/main/LICENSE'
+        }
+    }
 }
+
 

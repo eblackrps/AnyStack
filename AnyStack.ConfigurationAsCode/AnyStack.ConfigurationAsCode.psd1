@@ -1,11 +1,26 @@
 @{
-    RootModule           = 'AnyStack.ConfigurationAsCode.psm1'
-    ModuleVersion        = '1.0.0.0'
+    RootModule = 'AnyStack.ConfigurationAsCode.psm1'
+    ModuleVersion = '1.1.0'
     GUID = 'b7d6c0fe-c4df-4761-b72d-dfdea8301311'
-    Author               = 'The Any Stack Architect'
-    CompanyName          = 'AnyStack'
-    Description          = 'Production module for vSphere 8.0 U3 and VCF'
-    PowerShellVersion = '5.1'
-    FunctionsToExport    = '*'
+    Author = 'The AnyStack Architect'
+    CompanyName = 'AnyStack'
+    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Description = 'Enterprise module for AnyStack.ConfigurationAsCode automation and management.'
+    PowerShellVersion = '7.2'
+    RequiredModules = @(
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+    )
+    FunctionsToExport = @('Export-AnyStackConfiguration','Sync-AnyStackConfiguration')
+    CmdletsToExport = @()
+    VariablesToExport = @()
+    AliasesToExport = @()
+    PrivateData = @{
+        PSData = @{
+            Tags = @('VMware','vSphere','VCF','Automation', 'AnyStack.ConfigurationAsCode')
+            ProjectUri = 'https://github.com/eblackrps/AnyStack'
+            LicenseUri = 'https://github.com/eblackrps/AnyStack/blob/main/LICENSE'
+        }
+    }
 }
+
 

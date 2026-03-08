@@ -1,24 +1,26 @@
-# AnyStack.vSphere Module Manifest
 @{
-    RootModule           = 'AnyStack.vSphere.psm1'
-    ModuleVersion        = '1.0.0.0'
-    GUID                 = 'b9a8c1d2-3e4f-4a6b-bc8d-123456789abc'
-    Author               = 'The Any Stack Architect'
-    CompanyName          = 'AnyStack'
-    Copyright            = '(c) 2026 The Any Stack Architect. All rights reserved.'
-    Description          = 'Advanced Infrastructure Automation Module for vSphere 8.0 U3 (ESXi 8.0.3 / VCSA 8.0.3)'
-    PowerShellVersion = '5.1' # Optimized for modern PowerShell and PowerCLI v13+
-    RequiredModules      = @(
-        @{ ModuleName = 'VMware.VimAutomation.Core'; ModuleVersion = '13.3.0.22683933' } # VCF 9.0 / PowerCLI 13.3
+    RootModule = 'AnyStack.vSphere.psm1'
+    ModuleVersion = '1.1.0'
+    GUID = 'f5053a10-87a3-4e68-b568-ce9245938e94'
+    Author = 'The AnyStack Architect'
+    CompanyName = 'AnyStack'
+    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Description = 'Enterprise module for AnyStack.vSphere automation and management.'
+    PowerShellVersion = '7.2'
+    RequiredModules = @(
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
     )
-    FunctionsToExport    = '*'
-    CmdletsToExport      = '*'
-    VariablesToExport    = '*'
-    AliasesToExport      = '*'
+    FunctionsToExport = @('Connect-AnyStackServer','Disconnect-AnyStackServer','Get-AnyStackLicenseUsage','Get-AnyStackVcenterServices','Invoke-AnyStackHealthCheck','Write-AnyStackLog')
+    CmdletsToExport = @()
+    VariablesToExport = @()
+    AliasesToExport = @()
     PrivateData = @{
         PSData = @{
-            Tags = @('vSphere', 'Automation', 'Infrastructure', 'VMware', 'ESXi8', 'VCSA8')
-            ProjectUri = 'https://anystack.io'
+            Tags = @('VMware','vSphere','VCF','Automation', 'AnyStack.vSphere')
+            ProjectUri = 'https://github.com/eblackrps/AnyStack'
+            LicenseUri = 'https://github.com/eblackrps/AnyStack/blob/main/LICENSE'
         }
     }
 }
+
+

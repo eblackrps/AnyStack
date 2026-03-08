@@ -1,5 +1,5 @@
-$errors = @()
-$files = Get-ChildItem -Path . -Recurse -Include *.ps1,*.psm1
+﻿$errors = @()
+$files = Get-ChildItem -Path . -Recurse -Include *.ps1, *.psm1
 foreach ($file in $files) {
     $parseErrors = $null
     $tokens = $null

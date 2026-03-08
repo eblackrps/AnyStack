@@ -1,11 +1,26 @@
 @{
-    RootModule           = 'VCF.SddcManager.psm1'
-    ModuleVersion        = '1.0.0.0'
+    RootModule = 'VCF.SddcManager.psm1'
+    ModuleVersion = '1.1.0'
     GUID = '8873f9b6-1cce-449b-8835-5d390fd6b623'
-    Author               = 'The Any Stack Architect'
-    CompanyName          = 'AnyStack'
-    Description          = 'Production module for vSphere 8.0 U3 and VCF'
-    PowerShellVersion = '5.1'
-    FunctionsToExport    = '*'
+    Author = 'The AnyStack Architect'
+    CompanyName = 'AnyStack'
+    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Description = 'Enterprise module for VCF.SddcManager automation and management.'
+    PowerShellVersion = '7.2'
+    RequiredModules = @(
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+    )
+    FunctionsToExport = @('Get-AnyStackWorkloadDomain','Set-AnyStackPasswordRotation','Test-AnyStackSddcHealth')
+    CmdletsToExport = @()
+    VariablesToExport = @()
+    AliasesToExport = @()
+    PrivateData = @{
+        PSData = @{
+            Tags = @('VMware','vSphere','VCF','Automation', 'VCF.SddcManager')
+            ProjectUri = 'https://github.com/eblackrps/AnyStack'
+            LicenseUri = 'https://github.com/eblackrps/AnyStack/blob/main/LICENSE'
+        }
+    }
 }
+
 
