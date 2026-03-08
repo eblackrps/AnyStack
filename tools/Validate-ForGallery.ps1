@@ -40,7 +40,7 @@ foreach ($mod in $Modules) {
 
     # 3. Check metadata
     $missingMeta = $false
-    if ($manifestContent -notmatch "ModuleVersion\s*=\s*'1\.4\.0'") { $missingMeta = $true; Write-Error "ModuleVersion not 1.4.0" }
+    if ($manifestContent -notmatch "ModuleVersion\s*=\s*'1\.5\.0'") { $missingMeta = $true; Write-Error "ModuleVersion not 1.5.0" }
     if ($manifestContent -notmatch "Author\s*=\s*'The AnyStack Architect'") { $missingMeta = $true; Write-Error "Author incorrect" }
     if ($manifestContent -notmatch "Tags\s*=\s*@\(") { $missingMeta = $true; Write-Error "Tags missing" }
     if ($manifestContent -notmatch "ProjectUri") { $missingMeta = $true; Write-Error "ProjectUri missing" }
@@ -54,7 +54,7 @@ foreach ($mod in $Modules) {
 
     # 4. Check for NotImplementedException
     $codeFiles = Get-ChildItem -Path $mod.FullName -Recurse -Include *.psm1, *.ps1 -File
-    $stubs = $codeFiles | Select-String "NotImplementedException" -Quiet
+    $stubs = $codeFiles | Select-String "NotImplementedException"
     if ($stubs) {
         Write-Error "Found NotImplementedException in source files."
         $failed = $true
@@ -81,4 +81,3 @@ if ($failed) {
     Write-Host "Validation PASSED. All 28 modules are ready for publication." -ForegroundColor Green
     exit 0
 }
-
