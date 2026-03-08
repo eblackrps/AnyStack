@@ -18,6 +18,6 @@ When reporting an issue, please include the following information:
     *   Operating System version
     *   PowerShell version (`$PSVersionTable.PSVersion`)
     *   PowerCLI version (`Get-Module VMware.PowerCLI -ListAvailable | Select-Object Version`)
-    *   AnyStack version
+    *   AnyStack version: v1.4.0
 
 Thank you for your cooperation!

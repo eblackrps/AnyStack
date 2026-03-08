@@ -1,3 +1,4 @@
+﻿# AnyStack Enterprise Module Suite - Technical Specifications v1.4.0
 VCF.AlarmManager
 - Get-AnyStackActiveAlarm
   Query TriggeredAlarmState from AlarmManager view.
@@ -85,7 +86,7 @@ VCF.ClusterManager
   via ReconfigureComputeResource_Task. -WhatIf required.
   Return: RuleName, RuleType, VmsInRule, Enabled
 - Set-AnyStackHostPowerPolicy
-  PowerSystem.ConfigurePowerPolicy() — PolicyId: 1=HighPerf, 2=Balanced,
+  PowerSystem.ConfigurePowerPolicy() â€” PolicyId: 1=HighPerf, 2=Balanced,
   3=LowPower. -WhatIf required.
   Return: Host, PreviousPolicy, NewPolicy
 - Set-AnyStackVclsRetreatMode
@@ -404,4 +405,5 @@ VCF.StorageAdvanced
 - Test-AnyStackNvmeConnectivity
   Verify NVMe-oF target reachability via Test-NetConnection.
   Return: Host, Target, Port, Protocol, Reachable, LatencyMs
+
 

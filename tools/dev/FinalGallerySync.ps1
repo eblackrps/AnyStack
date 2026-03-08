@@ -1,4 +1,4 @@
-param([string]$ApiKey)
+﻿param([string]$ApiKey)
 
 if (-not $ApiKey) {
     Write-Error "Please provide your API Key. Example: .\FinalGallerySync.ps1 -ApiKey 'your-key-here'"
@@ -16,8 +16,8 @@ foreach ($mod in $Modules) {
         Write-Output "Updating metadata for $($mod.Name)..." -ForegroundColor Cyan
         $content = Get-Content $psd1Path -Raw
         
-        # 1. Bump version to 1.0.0.1
-        $content = $content -replace "ModuleVersion\s*=\s*'1.0.0.0'", "ModuleVersion = '1.0.0.1'"
+        # 1. Bump version to 1.4.0.1
+        $content = $content -replace "ModuleVersion\s*=\s*'1.4.0.0'", "ModuleVersion = '1.4.0.1'"
         
         # 2. Update ProjectUri
         $content = $content -replace "ProjectUri\s*=\s*'.*?'", "ProjectUri = '$GitHubUrl'"
@@ -34,9 +34,10 @@ foreach ($mod in $Modules) {
 Write-Output "Metadata update complete. Starting Gallery push..." -ForegroundColor Green
 
 foreach ($mod in $Modules) {
-    Write-Output ">>> Uploading $($mod.Name) v1.0.0.1..." -ForegroundColor Cyan
+    Write-Output ">>> Uploading $($mod.Name) v1.4.0.1..." -ForegroundColor Cyan
     Publish-Module -Path $mod.FullName -NuGetApiKey $ApiKey -Verbose -Force
 }
 
 Write-Output "Final Gallery Sync Complete! Your modules now point to your GitHub repository." -ForegroundColor Green
+
 
