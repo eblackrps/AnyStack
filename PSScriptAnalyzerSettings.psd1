@@ -1,12 +1,12 @@
-﻿# AnyStack Enterprise v1.4.0 PSScriptAnalyzerSettings
+# AnyStack Enterprise v1.5.0 PSScriptAnalyzerSettings
 @{
-    Severity     = @('Error', 'Warning')
-    ExcludeRules = @()
+    Severity     = @('Error')
+    ExcludeRules = @(
+        'PSUseConsistentWhitespace',
+        'PSAlignAssignmentStatement',
+        'PSAvoidUsingWriteHost'
+    )
     Rules        = @{
         PSUseConsistentIndentation = @{ Enable = $true; IndentationSize = 4 }
-        PSUseConsistentWhitespace = @{ Enable = $true }
-        PSAlignAssignmentStatement = @{ Enable = $true }
-        PSAvoidUsingWriteHost = @{ Enable = $true }
     }
 }
-

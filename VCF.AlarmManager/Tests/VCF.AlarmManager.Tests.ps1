@@ -9,10 +9,10 @@ Describe "VCF.AlarmManager Suite" {
         It "Should return expected object shape" {
             Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.AlarmManager"
             Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.AlarmManager"
-            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.AlarmManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='vm01'; MoRef=[PSCustomObject]@{Value='vm-1'}; OverallStatus='red'; TriggeredAlarmState=@([PSCustomObject]@{Alarm=[PSCustomObject]@{Value='alarm-1'}; AcknowledgedByUser=''; Time=(Get-Date)})}) } -ModuleName "VCF.AlarmManager"
             $result = Get-AnyStackActiveAlarm -Server 'mock' -ErrorAction SilentlyContinue
-            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+            $result | Should -Not -BeNullOrEmpty
+            $result[0].PSTypeName | Should -Not -BeNullOrEmpty
         }
     }
 }
-

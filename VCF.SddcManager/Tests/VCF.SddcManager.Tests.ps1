@@ -9,28 +9,30 @@ Describe "VCF.SddcManager Suite" {
         It "Should return expected object shape" {
             Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.SddcManager"
             Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.SddcManager"
-            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.SddcManager"
+            Mock Invoke-RestMethod { return [PSCustomObject]@{Id='domain-1'; Name='WorkloadDomain01'; Type='VI'; Status='ACTIVE'; Clusters=@()} } -ModuleName "VCF.SddcManager"
             $result = Get-AnyStackWorkloadDomain -Server 'mock' -ErrorAction SilentlyContinue
-            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+            $result | Should -Not -BeNullOrEmpty
+            $result[0].PSTypeName | Should -Not -BeNullOrEmpty
         }
     }
     Context "Set-AnyStackPasswordRotation" {
         It "Should return expected object shape" {
             Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.SddcManager"
             Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.SddcManager"
-            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.SddcManager"
+            Mock Invoke-RestMethod { return [PSCustomObject]@{Id='domain-1'; Name='WorkloadDomain01'; Type='VI'; Status='ACTIVE'; Clusters=@()} } -ModuleName "VCF.SddcManager"
             $result = Set-AnyStackPasswordRotation -Server 'mock' -ErrorAction SilentlyContinue
-            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+            $result | Should -Not -BeNullOrEmpty
+            $result[0].PSTypeName | Should -Not -BeNullOrEmpty
         }
     }
     Context "Test-AnyStackSddcHealth" {
         It "Should return expected object shape" {
             Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.SddcManager"
             Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.SddcManager"
-            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.SddcManager"
+            Mock Invoke-RestMethod { return [PSCustomObject]@{Id='domain-1'; Name='WorkloadDomain01'; Type='VI'; Status='ACTIVE'; Clusters=@()} } -ModuleName "VCF.SddcManager"
             $result = Test-AnyStackSddcHealth -Server 'mock' -ErrorAction SilentlyContinue
-            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+            $result | Should -Not -BeNullOrEmpty
+            $result[0].PSTypeName | Should -Not -BeNullOrEmpty
         }
     }
 }
-

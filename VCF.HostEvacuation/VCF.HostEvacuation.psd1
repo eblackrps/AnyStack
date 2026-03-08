@@ -1,6 +1,6 @@
 ﻿@{
     RootModule = 'VCF.HostEvacuation.psm1'
-    ModuleVersion = '1.5.0'
+    ModuleVersion = '1.6.0'
     GUID = 'b0a4a324-eb78-4b94-b876-6a831c09cef7'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'

@@ -1,5 +1,5 @@
 # AnyStack Enterprise Module Suite
-**Version:** 1.4.0 | **Author:** The Any Stack Architect
+**Version:** 1.6.0 | **Author:** The Any Stack Architect
 
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/AnyStack.vSphere?style=flat-square&logo=powershell&label=AnyStack.vSphere)](https://www.powershellgallery.com/packages/AnyStack.vSphere)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)

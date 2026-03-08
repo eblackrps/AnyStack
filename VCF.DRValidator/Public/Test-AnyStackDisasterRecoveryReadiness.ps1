@@ -42,21 +42,32 @@ function Test-AnyStackDisasterRecoveryReadiness {
                         $snapAge = [Math]::Round(((Get-Date) - $oldestSnap.CreateTime).TotalHours, 1)
                     }
                 }
-                
+
+                $haEnabled = $false
+                try {
+                    $hostView = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vm.Runtime.Host -Property Parent }
+                    $parentView = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $hostView.Parent -Property Configuration }
+                    if ($parentView -and $parentView.Configuration -and $parentView.Configuration.DasConfig) {
+                        $haEnabled = $parentView.Configuration.DasConfig.Enabled
+                    }
+                } catch {
+                    $haEnabled = $false
+                }
+
                 $reachable = $false
                 if ($vm.Guest.IpAddress) {
                     $ip = $vm.Guest.IpAddress
                     $ping = Test-NetConnection -ComputerName $ip -Port 443 -InformationLevel Quiet -ErrorAction SilentlyContinue
                     $reachable = $ping
                 }
-                
+
                 [PSCustomObject]@{
                     PSTypeName       = 'AnyStack.DRReadiness'
                     Timestamp        = (Get-Date)
                     Server           = $vi.Name
                     VmName           = $vm.Name
                     SnapshotAge      = $snapAge
-                    HaEnabled        = $true
+                    HaEnabled        = $haEnabled
                     NetworkReachable = $reachable
                     OverallReady     = ($snapAge -lt 72 -and $reachable)
                 }

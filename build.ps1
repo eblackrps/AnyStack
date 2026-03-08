@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    CI/CD Build Pipeline for the AnyStack Enterprise Module Suite v1.4.0.
+    CI/CD Build Pipeline for the AnyStack Enterprise Module Suite v1.5.0.
 .DESCRIPTION
     Compiles, tests, and prepares all sub-modules for deployment.
 #>
@@ -8,12 +8,12 @@ $ErrorActionPreference = 'Stop'
 
 $Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
 
-Write-Output "=========================================" -ForegroundColor Green
-Write-Output "Starting AnyStack Enterprise Build Pipeline v1.4.0" -ForegroundColor Green
-Write-Output "=========================================" -ForegroundColor Green
+Write-Host "=========================================" -ForegroundColor Green
+Write-Host "Starting AnyStack Enterprise Build Pipeline v1.5.0" -ForegroundColor Green
+Write-Host "=========================================" -ForegroundColor Green
 
 foreach ($mod in $Modules) {
-    Write-Output "--> Validating Module: $mod" -ForegroundColor Cyan
+    Write-Host "--> Validating Module: $mod" -ForegroundColor Cyan
     
     $psd1Path = Join-Path $PSScriptRoot "$mod\$mod.psd1"
     
@@ -25,11 +25,11 @@ foreach ($mod in $Modules) {
     try {
         # 1. Test Module Manifest
         Test-ModuleManifest -Path $psd1Path | Out-Null
-        Write-Output "    [OK] Manifest Validated" -ForegroundColor DarkGreen
+        Write-Host "    [OK] Manifest Validated" -ForegroundColor DarkGreen
         
         $testPath = Join-Path $PSScriptRoot "$mod\Tests"
         if (Test-Path $testPath) {
-            Write-Output "    [RUNNING] Pester Tests for $mod..." -ForegroundColor DarkCyan
+            Write-Host "    [RUNNING] Pester Tests for $mod..." -ForegroundColor DarkCyan
             # Invoke-Pester -Path $testPath
         }
     }
@@ -39,6 +39,6 @@ foreach ($mod in $Modules) {
     }
 }
 
-Write-Output "=========================================" -ForegroundColor Green
-Write-Output "Build Complete. Modules are ready for distribution." -ForegroundColor Green
-Write-Output "=========================================" -ForegroundColor Green
+Write-Host "=========================================" -ForegroundColor Green
+Write-Host "Build Complete. Modules are ready for distribution." -ForegroundColor Green
+Write-Host "=========================================" -ForegroundColor Green

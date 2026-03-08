@@ -43,8 +43,8 @@ function Get-AnyStackDatastoreGrowthRate {
                 $dsObj = Get-Datastore -Id $ds.MoRef -Server $vi
                 $stats = Get-Stat -Entity $dsObj -Stat disk.used.latest -Start (Get-Date).AddDays(-7) -Finish (Get-Date) -ErrorAction SilentlyContinue
                 if ($null -ne $stats -and $stats.Count -ge 2) {
-                    $first = $stats[-1].Value
-                    $last = $stats[0].Value
+                    $first = $stats[0].Value
+                    $last = $stats[-1].Value
                     $deltaKb = $last - $first
                     $dailyDeltaGb = ($deltaKb / 1MB) / 7
                     $growthRate = [Math]::Round($dailyDeltaGb, 2)
