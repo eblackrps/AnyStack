@@ -1,4 +1,4 @@
-# AnyStack.vSphere Module Script (.psm1)
+﻿# AnyStack.vSphere Module Script (.psm1)
 # Author: The Any Stack Architect
 # Purpose: Advanced vSphere Infrastructure Automation
 
@@ -23,3 +23,7 @@ $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
 }
 
 Write-Verbose "AnyStack.vSphere module loaded successfully."
+
+
+ 
+

@@ -1,4 +1,4 @@
-TOPIC
+﻿TOPIC
     about_VCF.ClusterManager
 
 SHORT DESCRIPTION
@@ -17,3 +17,7 @@ EXAMPLES
 
 SEE ALSO
     https://github.com/eblackrps/AnyStack
+
+
+ 
+

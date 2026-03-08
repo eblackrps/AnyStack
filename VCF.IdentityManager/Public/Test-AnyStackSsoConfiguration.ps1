@@ -1,4 +1,4 @@
-function Test-AnyStackSsoConfiguration {
+﻿function Test-AnyStackSsoConfiguration {
     <#
     .SYNOPSIS
         Tests SSO configuration.
@@ -52,4 +52,6 @@ function Test-AnyStackSsoConfiguration {
         }
     }
 }
+
+ 
 

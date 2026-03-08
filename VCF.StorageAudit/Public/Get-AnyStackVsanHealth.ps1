@@ -1,4 +1,4 @@
-function Get-AnyStackVsanHealth {
+﻿function Get-AnyStackVsanHealth {
     <#
     .SYNOPSIS
         Gets vSAN health status.
@@ -54,4 +54,6 @@ function Get-AnyStackVsanHealth {
         }
     }
 }
+
+ 
 

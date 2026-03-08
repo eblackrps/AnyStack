@@ -1,4 +1,4 @@
-$PublicPath  = Join-Path -Path $PSScriptRoot -ChildPath 'Public'
+﻿$PublicPath  = Join-Path -Path $PSScriptRoot -ChildPath 'Public'
 $PrivatePath = Join-Path -Path $PSScriptRoot -ChildPath 'Private'
 
 foreach ($Path in @($PrivatePath, $PublicPath)) {
@@ -7,3 +7,7 @@ foreach ($Path in @($PrivatePath, $PublicPath)) {
         foreach ($File in $Files) { . $File.FullName }
     }
 }
+
+
+ 
+

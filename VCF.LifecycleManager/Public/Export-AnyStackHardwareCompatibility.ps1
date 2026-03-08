@@ -1,4 +1,4 @@
-function Export-AnyStackHardwareCompatibility {
+﻿function Export-AnyStackHardwareCompatibility {
     <#
     .SYNOPSIS
         Exports an HCL report.
@@ -61,4 +61,6 @@ function Export-AnyStackHardwareCompatibility {
         }
     }
 }
+
+ 
 

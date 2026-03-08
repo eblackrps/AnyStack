@@ -20,7 +20,7 @@ foreach ($mod in $modules) {
     $content += "    function global:Get-VIServer { param(`$Name) return `$null }`n"
     $content += "    function global:Connect-VIServer { return [PSCustomObject]@{SessionId='mock'} }`n"
     $content += "    function global:Disconnect-VIServer { }`n"
-    $content += "    function global:Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='vm-1'}; Config=[PSCustomObject]@{LockdownMode='lockdownDisabled'; Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}; Guest=[PSCustomObject]@{IpAddress='1.1.1.1'}}) }`n"
+    $content += "    function global:Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='vm-1'}; Config=[PSCustomObject]@{LockdownMode='lockdownDisabled'; Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}; Guest=[PSCustomObject]@{IpAddress='1.5.0.1'}}) }`n"
     $content += "    function global:Get-Stat { return @([PSCustomObject]@{Value=10}) }`n"
     $content += "    function global:Get-Datastore { return [PSCustomObject]@{Name='MockDS'; MoRef='ds-1'} }`n"
     $content += "    function global:Get-VM { return [PSCustomObject]@{Name='MockVM'; Id='vm-1'} }`n"
@@ -82,3 +82,7 @@ foreach ($mod in $modules) {
     
     Set-Content -Path $testFile -Value $content -Encoding UTF8
 }
+
+
+ 
+

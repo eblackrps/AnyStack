@@ -1,4 +1,4 @@
-function Start-AnyStackVmBackup {
+﻿function Start-AnyStackVmBackup {
     <#
     .SYNOPSIS
         Starts a VM backup.
@@ -56,4 +56,6 @@ function Start-AnyStackVmBackup {
         }
     }
 }
+
+ 
 

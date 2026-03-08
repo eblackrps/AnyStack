@@ -1,4 +1,4 @@
-$cmdlets = @{}
+﻿$cmdlets = @{}
 
 $cmdlets['VCF.SddcManager\Public\Get-AnyStackWorkloadDomain.ps1'] = @'
 function Get-AnyStackWorkloadDomain {
@@ -1785,3 +1785,7 @@ foreach ($path in $cmdlets.Keys) {
     Set-Content -Path $path -Value $content -Encoding UTF8
 }
 Write-Host "Generated part 4 files."
+
+
+ 
+

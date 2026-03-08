@@ -1,4 +1,4 @@
-function Sync-AnyStackAutomationScripts {
+﻿function Sync-AnyStackAutomationScripts {
     <#
     .SYNOPSIS
         Syncs automation scripts to OptionManager.
@@ -75,4 +75,6 @@ function Sync-AnyStackAutomationScripts {
         }
     }
 }
+
+ 
 

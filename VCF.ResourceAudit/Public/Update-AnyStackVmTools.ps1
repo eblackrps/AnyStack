@@ -1,4 +1,4 @@
-function Update-AnyStackVmTools {
+﻿function Update-AnyStackVmTools {
     <#
     .SYNOPSIS
         Upgrades VM Tools.
@@ -63,4 +63,6 @@ function Update-AnyStackVmTools {
         }
     }
 }
+
+ 
 

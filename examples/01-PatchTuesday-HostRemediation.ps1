@@ -1,8 +1,8 @@
-<#
+﻿<#
 .SYNOPSIS
     Automates Patch Tuesday host remediation.
 .DESCRIPTION
-    Chain: Connect-AnyStackServer → Test-AnyStackCompliance → Test-AnyStackCertificates → Clear-AnyStackOrphanedSnapshots -WhatIf → Start-AnyStackHostEvacuation -WhatIf → Start-AnyStackHostRemediation -WhatIf → Stop-AnyStackHostEvacuation -WhatIf → Export-AnyStackClusterReport
+    Chain: Connect-AnyStackServer â†’ Test-AnyStackCompliance â†’ Test-AnyStackCertificates â†’ Clear-AnyStackOrphanedSnapshots -WhatIf â†’ Start-AnyStackHostEvacuation -WhatIf â†’ Start-AnyStackHostRemediation -WhatIf â†’ Stop-AnyStackHostEvacuation -WhatIf â†’ Export-AnyStackClusterReport
 #>
 param(
     [string]$Server = 'vcenter.corp.local',
@@ -19,3 +19,7 @@ Start-AnyStackHostEvacuation -Server $vi -HostName $HostName -WhatIf
 Start-AnyStackHostRemediation -Server $vi -HostName $HostName -WhatIf
 Stop-AnyStackHostEvacuation -Server $vi -HostName $HostName -WhatIf
 Export-AnyStackClusterReport -Server $vi -ClusterName $ClusterName
+
+
+ 
+

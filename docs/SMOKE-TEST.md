@@ -1,14 +1,14 @@
-# AnyStack Post-Publish Smoke Test
+﻿# AnyStack Post-Publish Smoke Test
 
 Run these steps on a clean machine that has never had AnyStack installed.
 
-## Step 1 — Fresh Install
+## Step 1 â€” Fresh Install
 ```powershell
 Install-Module AnyStack -Scope CurrentUser
 Import-Module AnyStack
 ```
 
-## Step 2 — Verify Module Count
+## Step 2 â€” Verify Module Count
 ```powershell
 $modules = Get-Module -Name AnyStack* | Measure-Object
 Write-Host "Modules loaded: $($modules.Count) (expected: 28)"
@@ -17,7 +17,7 @@ $cmdlets = Get-Command -Module (Get-Module AnyStack*) | Measure-Object
 Write-Host "Cmdlets available: $($cmdlets.Count) (expected: 117)"
 ```
 
-## Step 3 — Connect and Run Read-Only Cmdlets
+## Step 3 â€” Connect and Run Read-Only Cmdlets
 ```powershell
 Connect-AnyStackServer -Server 'your-vcenter.domain.local'
 
@@ -33,8 +33,8 @@ Get-AnyStackVsanHealth
 Disconnect-AnyStackServer
 ```
 
-## Step 4 — Verify WhatIf Works on Destructive Cmdlets
-These must produce NO changes — only `-WhatIf` output:
+## Step 4 â€” Verify WhatIf Works on Destructive Cmdlets
+These must produce NO changes â€” only `-WhatIf` output:
 ```powershell
 Clear-AnyStackOrphanedSnapshots -WhatIf
 Remove-AnyStackOrphanedVmdk -WhatIf
@@ -43,5 +43,8 @@ Start-AnyStackHostEvacuation -WhatIf
 Repair-AnyStackComplianceDrift -WhatIf
 ```
 
-## Step 5 — Warning Verification
+## Step 5 â€” Warning Verification
 Confirm that the "Destructive Operations" warning is present in the `README.md` before executing any of the above without `-WhatIf`.
+
+ 
+

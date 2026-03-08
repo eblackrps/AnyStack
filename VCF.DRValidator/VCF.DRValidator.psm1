@@ -1,4 +1,4 @@
-# VCF.DRValidator Module Script (.psm1)
+﻿# VCF.DRValidator Module Script (.psm1)
 # Author: The Any Stack Architect
 # Purpose: Advanced Disaster Recovery Readiness Validation
 
@@ -18,3 +18,6 @@ $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
 }
 
 Write-Verbose "VCF.DRValidator module loaded successfully."
+
+ 
+

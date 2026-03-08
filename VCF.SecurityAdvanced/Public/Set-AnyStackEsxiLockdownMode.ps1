@@ -1,4 +1,4 @@
-function Set-AnyStackEsxiLockdownMode {
+﻿function Set-AnyStackEsxiLockdownMode {
     <#
     .SYNOPSIS
         Configures Lockdown Mode on an ESXi host.
@@ -58,4 +58,6 @@ function Set-AnyStackEsxiLockdownMode {
         }
     }
 }
+
+ 
 

@@ -1,4 +1,4 @@
-function Sync-AnyStackContentLibrary {
+﻿function Sync-AnyStackContentLibrary {
     <#
     .SYNOPSIS
         Syncs a content library.
@@ -56,4 +56,6 @@ function Sync-AnyStackContentLibrary {
         }
     }
 }
+
+ 
 

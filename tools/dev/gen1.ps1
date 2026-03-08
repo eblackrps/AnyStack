@@ -1,4 +1,4 @@
-$cmdlets = @{}
+﻿$cmdlets = @{}
 
 $cmdlets['VCF.ApplianceManager\Public\Get-AnyStackVcenterDiskSpace.ps1'] = @'
 function Get-AnyStackVcenterDiskSpace {
@@ -1778,3 +1778,7 @@ foreach ($path in $cmdlets.Keys) {
     Set-Content -Path $path -Value $content -Encoding UTF8
 }
 Write-Host "Generated part 1 files."
+
+
+ 
+

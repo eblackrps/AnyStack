@@ -1,4 +1,4 @@
-function New-AnyStackHostProfile {
+﻿function New-AnyStackHostProfile {
     <#
     .SYNOPSIS
         Creates a new Host Profile.
@@ -66,4 +66,6 @@ function New-AnyStackHostProfile {
         }
     }
 }
+
+ 
 

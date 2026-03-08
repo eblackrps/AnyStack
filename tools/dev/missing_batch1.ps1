@@ -1,4 +1,4 @@
-$cmdlets = @{}
+﻿$cmdlets = @{}
 
 $cmdlets['AnyStack.ConfigurationAsCode\Public\Export-AnyStackConfiguration.ps1'] = @'
 function Export-AnyStackConfiguration {
@@ -226,3 +226,7 @@ foreach ($path in $cmdlets.Keys) {
     Set-Content -Path $path -Value $content -Encoding UTF8
 }
 Write-Host "Generated batch 1 of missing cmdlets."
+
+
+ 
+

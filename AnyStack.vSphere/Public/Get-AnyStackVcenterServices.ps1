@@ -1,4 +1,4 @@
-function Get-AnyStackVcenterServices {
+﻿function Get-AnyStackVcenterServices {
     <#
     .SYNOPSIS
         Lists vCenter services and their status.
@@ -47,4 +47,6 @@ function Get-AnyStackVcenterServices {
         }
     }
 }
+
+ 
 

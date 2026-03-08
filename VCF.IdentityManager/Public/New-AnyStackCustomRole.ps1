@@ -1,4 +1,4 @@
-function New-AnyStackCustomRole {
+﻿function New-AnyStackCustomRole {
     <#
     .SYNOPSIS
         Creates a custom role.
@@ -61,4 +61,6 @@ function New-AnyStackCustomRole {
         }
     }
 }
+
+ 
 

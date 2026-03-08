@@ -1,4 +1,4 @@
-function Get-AnyStackDatastoreLatency {
+﻿function Get-AnyStackDatastoreLatency {
     <#
     .SYNOPSIS
         Gets datastore latency.
@@ -53,4 +53,6 @@ function Get-AnyStackDatastoreLatency {
         }
     }
 }
+
+ 
 

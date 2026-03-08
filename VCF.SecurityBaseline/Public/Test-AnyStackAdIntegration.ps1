@@ -1,4 +1,4 @@
-function Test-AnyStackAdIntegration {
+﻿function Test-AnyStackAdIntegration {
     <#
     .SYNOPSIS
         Tests AD integration on host.
@@ -58,4 +58,6 @@ function Test-AnyStackAdIntegration {
         }
     }
 }
+
+ 
 

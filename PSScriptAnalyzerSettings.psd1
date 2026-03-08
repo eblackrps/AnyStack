@@ -1,4 +1,4 @@
-﻿# AnyStack Enterprise v1.4.0 PSScriptAnalyzerSettings
+﻿# AnyStack Enterprise v1.5.0 PSScriptAnalyzerSettings
 @{
     Severity     = @('Error', 'Warning')
     ExcludeRules = @()
@@ -9,4 +9,8 @@
         PSAvoidUsingWriteHost = @{ Enable = $true }
     }
 }
+
+
+ 
+
 

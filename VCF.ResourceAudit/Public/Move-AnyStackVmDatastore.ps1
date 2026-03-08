@@ -1,4 +1,4 @@
-function Move-AnyStackVmDatastore {
+﻿function Move-AnyStackVmDatastore {
     <#
     .SYNOPSIS
         Moves VM to another datastore.
@@ -62,4 +62,6 @@ function Move-AnyStackVmDatastore {
         }
     }
 }
+
+ 
 

@@ -1,4 +1,4 @@
-function Remove-AnyStackOldTemplates {
+﻿function Remove-AnyStackOldTemplates {
     <#
     .SYNOPSIS
         Removes old VM templates.
@@ -58,4 +58,6 @@ function Remove-AnyStackOldTemplates {
         }
     }
 }
+
+ 
 

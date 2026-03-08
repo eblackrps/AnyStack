@@ -1,6 +1,6 @@
-<#
+﻿<#
 .SYNOPSIS
-    CI/CD Build Pipeline for the AnyStack Enterprise Module Suite v1.4.0.
+    CI/CD Build Pipeline for the AnyStack Enterprise Module Suite v1.5.0.
 .DESCRIPTION
     Compiles, tests, and prepares all sub-modules for deployment.
 #>
@@ -9,7 +9,7 @@ $ErrorActionPreference = 'Stop'
 $Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
 
 Write-Output "=========================================" -ForegroundColor Green
-Write-Output "Starting AnyStack Enterprise Build Pipeline v1.4.0" -ForegroundColor Green
+Write-Output "Starting AnyStack Enterprise Build Pipeline v1.5.0" -ForegroundColor Green
 Write-Output "=========================================" -ForegroundColor Green
 
 foreach ($mod in $Modules) {
@@ -42,3 +42,7 @@ foreach ($mod in $Modules) {
 Write-Output "=========================================" -ForegroundColor Green
 Write-Output "Build Complete. Modules are ready for distribution." -ForegroundColor Green
 Write-Output "=========================================" -ForegroundColor Green
+
+
+ 
+

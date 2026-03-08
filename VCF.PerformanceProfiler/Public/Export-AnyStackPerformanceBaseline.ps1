@@ -1,4 +1,4 @@
-function Export-AnyStackPerformanceBaseline {
+﻿function Export-AnyStackPerformanceBaseline {
     <#
     .SYNOPSIS
         Exports a baseline performance report.
@@ -60,4 +60,6 @@ function Export-AnyStackPerformanceBaseline {
         }
     }
 }
+
+ 
 

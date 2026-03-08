@@ -1,4 +1,4 @@
-function Set-AnyStackRightSizeRecommendation {
+﻿function Set-AnyStackRightSizeRecommendation {
     <#
     .SYNOPSIS
         Applies right-size recommendations.
@@ -77,4 +77,6 @@ function Set-AnyStackRightSizeRecommendation {
         }
     }
 }
+
+ 
 

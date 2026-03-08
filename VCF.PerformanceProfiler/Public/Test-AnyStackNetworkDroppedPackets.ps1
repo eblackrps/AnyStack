@@ -1,4 +1,4 @@
-function Test-AnyStackNetworkDroppedPackets {
+﻿function Test-AnyStackNetworkDroppedPackets {
     <#
     .SYNOPSIS
         Tests for dropped network packets.
@@ -61,4 +61,6 @@ function Test-AnyStackNetworkDroppedPackets {
         }
     }
 }
+
+ 
 

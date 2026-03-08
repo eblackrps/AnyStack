@@ -1,4 +1,4 @@
-function Stop-AnyStackHostEvacuation {
+﻿function Stop-AnyStackHostEvacuation {
     <#
     .SYNOPSIS
         Stops host evacuation (exits Maintenance Mode).
@@ -59,4 +59,6 @@ function Stop-AnyStackHostEvacuation {
         }
     }
 }
+
+ 
 

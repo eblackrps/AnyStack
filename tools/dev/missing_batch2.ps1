@@ -1,4 +1,4 @@
-$cmdlets = @{}
+﻿$cmdlets = @{}
 
 $cmdlets['AnyStack.vSphere\Public\Connect-AnyStackServer.ps1'] = @'
 function Connect-AnyStackServer {
@@ -266,3 +266,7 @@ foreach ($path in $cmdlets.Keys) {
     Set-Content -Path $path -Value $content -Encoding UTF8
 }
 Write-Host "Generated batch 2 of missing cmdlets."
+
+
+ 
+

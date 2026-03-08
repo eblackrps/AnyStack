@@ -1,4 +1,4 @@
-function Update-AnyStackEsxCertificate {
+﻿function Update-AnyStackEsxCertificate {
     <#
     .SYNOPSIS
         Updates an ESXi host certificate.
@@ -62,4 +62,6 @@ function Update-AnyStackEsxCertificate {
         }
     }
 }
+
+ 
 

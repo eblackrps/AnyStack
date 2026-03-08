@@ -1,4 +1,4 @@
-function Invoke-AnyStackWithRetry {
+﻿function Invoke-AnyStackWithRetry {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
@@ -19,3 +19,7 @@ function Invoke-AnyStackWithRetry {
         }
     } while ($attempt -lt $MaxAttempts)
 }
+
+
+ 
+

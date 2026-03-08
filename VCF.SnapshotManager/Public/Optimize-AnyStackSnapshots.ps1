@@ -1,4 +1,4 @@
-function Optimize-AnyStackSnapshots {
+﻿function Optimize-AnyStackSnapshots {
     <#
     .SYNOPSIS
         Optimizes snapshots via consolidation.
@@ -62,4 +62,6 @@ function Optimize-AnyStackSnapshots {
         }
     }
 }
+
+ 
 

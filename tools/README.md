@@ -1,4 +1,4 @@
-# AnyStack Tools
+﻿# AnyStack Tools
 
 This directory contains utility scripts for AnyStack development, publishing, and code generation.
 
@@ -16,3 +16,7 @@ This directory contains utility scripts for AnyStack development, publishing, an
 ### Base Tools
 - **FixAndPublish.ps1**: Validation and publication script to deploy modules to PSGallery. (Replaced by GitHub Actions, kept for local testing)
 - **Validate-ForGallery.ps1**: Pre-publish validation script to ensure all modules pass PSScriptAnalyzer and meet manifest requirements.
+
+
+ 
+

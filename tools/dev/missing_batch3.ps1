@@ -1,4 +1,4 @@
-$cmdlets = @{}
+﻿$cmdlets = @{}
 
 $cmdlets['VCF.AlarmManager\Public\Get-AnyStackActiveAlarm.ps1'] = @'
 function Get-AnyStackActiveAlarm {
@@ -456,3 +456,7 @@ foreach ($path in $cmdlets.Keys) {
     Set-Content -Path $path -Value $content -Encoding UTF8
 }
 Write-Host "Generated batch 3 of missing cmdlets."
+
+
+ 
+

@@ -1,4 +1,4 @@
-function Get-AnyStackHostCpuCoStop {
+﻿function Get-AnyStackHostCpuCoStop {
     <#
     .SYNOPSIS
         Gets host CPU co-stop metrics.
@@ -58,4 +58,6 @@ function Get-AnyStackHostCpuCoStop {
         }
     }
 }
+
+ 
 

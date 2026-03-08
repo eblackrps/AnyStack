@@ -1,4 +1,4 @@
-function New-AnyStackVmTemplate {
+﻿function New-AnyStackVmTemplate {
     <#
     .SYNOPSIS
         Marks a VM as a template.
@@ -57,4 +57,6 @@ function New-AnyStackVmTemplate {
         }
     }
 }
+
+ 
 

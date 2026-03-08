@@ -1,4 +1,4 @@
-function Test-AnyStackNetworkConfiguration {
+﻿function Test-AnyStackNetworkConfiguration {
     <#
     .SYNOPSIS
         Tests overall network configuration.
@@ -60,4 +60,6 @@ function Test-AnyStackNetworkConfiguration {
         }
     }
 }
+
+ 
 

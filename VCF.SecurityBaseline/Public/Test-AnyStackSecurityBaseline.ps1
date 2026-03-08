@@ -1,4 +1,4 @@
-function Test-AnyStackSecurityBaseline {
+﻿function Test-AnyStackSecurityBaseline {
     <#
     .SYNOPSIS
         Tests security baseline on host.
@@ -81,4 +81,6 @@ function Test-AnyStackSecurityBaseline {
         }
     }
 }
+
+ 
 

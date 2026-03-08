@@ -1,4 +1,4 @@
-function Get-AnyStackFailedScheduledTask {
+﻿function Get-AnyStackFailedScheduledTask {
     <#
     .SYNOPSIS
         Retrieves failed scheduled tasks in vCenter.
@@ -54,4 +54,6 @@ function Get-AnyStackFailedScheduledTask {
         }
     }
 }
+
+ 
 

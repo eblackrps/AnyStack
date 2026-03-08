@@ -1,4 +1,4 @@
-$ApiKey = $env:PSGALLERY_API_KEY
+﻿$ApiKey = $env:PSGALLERY_API_KEY
 
 if (-not $ApiKey) {
     Write-Error "Please set the PSGALLERY_API_KEY environment variable."
@@ -46,3 +46,7 @@ foreach ($mod in $Modules) {
     Write-Host ">>> Uploading $($mod.Name) to the PowerShell Gallery..." -ForegroundColor Cyan
     Publish-Module -Path $mod.FullName -NuGetApiKey $ApiKey -Verbose -Force
 }
+
+
+ 
+

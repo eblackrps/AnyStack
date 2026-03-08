@@ -1,4 +1,4 @@
-function Get-AnyStackVmStorageLatency {
+﻿function Get-AnyStackVmStorageLatency {
     <#
     .SYNOPSIS
         Gets VM storage latency.
@@ -57,4 +57,6 @@ function Get-AnyStackVmStorageLatency {
         }
     }
 }
+
+ 
 

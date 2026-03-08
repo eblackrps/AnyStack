@@ -1,4 +1,4 @@
-function Test-AnyStackHaFailover {
+﻿function Test-AnyStackHaFailover {
     <#
     .SYNOPSIS
         Tests HA failover capacity.
@@ -53,4 +53,6 @@ function Test-AnyStackHaFailover {
         }
     }
 }
+
+ 
 

@@ -1,4 +1,4 @@
-# Fix ErrorRecord calls
+﻿# Fix ErrorRecord calls
 $files = Get-ChildItem -Recurse -Filter *.ps1 | Where-Object { $_.FullName -match 'Public' }
 foreach ($f in $files) {
     $content = Get-Content $f.FullName -Raw
@@ -36,3 +36,7 @@ foreach ($mod in $modules) {
     $content += "}`n"
     Set-Content -Path $testFile -Value $content -Encoding UTF8
 }
+
+
+ 
+

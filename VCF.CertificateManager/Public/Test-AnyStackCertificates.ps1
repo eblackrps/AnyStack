@@ -1,4 +1,4 @@
-function Test-AnyStackCertificates {
+﻿function Test-AnyStackCertificates {
     <#
     .SYNOPSIS
         Tests host certificate validity.
@@ -63,4 +63,6 @@ function Test-AnyStackCertificates {
         }
     }
 }
+
+ 
 

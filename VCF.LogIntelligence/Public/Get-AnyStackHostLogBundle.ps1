@@ -1,4 +1,4 @@
-function Get-AnyStackHostLogBundle {
+﻿function Get-AnyStackHostLogBundle {
     <#
     .SYNOPSIS
         Generates a host log bundle.
@@ -57,4 +57,6 @@ function Get-AnyStackHostLogBundle {
         }
     }
 }
+
+ 
 

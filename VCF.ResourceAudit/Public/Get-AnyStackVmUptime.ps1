@@ -1,4 +1,4 @@
-function Get-AnyStackVmUptime {
+﻿function Get-AnyStackVmUptime {
     <#
     .SYNOPSIS
         Calculates VM uptime.
@@ -60,4 +60,6 @@ function Get-AnyStackVmUptime {
         }
     }
 }
+
+ 
 

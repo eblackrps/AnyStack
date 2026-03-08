@@ -1,4 +1,4 @@
-function Restart-AnyStackVmTools {
+﻿function Restart-AnyStackVmTools {
     <#
     .SYNOPSIS
         Restarts VM Tools inside the guest OS.
@@ -62,4 +62,6 @@ function Restart-AnyStackVmTools {
         }
     }
 }
+
+ 
 

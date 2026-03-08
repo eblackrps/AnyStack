@@ -1,4 +1,4 @@
-function Test-AnyStackProactiveHa {
+﻿function Test-AnyStackProactiveHa {
     <#
     .SYNOPSIS
         Tests proactive HA configuration.
@@ -52,4 +52,6 @@ function Test-AnyStackProactiveHa {
         }
     }
 }
+
+ 
 

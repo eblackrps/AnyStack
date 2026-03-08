@@ -1,4 +1,4 @@
-function Get-AnyStackVmDiskLatency {
+﻿function Get-AnyStackVmDiskLatency {
     <#
     .SYNOPSIS
         Gets VM disk latency.
@@ -53,4 +53,6 @@ function Get-AnyStackVmDiskLatency {
         }
     }
 }
+
+ 
 

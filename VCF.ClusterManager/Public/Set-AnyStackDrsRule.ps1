@@ -1,4 +1,4 @@
-function Set-AnyStackDrsRule {
+﻿function Set-AnyStackDrsRule {
     <#
     .SYNOPSIS
         Sets a DRS affinity or anti-affinity rule.
@@ -86,4 +86,6 @@ function Set-AnyStackDrsRule {
         }
     }
 }
+
+ 
 

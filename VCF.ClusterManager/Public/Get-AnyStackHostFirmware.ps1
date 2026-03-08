@@ -1,4 +1,4 @@
-function Get-AnyStackHostFirmware {
+﻿function Get-AnyStackHostFirmware {
     <#
     .SYNOPSIS
         Retrieves ESXi host firmware versions.
@@ -52,4 +52,6 @@ function Get-AnyStackHostFirmware {
         }
     }
 }
+
+ 
 

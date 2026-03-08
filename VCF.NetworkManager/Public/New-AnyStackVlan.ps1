@@ -1,4 +1,4 @@
-function New-AnyStackVlan {
+﻿function New-AnyStackVlan {
     <#
     .SYNOPSIS
         Creates a new distributed portgroup.
@@ -75,4 +75,6 @@ function New-AnyStackVlan {
         }
     }
 }
+
+ 
 

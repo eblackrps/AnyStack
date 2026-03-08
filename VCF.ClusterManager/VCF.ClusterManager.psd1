@@ -9,7 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         'VMware.VimAutomation.Core',
-        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+        @{ModuleName='VMware.PowerCLI'; ModuleVersion = '1.5.0'}
     )
     FunctionsToExport = @('Export-AnyStackClusterReport','Get-AnyStackHostFirmware','Get-AnyStackHostSensors','New-AnyStackHostProfile','Set-AnyStackDrsRule','Set-AnyStackHostPowerPolicy','Set-AnyStackVclsRetreatMode','Set-AnyStackVmAffinityRule','Test-AnyStackHaFailover','Test-AnyStackHostNtp','Test-AnyStackProactiveHa')
     CmdletsToExport = @()
@@ -28,5 +28,8 @@
 
 
 
+
+
+ 
 
 

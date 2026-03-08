@@ -1,4 +1,4 @@
-# AnyStack Enterprise Module Suite - Pester Configuration v1.4.0
+﻿# AnyStack Enterprise Module Suite - Pester Configuration v1.5.0
 @{
     Run          = @{
         Path = '*/Tests/*'
@@ -11,3 +11,7 @@
         OutputPath = 'coverage.xml'
     }
 }
+
+
+ 
+

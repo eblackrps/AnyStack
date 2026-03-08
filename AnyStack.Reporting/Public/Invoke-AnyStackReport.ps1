@@ -1,4 +1,4 @@
-function Invoke-AnyStackReport {
+﻿function Invoke-AnyStackReport {
     <#
     .SYNOPSIS
         Triggers a data collection report.
@@ -44,4 +44,6 @@ function Invoke-AnyStackReport {
         }
     }
 }
+
+ 
 

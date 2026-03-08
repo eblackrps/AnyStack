@@ -1,4 +1,4 @@
-function Set-AnyStackHostPowerPolicy {
+﻿function Set-AnyStackHostPowerPolicy {
     <#
     .SYNOPSIS
         Configures host power policy.
@@ -59,4 +59,6 @@ function Set-AnyStackHostPowerPolicy {
         }
     }
 }
+
+ 
 

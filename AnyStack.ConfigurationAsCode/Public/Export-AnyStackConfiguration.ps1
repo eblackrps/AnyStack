@@ -1,4 +1,4 @@
-function Export-AnyStackConfiguration {
+﻿function Export-AnyStackConfiguration {
     <#
     .SYNOPSIS
         Exports vCenter configuration to a structured JSON file.
@@ -54,4 +54,6 @@ function Export-AnyStackConfiguration {
         }
     }
 }
+
+ 
 

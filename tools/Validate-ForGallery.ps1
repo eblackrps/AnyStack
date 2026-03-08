@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Validates all AnyStack modules prior to PSGallery publication.
 #>
@@ -40,7 +40,7 @@ foreach ($mod in $Modules) {
 
     # 3. Check metadata
     $missingMeta = $false
-    if ($manifestContent -notmatch "ModuleVersion\s*=\s*'1\.4\.0'") { $missingMeta = $true; Write-Error "ModuleVersion not 1.4.0" }
+    if ($manifestContent -notmatch "ModuleVersion\s*=\s*'1\.4\.0'") { $missingMeta = $true; Write-Error "ModuleVersion not 1.5.0" }
     if ($manifestContent -notmatch "Author\s*=\s*'The AnyStack Architect'") { $missingMeta = $true; Write-Error "Author incorrect" }
     if ($manifestContent -notmatch "Tags\s*=\s*@\(") { $missingMeta = $true; Write-Error "Tags missing" }
     if ($manifestContent -notmatch "ProjectUri") { $missingMeta = $true; Write-Error "ProjectUri missing" }
@@ -81,4 +81,7 @@ if ($failed) {
     Write-Host "Validation PASSED. All 28 modules are ready for publication." -ForegroundColor Green
     exit 0
 }
+
+
+ 
 

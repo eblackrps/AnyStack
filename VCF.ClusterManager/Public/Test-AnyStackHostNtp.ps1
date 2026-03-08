@@ -1,4 +1,4 @@
-function Test-AnyStackHostNtp {
+﻿function Test-AnyStackHostNtp {
     <#
     .SYNOPSIS
         Tests host NTP configuration.
@@ -65,4 +65,6 @@ function Test-AnyStackHostNtp {
         }
     }
 }
+
+ 
 

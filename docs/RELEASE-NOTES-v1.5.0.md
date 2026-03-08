@@ -1,7 +1,7 @@
-## AnyStack v1.4.0 — Full Enterprise Implementation
+﻿## AnyStack v1.5.0 â€” Full Enterprise Implementation
 
 ### What's New
-- **117 production cmdlets** — all enterprise stubs fully implemented with real vSphere API logic.
+- **117 production cmdlets** â€” all enterprise stubs fully implemented with real vSphere API logic.
 - **28 modules** including the `AnyStack` meta-module for simplified suite-wide installation.
 - **Gold Standard Compliance**: Standardized resilience (retry logic), typing, and metadata across all cmdlets.
 - **Dependency Hardening**: Explicit declaration of `VMware.VimAutomation.Core` in all module manifests.
@@ -21,3 +21,7 @@ The following cmdlets in `VCF.DRValidator` were renamed for consistency in previ
 | Export-DRReadinessReport | Export-AnyStackDRReadinessReport |
 | Test-DisasterRecoveryReadiness | Test-AnyStackDisasterRecoveryReadiness |
 | Repair-DisasterRecoveryReadiness | Repair-AnyStackDisasterRecoveryReadiness |
+
+
+ 
+

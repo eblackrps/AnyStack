@@ -1,4 +1,4 @@
-function Clear-AnyStackOrphanedSnapshots {
+﻿function Clear-AnyStackOrphanedSnapshots {
     <#
     .SYNOPSIS
         Removes old VM snapshots.
@@ -72,4 +72,6 @@ function Clear-AnyStackOrphanedSnapshots {
         }
     }
 }
+
+ 
 

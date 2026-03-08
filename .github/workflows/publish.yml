@@ -1,4 +1,4 @@
-﻿# AnyStack Enterprise v1.4.0 Publish
+﻿# AnyStack Enterprise v1.5.0 Publish
 name: Publish to PSGallery
 on:
   push:
@@ -69,4 +69,7 @@ jobs:
                            -Confirm:$false
             Start-Sleep -Seconds 5
           }
+
+
+ 
 

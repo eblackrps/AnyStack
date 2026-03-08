@@ -1,4 +1,4 @@
-function Sync-AnyStackTagCategory {
+﻿function Sync-AnyStackTagCategory {
     <#
     .SYNOPSIS
         Syncs tag categories from JSON.
@@ -54,4 +54,6 @@ function Sync-AnyStackTagCategory {
         }
     }
 }
+
+ 
 

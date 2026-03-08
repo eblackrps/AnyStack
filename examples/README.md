@@ -1,4 +1,4 @@
-# AnyStack Enterprise Examples
+﻿# AnyStack Enterprise Examples
 
 This folder contains end-to-end automation scripts that demonstrate how to chain AnyStack Enterprise cmdlets for common data center operations.
 
@@ -9,3 +9,7 @@ This folder contains end-to-end automation scripts that demonstrate how to chain
 | `03-SecurityAudit-Weekly.ps1` | CIS STIG audit, lockdown verification | Weekly |
 | `04-CapacityReview-Monthly.ps1` | Finding zombie VMs, datastore growth, right-sizing | Monthly |
 | `05-DR-Readiness-Check.ps1` | Snapshot limits, HA failover checks, vSAN health | Weekly |
+
+
+ 
+

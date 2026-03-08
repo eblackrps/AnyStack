@@ -1,4 +1,4 @@
-function Get-AnyStackVmMigrationHistory {
+﻿function Get-AnyStackVmMigrationHistory {
     <#
     .SYNOPSIS
         Gets VM vMotion history.
@@ -68,4 +68,6 @@ function Get-AnyStackVmMigrationHistory {
         }
     }
 }
+
+ 
 
