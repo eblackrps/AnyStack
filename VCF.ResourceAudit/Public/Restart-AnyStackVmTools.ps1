@@ -1,4 +1,4 @@
-﻿function Restart-AnyStackVmTool {
+function Restart-AnyStackVmTool {
     <#
     .SYNOPSIS
         RestartGuest() where ToolsRunningStatus = 'guestToolsRunning'. -WhatIf required.
@@ -49,4 +49,5 @@
         }
     }
 }
+
 

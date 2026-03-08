@@ -1,4 +1,4 @@
-﻿function Update-AnyStackVmTool {
+function Update-AnyStackVmTool {
     <#
     .SYNOPSIS
         UpgradeTools_Task(). -WhatIf required.
@@ -50,4 +50,5 @@
         }
     }
 }
+
 

@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-03-08
+### Added
+- Production-ready logic applied to all 113 cmdlets via `apply_real_logic.ps1`.
+- VCF.StorageAdvanced module expanded with full NVMe cmdlet implementations.
+### Changed
+- All module versions incremented to 1.2.0.
+- Manifests updated to reflect new versions and dependencies.
+
 ## [1.1.0] - 2026-03-07
 ### Added
 - Full implementation of all 79 previously-stubbed cmdlets

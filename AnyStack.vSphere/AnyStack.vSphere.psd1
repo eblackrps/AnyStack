@@ -1,6 +1,6 @@
 @{
     RootModule = 'AnyStack.vSphere.psm1'
-    ModuleVersion = '1.1.0'
+    ModuleVersion = '1.2.0'
     GUID = 'f5053a10-87a3-4e68-b568-ce9245938e94'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -22,5 +22,6 @@
         }
     }
 }
+
 
 

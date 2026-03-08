@@ -1,6 +1,6 @@
 @{
     RootModule = 'AnyStack.Reporting.psm1'
-    ModuleVersion = '1.1.0'
+    ModuleVersion = '1.2.0'
     GUID = 'e3a41f70-f989-4079-bbc6-65965e3644d1'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -22,5 +22,6 @@
         }
     }
 }
+
 
 

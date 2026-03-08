@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.PerformanceProfiler.psm1'
-    ModuleVersion = '1.1.0'
+    ModuleVersion = '1.2.0'
     GUID = 'e577018e-c017-4682-88a9-b613e640d15e'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -22,5 +22,6 @@
         }
     }
 }
+
 
 

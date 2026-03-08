@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.SecurityAdvanced.psm1'
-    ModuleVersion = '1.1.0'
+    ModuleVersion = '1.2.0'
     GUID = '3cd79541-f1c6-43cf-9ab8-5eba8e46cc7a'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -22,5 +22,6 @@
         }
     }
 }
+
 
 

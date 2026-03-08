@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.CertificateManager.psm1'
-    ModuleVersion = '1.1.0'
+    ModuleVersion = '1.2.0'
     GUID = '48a5e0e4-ef1b-4ec2-badb-2f8e883dc086'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -22,5 +22,6 @@
         }
     }
 }
+
 
 
