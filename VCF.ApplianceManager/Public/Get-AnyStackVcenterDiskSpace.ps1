@@ -1,4 +1,4 @@
-﻿function Get-AnyStackVcenterDiskSpace {
+function Get-AnyStackVcenterDiskSpace {
     <#
     .SYNOPSIS
         Retrieves disk space usage for vCenter partitions via VAMI API.
@@ -57,7 +57,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

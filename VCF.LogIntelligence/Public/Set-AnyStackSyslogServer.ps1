@@ -1,4 +1,4 @@
-﻿function Set-AnyStackSyslogServer {
+function Set-AnyStackSyslogServer {
     <#
     .SYNOPSIS
         Sets the syslog server for a host.
@@ -58,7 +58,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

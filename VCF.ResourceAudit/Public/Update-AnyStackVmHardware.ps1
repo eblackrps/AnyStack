@@ -1,4 +1,4 @@
-﻿function Update-AnyStackVmHardware {
+function Update-AnyStackVmHardware {
     <#
     .SYNOPSIS
         Upgrades VM hardware compatibility.
@@ -59,7 +59,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

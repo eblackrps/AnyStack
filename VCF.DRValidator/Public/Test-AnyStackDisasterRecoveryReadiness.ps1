@@ -1,4 +1,4 @@
-﻿function Test-AnyStackDisasterRecoveryReadiness {
+function Test-AnyStackDisasterRecoveryReadiness {
     <#
     .SYNOPSIS
         Tests disaster recovery readiness.
@@ -36,9 +36,11 @@
             
             foreach ($vm in $vms) {
                 $snapAge = 0
-                if ($vm.Snapshot -and $vm.Snapshot.CurrentSnapshot) {
-                    # Mock finding the current snapshot time
-                    $snapAge = 10
+                if ($vm.Snapshot -and $vm.Snapshot.RootSnapshotList) {
+                    $oldestSnap = Get-OldSnapshot -SnapshotTree $vm.Snapshot.RootSnapshotList
+                    if ($oldestSnap) {
+                        $snapAge = [Math]::Round(((Get-Date) - $oldestSnap.CreateTime).TotalHours, 1)
+                    }
                 }
                 
                 $reachable = $false
@@ -61,7 +63,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

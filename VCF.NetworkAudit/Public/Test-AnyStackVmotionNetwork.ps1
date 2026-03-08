@@ -1,4 +1,4 @@
-﻿function Test-AnyStackVmotionNetwork {
+function Test-AnyStackVmotionNetwork {
     <#
     .SYNOPSIS
         Tests vMotion network connectivity.
@@ -52,7 +52,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

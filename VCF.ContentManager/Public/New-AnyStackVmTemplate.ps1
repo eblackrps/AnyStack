@@ -1,4 +1,4 @@
-﻿function New-AnyStackVmTemplate {
+function New-AnyStackVmTemplate {
     <#
     .SYNOPSIS
         Marks a VM as a template.
@@ -53,7 +53,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

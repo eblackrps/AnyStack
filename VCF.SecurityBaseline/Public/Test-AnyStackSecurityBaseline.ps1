@@ -1,4 +1,4 @@
-﻿function Test-AnyStackSecurityBaseline {
+function Test-AnyStackSecurityBaseline {
     <#
     .SYNOPSIS
         Tests security baseline on host.
@@ -46,8 +46,24 @@
                 
                 $lockdownPassed = $h.Config.LockdownMode -ne 'lockdownDisabled'
                 if ($lockdownPassed) { $passed++ } else { $failed++ }
-                
                 $findings += [PSCustomObject]@{ CheckName='Lockdown'; Expected='Enabled'; Actual=$h.Config.LockdownMode; Passed=$lockdownPassed }
+                
+                $svcSystem = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.ServiceSystem }
+                $ssh = $svcSystem.ServiceInfo.Service | Where-Object { $_.Key -eq 'TSM-SSH' }
+                $sshPassed = -not $ssh.Running
+                if ($sshPassed) { $passed++ } else { $failed++ }
+                $findings += [PSCustomObject]@{ CheckName='SSH'; Expected='Stopped'; Actual=if($ssh.Running){'Running'}else{'Stopped'}; Passed=$sshPassed }
+                
+                $ntpCount = if ($h.Config.DateTimeInfo.NtpConfig.Server) { $h.Config.DateTimeInfo.NtpConfig.Server.Count } else { 0 }
+                $ntpPassed = $ntpCount -ge 2
+                if ($ntpPassed) { $passed++ } else { $failed++ }
+                $findings += [PSCustomObject]@{ CheckName='NTP'; Expected='>= 2'; Actual=$ntpCount; Passed=$ntpPassed }
+                
+                $syslogOpt = $h.Config.Option | Where-Object { $_.Key -eq 'Syslog.global.logHost' }
+                $syslogVal = if ($syslogOpt) { $syslogOpt.Value } else { '' }
+                $syslogPassed = -not [string]::IsNullOrWhiteSpace($syslogVal)
+                if ($syslogPassed) { $passed++ } else { $failed++ }
+                $findings += [PSCustomObject]@{ CheckName='Syslog'; Expected='Configured'; Actual=$syslogVal; Passed=$syslogPassed }
                 
                 [PSCustomObject]@{
                     PSTypeName   = 'AnyStack.SecurityBaseline'
@@ -61,7 +77,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

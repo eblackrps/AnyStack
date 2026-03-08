@@ -1,4 +1,4 @@
-﻿function Invoke-AnyStackReport {
+function Invoke-AnyStackReport {
     <#
     .SYNOPSIS
         Triggers a data collection report.
@@ -40,7 +40,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

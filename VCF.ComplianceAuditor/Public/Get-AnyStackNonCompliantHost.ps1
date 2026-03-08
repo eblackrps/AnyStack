@@ -1,4 +1,4 @@
-﻿function Get-AnyStackNonCompliantHost {
+function Get-AnyStackNonCompliantHost {
     <#
     .SYNOPSIS
         Gets non-compliant hosts.
@@ -57,7 +57,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

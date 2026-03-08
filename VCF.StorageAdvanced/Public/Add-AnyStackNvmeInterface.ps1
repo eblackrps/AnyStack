@@ -1,4 +1,4 @@
-﻿function Add-AnyStackNvmeInterface {
+function Add-AnyStackNvmeInterface {
     <#
     .SYNOPSIS
         Adds an NVMe adapter.
@@ -62,7 +62,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

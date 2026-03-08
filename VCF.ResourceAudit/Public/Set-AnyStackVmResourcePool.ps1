@@ -1,4 +1,4 @@
-﻿function Set-AnyStackVmResourcePool {
+function Set-AnyStackVmResourcePool {
     <#
     .SYNOPSIS
         Moves VM to a resource pool.
@@ -55,7 +55,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

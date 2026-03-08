@@ -1,4 +1,4 @@
-﻿function Get-AnyStackOrphanedVmdk {
+function Get-AnyStackOrphanedVmdk {
     <#
     .SYNOPSIS
         Finds orphaned VMDK files.
@@ -49,7 +49,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

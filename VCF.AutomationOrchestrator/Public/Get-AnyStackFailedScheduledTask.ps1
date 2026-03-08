@@ -1,4 +1,4 @@
-﻿function Get-AnyStackFailedScheduledTask {
+function Get-AnyStackFailedScheduledTask {
     <#
     .SYNOPSIS
         Retrieves failed scheduled tasks in vCenter.
@@ -50,7 +50,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

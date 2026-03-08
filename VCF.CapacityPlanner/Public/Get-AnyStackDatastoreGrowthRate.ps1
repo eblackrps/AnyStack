@@ -1,4 +1,4 @@
-﻿function Get-AnyStackDatastoreGrowthRate {
+function Get-AnyStackDatastoreGrowthRate {
     <#
     .SYNOPSIS
         Gets datastore growth rates.
@@ -36,10 +36,24 @@
             $datastores = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType Datastore -Filter $filter -Property Name,Summary }
             
             foreach ($ds in $datastores) {
-                # Simulated historical growth metric (usually requires PerfManager query over 7 days)
-                $growthRate = Get-Random -Minimum 1 -Maximum 50
                 $freeGb = [Math]::Round($ds.Summary.FreeSpace / 1GB, 2)
-                $days = if ($growthRate -gt 0) { [Math]::Round($freeGb / $growthRate) } else { 999 }
+                $growthRate = $null
+                $days = $null
+                
+                $dsObj = Get-Datastore -Id $ds.MoRef -Server $vi
+                $stats = Get-Stat -Entity $dsObj -Stat disk.used.latest -Start (Get-Date).AddDays(-7) -Finish (Get-Date) -ErrorAction SilentlyContinue
+                if ($null -ne $stats -and $stats.Count -ge 2) {
+                    $first = $stats[-1].Value
+                    $last = $stats[0].Value
+                    $deltaKb = $last - $first
+                    $dailyDeltaGb = ($deltaKb / 1MB) / 7
+                    $growthRate = [Math]::Round($dailyDeltaGb, 2)
+                    if ($growthRate -gt 0) {
+                        $days = [Math]::Round($freeGb / $growthRate)
+                    }
+                } else {
+                    Write-Warning "Insufficient history (< 2 data points) for datastore $($ds.Name)."
+                }
                 
                 [PSCustomObject]@{
                     PSTypeName           = 'AnyStack.DatastoreGrowthRate'
@@ -54,7 +68,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

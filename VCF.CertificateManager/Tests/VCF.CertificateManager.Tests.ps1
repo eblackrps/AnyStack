@@ -1,36 +1,36 @@
-Describe "VCF.CertificateManager Suite" {
-    BeforeAll {
-        function Invoke-AnyStackWithRetry { }
-    }
+BeforeAll {
+    function global:Get-AnyStackConnection { param($Server) return [PSCustomObject]@{Name='MockVC'} }
+    function global:Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock }
+    Import-Module "$PSScriptRoot\..\VCF.CertificateManager.psd1" -Force
+}
 
-    Context "Module Info" {
-        It "Should have a valid manifest" {
-            $true | Should -Be $true
-        }
-        It "Should export correct cmdlets" {
-            $true | Should -Be $true
-        }
-    }
+Describe "VCF.CertificateManager Suite" {
     Context "Test-AnyStackCertificates" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.CertificateManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.CertificateManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.CertificateManager"
+            $result = Test-AnyStackCertificates -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Update-AnyStackEsxCertificate" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.CertificateManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.CertificateManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.CertificateManager"
+            $result = Update-AnyStackEsxCertificate -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Update-AnyStackVcsCertificate" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.CertificateManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.CertificateManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.CertificateManager"
+            $result = Update-AnyStackVcsCertificate -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-﻿function Set-AnyStackDrsRule {
+function Set-AnyStackDrsRule {
     <#
     .SYNOPSIS
         Sets a DRS affinity or anti-affinity rule.
@@ -82,7 +82,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

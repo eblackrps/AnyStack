@@ -1,6 +1,6 @@
 ﻿@{
     RootModule = 'VCF.IdentityManager.psm1'
-    ModuleVersion = '1.4.0'
+    ModuleVersion = '1.5.0'
     GUID = 'bfd98cf4-0261-4e5f-ad55-b818f8e22ce5'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -23,6 +23,7 @@
         }
     }
 }
+
 
 
 

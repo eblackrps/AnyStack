@@ -1,4 +1,4 @@
-﻿function Test-AnyStackVsanCapacity {
+function Test-AnyStackVsanCapacity {
     <#
     .SYNOPSIS
         Tests vSAN capacity limits.
@@ -54,7 +54,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

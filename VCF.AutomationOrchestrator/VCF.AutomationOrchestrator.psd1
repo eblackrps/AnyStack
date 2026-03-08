@@ -1,6 +1,6 @@
 ﻿@{
     RootModule = 'VCF.AutomationOrchestrator.psm1'
-    ModuleVersion = '1.4.0'
+    ModuleVersion = '1.5.0'
     GUID = 'ee8c3b8f-e85f-40b6-b0fe-1040f9616353'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -23,6 +23,7 @@
         }
     }
 }
+
 
 
 

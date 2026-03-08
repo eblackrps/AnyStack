@@ -1,4 +1,4 @@
-﻿function Move-AnyStackVmDatastore {
+function Move-AnyStackVmDatastore {
     <#
     .SYNOPSIS
         Moves VM to another datastore.
@@ -58,7 +58,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

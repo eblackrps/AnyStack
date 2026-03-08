@@ -1,6 +1,6 @@
 ﻿@{
     RootModule = 'VCF.LifecycleManager.psm1'
-    ModuleVersion = '1.4.0'
+    ModuleVersion = '1.5.0'
     GUID = 'b9926487-f43a-41c3-925f-34525f82ba52'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -23,6 +23,7 @@
         }
     }
 }
+
 
 
 

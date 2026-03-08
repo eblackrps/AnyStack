@@ -1,4 +1,4 @@
-﻿function Set-AnyStackEsxiLockdownMode {
+function Set-AnyStackEsxiLockdownMode {
     <#
     .SYNOPSIS
         Configures Lockdown Mode on an ESXi host.
@@ -54,7 +54,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

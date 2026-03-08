@@ -1,4 +1,4 @@
-﻿function Test-AnyStackVcenterDatabaseHealth {
+function Test-AnyStackVcenterDatabaseHealth {
     <#
     .SYNOPSIS
         Tests the health of the vCenter Server database.
@@ -40,7 +40,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

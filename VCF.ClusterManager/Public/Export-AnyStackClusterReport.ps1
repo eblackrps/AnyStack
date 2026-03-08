@@ -1,4 +1,4 @@
-﻿function Export-AnyStackClusterReport {
+function Export-AnyStackClusterReport {
     <#
     .SYNOPSIS
         Exports a cluster summary report.
@@ -59,7 +59,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

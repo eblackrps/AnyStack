@@ -1,4 +1,4 @@
-﻿function Test-AnyStackAdIntegration {
+function Test-AnyStackAdIntegration {
     <#
     .SYNOPSIS
         Tests AD integration on host.
@@ -54,7 +54,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

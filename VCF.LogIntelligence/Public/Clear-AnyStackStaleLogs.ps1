@@ -1,4 +1,4 @@
-﻿function Clear-AnyStackStaleLogs {
+function Clear-AnyStackStaleLogs {
     <#
     .SYNOPSIS
         Clears stale logs from ESXi hosts.
@@ -51,7 +51,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

@@ -1,4 +1,4 @@
-﻿function Get-AnyStackHostMemoryUsage {
+function Get-AnyStackHostMemoryUsage {
     <#
     .SYNOPSIS
         Gets host memory usage.
@@ -48,7 +48,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

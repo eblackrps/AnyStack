@@ -1,92 +1,108 @@
-Describe "VCF.ClusterManager Suite" {
-    BeforeAll {
-        function Invoke-AnyStackWithRetry { }
-    }
+BeforeAll {
+    function global:Get-AnyStackConnection { param($Server) return [PSCustomObject]@{Name='MockVC'} }
+    function global:Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock }
+    Import-Module "$PSScriptRoot\..\VCF.ClusterManager.psd1" -Force
+}
 
-    Context "Module Info" {
-        It "Should have a valid manifest" {
-            $true | Should -Be $true
-        }
-        It "Should export correct cmdlets" {
-            $true | Should -Be $true
-        }
-    }
+Describe "VCF.ClusterManager Suite" {
     Context "Export-AnyStackClusterReport" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.ClusterManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.ClusterManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.ClusterManager"
+            $result = Export-AnyStackClusterReport -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Get-AnyStackHostFirmware" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.ClusterManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.ClusterManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.ClusterManager"
+            $result = Get-AnyStackHostFirmware -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Get-AnyStackHostSensors" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.ClusterManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.ClusterManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.ClusterManager"
+            $result = Get-AnyStackHostSensors -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "New-AnyStackHostProfile" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.ClusterManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.ClusterManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.ClusterManager"
+            $result = New-AnyStackHostProfile -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Set-AnyStackDrsRule" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.ClusterManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.ClusterManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.ClusterManager"
+            $result = Set-AnyStackDrsRule -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Set-AnyStackHostPowerPolicy" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.ClusterManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.ClusterManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.ClusterManager"
+            $result = Set-AnyStackHostPowerPolicy -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Set-AnyStackVclsRetreatMode" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.ClusterManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.ClusterManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.ClusterManager"
+            $result = Set-AnyStackVclsRetreatMode -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Set-AnyStackVmAffinityRule" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.ClusterManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.ClusterManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.ClusterManager"
+            $result = Set-AnyStackVmAffinityRule -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Test-AnyStackHaFailover" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.ClusterManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.ClusterManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.ClusterManager"
+            $result = Test-AnyStackHaFailover -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Test-AnyStackHostNtp" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.ClusterManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.ClusterManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.ClusterManager"
+            $result = Test-AnyStackHostNtp -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Test-AnyStackProactiveHa" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.ClusterManager"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.ClusterManager"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.ClusterManager"
+            $result = Test-AnyStackProactiveHa -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
 }
 

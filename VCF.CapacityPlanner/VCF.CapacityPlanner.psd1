@@ -1,6 +1,6 @@
 ﻿@{
     RootModule = 'VCF.CapacityPlanner.psm1'
-    ModuleVersion = '1.4.0'
+    ModuleVersion = '1.5.0'
     GUID = '2d04c202-4008-40c8-84b2-22b356955b4c'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -23,6 +23,7 @@
         }
     }
 }
+
 
 
 

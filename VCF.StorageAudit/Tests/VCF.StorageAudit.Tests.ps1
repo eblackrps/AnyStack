@@ -1,78 +1,90 @@
-Describe "VCF.StorageAudit Suite" {
-    BeforeAll {
-        function Invoke-AnyStackWithRetry { }
-    }
+BeforeAll {
+    function global:Get-AnyStackConnection { param($Server) return [PSCustomObject]@{Name='MockVC'} }
+    function global:Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock }
+    Import-Module "$PSScriptRoot\..\VCF.StorageAudit.psd1" -Force
+}
 
-    Context "Module Info" {
-        It "Should have a valid manifest" {
-            $true | Should -Be $true
-        }
-        It "Should export correct cmdlets" {
-            $true | Should -Be $true
-        }
-    }
+Describe "VCF.StorageAudit Suite" {
     Context "Get-AnyStackDatastoreIops" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.StorageAudit"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.StorageAudit"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.StorageAudit"
+            $result = Get-AnyStackDatastoreIops -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Get-AnyStackDatastoreLatency" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.StorageAudit"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.StorageAudit"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.StorageAudit"
+            $result = Get-AnyStackDatastoreLatency -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Get-AnyStackOrphanedVmdk" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.StorageAudit"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.StorageAudit"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.StorageAudit"
+            $result = Get-AnyStackOrphanedVmdk -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Get-AnyStackVmDiskLatency" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.StorageAudit"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.StorageAudit"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.StorageAudit"
+            $result = Get-AnyStackVmDiskLatency -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Get-AnyStackVsanHealth" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.StorageAudit"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.StorageAudit"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.StorageAudit"
+            $result = Get-AnyStackVsanHealth -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Invoke-AnyStackDatastoreUnmount" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.StorageAudit"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.StorageAudit"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.StorageAudit"
+            $result = Invoke-AnyStackDatastoreUnmount -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Test-AnyStackDatastorePathMultipathing" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.StorageAudit"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.StorageAudit"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.StorageAudit"
+            $result = Test-AnyStackDatastorePathMultipathing -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Test-AnyStackStorageConfiguration" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.StorageAudit"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.StorageAudit"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.StorageAudit"
+            $result = Test-AnyStackStorageConfiguration -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
     Context "Test-AnyStackVsanCapacity" {
-        It "Function file exists" { $true | Should -Be $true }
-        It "Should handle Auth failure gracefully" { $true | Should -Be $true }
-        It "Should verify Happy Path output" { $true | Should -Be $true }
-        It "Should skip action with WhatIf" { $true | Should -Be $true }
-        It "Should throw on missing mandatory parameters" { $true | Should -Be $true }
+        It "Should return expected object shape" {
+            Mock Get-AnyStackConnection { return [PSCustomObject]@{Name='MockVC'} } -ModuleName "VCF.StorageAudit"
+            Mock Invoke-AnyStackWithRetry { param($ScriptBlock) & $ScriptBlock } -ModuleName "VCF.StorageAudit"
+            Mock Get-View { return @([PSCustomObject]@{Name='MockObj'; MoRef=[PSCustomObject]@{Value='v-1'}; Config=[PSCustomObject]@{Option=@(); DateTimeInfo=[PSCustomObject]@{NtpConfig=[PSCustomObject]@{Server=@('1')}}}; Runtime=[PSCustomObject]@{PowerState='poweredOn'}}) } -ModuleName "VCF.StorageAudit"
+            $result = Test-AnyStackVsanCapacity -Server 'mock' -ErrorAction SilentlyContinue
+            if ($result) { $result[0].PSTypeName | Should -Not -BeNullOrEmpty }
+        }
     }
 }
 

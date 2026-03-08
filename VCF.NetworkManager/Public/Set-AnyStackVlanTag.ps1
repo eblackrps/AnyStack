@@ -1,4 +1,4 @@
-﻿function Set-AnyStackVlanTag {
+function Set-AnyStackVlanTag {
     <#
     .SYNOPSIS
         Updates VLAN ID on an existing portgroup.
@@ -60,7 +60,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

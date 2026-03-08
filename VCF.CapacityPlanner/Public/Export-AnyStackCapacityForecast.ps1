@@ -1,4 +1,4 @@
-﻿function Export-AnyStackCapacityForecast {
+function Export-AnyStackCapacityForecast {
     <#
     .SYNOPSIS
         Exports a capacity forecast report.
@@ -59,7 +59,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

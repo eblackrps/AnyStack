@@ -1,4 +1,4 @@
-﻿function Invoke-AnyStackDatastoreUnmount {
+function Invoke-AnyStackDatastoreUnmount {
     <#
     .SYNOPSIS
         Unmounts a datastore.
@@ -55,7 +55,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

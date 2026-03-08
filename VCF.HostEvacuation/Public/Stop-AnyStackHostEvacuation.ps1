@@ -1,4 +1,4 @@
-﻿function Stop-AnyStackHostEvacuation {
+function Stop-AnyStackHostEvacuation {
     <#
     .SYNOPSIS
         Stops host evacuation (exits Maintenance Mode).
@@ -55,7 +55,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

@@ -1,4 +1,4 @@
-﻿function Set-AnyStackResourceTag {
+function Set-AnyStackResourceTag {
     <#
     .SYNOPSIS
         Applies a tag to an object.
@@ -71,7 +71,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

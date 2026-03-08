@@ -1,4 +1,4 @@
-﻿function Get-AnyStackOrphanedState {
+function Get-AnyStackOrphanedState {
     <#
     .SYNOPSIS
         Finds orphaned VMs.
@@ -44,7 +44,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

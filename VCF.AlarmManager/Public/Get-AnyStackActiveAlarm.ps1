@@ -1,4 +1,4 @@
-﻿function Get-AnyStackActiveAlarm {
+function Get-AnyStackActiveAlarm {
     <#
     .SYNOPSIS
         Retrieves active alarms from the connected vCenter.
@@ -46,7 +46,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

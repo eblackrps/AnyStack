@@ -1,4 +1,4 @@
-﻿function Get-AnyStackDatastoreIops {
+function Get-AnyStackDatastoreIops {
     <#
     .SYNOPSIS
         Gets datastore IOPS.
@@ -50,7 +50,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

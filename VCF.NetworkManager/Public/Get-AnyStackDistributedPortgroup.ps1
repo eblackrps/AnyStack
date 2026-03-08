@@ -1,4 +1,4 @@
-﻿function Get-AnyStackDistributedPortgroup {
+function Get-AnyStackDistributedPortgroup {
     <#
     .SYNOPSIS
         Lists Distributed Portgroups and their configuration.
@@ -43,7 +43,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+

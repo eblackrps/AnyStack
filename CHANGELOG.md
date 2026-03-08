@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-03-08
+### Fixed
+- `Get-AnyStackDatastoreGrowthRate`: Removed random number and implemented real growth calculation using `Get-Stat`.
+- `Test-AnyStackDisasterRecoveryReadiness`: Removed hardcoded snapshot age and wired up private helper `Get-OldSnapshot`.
+- `Get-OldSnapshot`: Fixed recursive call name mismatch causing runtime errors.
+- `Test-AnyStackSecurityBaseline`: Expanded checks to match described behavior (SSH, NTP, Syslog).
+- `Pester Tests`: Replaced all fake Pester tests with real mocked unit tests across all 27 modules.
+
 ## [1.4.0] - 2026-03-08
 ### Added
 - Full implementation of all 117 enterprise cmdlets with real vSphere API logic.

@@ -1,18 +1,18 @@
 function Get-OldSnapshot {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
     <#
     .SYNOPSIS
-        Internal helper to recursively find snapshots older than a specified threshold.
+        Internal helper to recursively find the oldest snapshot.
     #>
-    param($SnapshotTree, [datetime]$OlderThan)
+    param($SnapshotTree)
+    $oldest = $null
     foreach ($snap in $SnapshotTree) {
-        if ($snap.CreateTime -lt $OlderThan) { return $true }
+        if (-not $oldest -or $snap.CreateTime -lt $oldest.CreateTime) { $oldest = $snap }
         if ($snap.ChildSnapshotList) {
-            if (Get-OldSnapshots -SnapshotTree $snap.ChildSnapshotList -OlderThan $OlderThan) { return $true }
+            $childOldest = Get-OldSnapshot -SnapshotTree $snap.ChildSnapshotList
+            if ($childOldest -and (-not $oldest -or $childOldest.CreateTime -lt $oldest.CreateTime)) {
+                $oldest = $childOldest
+            }
         }
     }
-    return $false
+    return $oldest
 }

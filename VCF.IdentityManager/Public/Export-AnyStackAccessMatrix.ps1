@@ -1,4 +1,4 @@
-﻿function Export-AnyStackAccessMatrix {
+function Export-AnyStackAccessMatrix {
     <#
     .SYNOPSIS
         Exports an access matrix.
@@ -48,7 +48,8 @@
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }
+
