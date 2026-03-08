@@ -1,4 +1,4 @@
-﻿param([string]$ApiKey)
+param([string]$ApiKey)
 
 if (-not $ApiKey) {
     Write-Error "Please provide your API Key. Example: .\FinalGallerySync.ps1 -ApiKey 'your-key-here'"

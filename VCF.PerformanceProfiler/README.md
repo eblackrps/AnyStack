@@ -1,6 +1,6 @@
 # VCF.PerformanceProfiler
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Performance baseline capture, CPU co-stop analysis, storage latency profiling, and dropped packet detection.
 

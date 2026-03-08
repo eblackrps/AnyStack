@@ -1,6 +1,6 @@
 # VCF.StorageAudit
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Comprehensive storage auditing: IOPS and latency profiling, orphaned VMDK detection, vSAN health, datastore multipathing, and capacity checks.
 

@@ -1,4 +1,4 @@
-﻿# AnyStack Enterprise v1.4.0 .gitignore
+# AnyStack Enterprise v1.4.0 .gitignore
 # PowerShell
 *.ps1xml
 *.pssc

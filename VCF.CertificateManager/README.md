@@ -1,6 +1,6 @@
 # VCF.CertificateManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Certificate lifecycle management for ESXi hosts and vCenter. Audit expiry, renew host certificates, and manage VMCA-signed certs without manual console work.
 

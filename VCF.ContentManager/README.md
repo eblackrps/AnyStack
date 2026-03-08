@@ -1,6 +1,6 @@
 # VCF.ContentManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Content Library and template management. Sync libraries, clean up orphaned ISOs, and manage VM templates at scale.
 

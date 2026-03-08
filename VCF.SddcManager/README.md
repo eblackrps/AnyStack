@@ -1,6 +1,6 @@
 # VCF.SddcManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 SDDC Manager integration for VCF environments. Workload Domain management, password rotation, and SDDC health checks.
 

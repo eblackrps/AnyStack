@@ -1,6 +1,6 @@
-﻿@{
+@{
     RootModule = 'AnyStack.psm1'
-    ModuleVersion = '1.6.0'
+    ModuleVersion = '1.6.1'
     GUID = 'dee0a564-e550-4cce-a916-eac3ebff45c2'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -9,33 +9,33 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         'VMware.PowerCLI',
-        @{ModuleName='AnyStack.ConfigurationAsCode'; ModuleVersion = '1.6.0'},
-        @{ModuleName='AnyStack.Reporting'; ModuleVersion = '1.6.0'},
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.AlarmManager'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.ApplianceManager'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.AutomationOrchestrator'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.CapacityPlanner'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.CertificateManager'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.ClusterManager'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.ComplianceAuditor'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.ContentManager'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.DRValidator'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.HostEvacuation'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.IdentityManager'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.LifecycleManager'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.LogIntelligence'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.NetworkAudit'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.NetworkManager'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.PerformanceProfiler'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.ResourceAudit'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.SddcManager'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.SecurityAdvanced'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.SecurityBaseline'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.SnapshotManager'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.StorageAdvanced'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.StorageAudit'; ModuleVersion = '1.6.0'},
-        @{ModuleName='VCF.TagManager'; ModuleVersion = '1.6.0'}
+        @{ModuleName='AnyStack.ConfigurationAsCode'; ModuleVersion = '1.6.1'},
+        @{ModuleName='AnyStack.Reporting'; ModuleVersion = '1.6.1'},
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.AlarmManager'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.ApplianceManager'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.AutomationOrchestrator'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.CapacityPlanner'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.CertificateManager'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.ClusterManager'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.ComplianceAuditor'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.ContentManager'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.DRValidator'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.HostEvacuation'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.IdentityManager'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.LifecycleManager'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.LogIntelligence'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.NetworkAudit'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.NetworkManager'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.PerformanceProfiler'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.ResourceAudit'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.SddcManager'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.SecurityAdvanced'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.SecurityBaseline'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.SnapshotManager'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.StorageAdvanced'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.StorageAudit'; ModuleVersion = '1.6.1'},
+        @{ModuleName='VCF.TagManager'; ModuleVersion = '1.6.1'}
     )
     FunctionsToExport = @()
     CmdletsToExport = @()

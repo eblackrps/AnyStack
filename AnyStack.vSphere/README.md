@@ -1,6 +1,6 @@
 # AnyStack.vSphere
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Core connectivity and foundational utilities. All other AnyStack modules depend on this one. Handles server connections, health checks, license auditing, and logging.
 

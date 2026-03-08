@@ -1,6 +1,6 @@
 # VCF.NetworkManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Distributed Virtual Switch management: port group inventory, VLAN provisioning, and tag assignment.
 

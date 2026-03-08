@@ -1,6 +1,6 @@
 # VCF.StorageAdvanced
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 NVMe over Fabrics management for vSphere 8.0 U3 environments: interface provisioning, device discovery, queue depth tuning, and connectivity testing.
 

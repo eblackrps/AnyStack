@@ -1,4 +1,4 @@
-﻿function Test-AnyStackSddcHealth {
+function Test-AnyStackSddcHealth {
     <#
     .SYNOPSIS
         Tests SDDC health.

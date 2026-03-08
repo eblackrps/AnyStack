@@ -1,4 +1,4 @@
-﻿function Set-AnyStackPasswordRotation {
+function Set-AnyStackPasswordRotation {
     <#
     .SYNOPSIS
         Triggers password rotation.

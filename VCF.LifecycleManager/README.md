@@ -1,6 +1,6 @@
 # VCF.LifecycleManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 vSphere Lifecycle Manager operations: cluster images, host remediation, hardware compatibility, and compliance checks.
 

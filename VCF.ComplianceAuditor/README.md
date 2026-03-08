@@ -1,6 +1,6 @@
 # VCF.ComplianceAuditor
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 STIG and CIS benchmark compliance auditing for ESXi hosts. Identify drift, generate audit reports, and remediate non-compliant configuration.
 

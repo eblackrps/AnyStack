@@ -1,6 +1,6 @@
 # VCF.IdentityManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Role-based access control auditing, global permissions management, and SSO configuration validation.
 

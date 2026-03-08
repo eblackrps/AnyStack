@@ -1,6 +1,6 @@
 # VCF.ApplianceManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Operational management of the vCenter Server Appliance (VCSA). Disk space monitoring, service control, and database health checks.
 

@@ -1,6 +1,6 @@
 # VCF.SnapshotManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Snapshot lifecycle management. Cleans up orphaned snapshots and optimizes snapshot chains to prevent performance degradation.
 

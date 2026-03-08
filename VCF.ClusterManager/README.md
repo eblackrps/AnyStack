@@ -1,6 +1,6 @@
 # VCF.ClusterManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Cluster-level operations: DRS rules, HA failover testing, host power policy, NTP validation, host profiles, and vCLS retreat mode management.
 

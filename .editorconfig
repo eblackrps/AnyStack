@@ -1,4 +1,4 @@
-﻿# AnyStack Enterprise v1.4.0 .editorconfig
+# AnyStack Enterprise v1.4.0 .editorconfig
 root = true
 
 [*.ps1]

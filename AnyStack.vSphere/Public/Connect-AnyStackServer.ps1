@@ -1,4 +1,4 @@
-﻿function Connect-AnyStackServer {
+function Connect-AnyStackServer {
     <#
     .SYNOPSIS
         Connects to a vCenter Server or ESXi host.

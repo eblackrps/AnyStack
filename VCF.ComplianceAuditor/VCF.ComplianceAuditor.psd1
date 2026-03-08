@@ -1,6 +1,6 @@
-﻿@{
+@{
     RootModule = 'VCF.ComplianceAuditor.psm1'
-    ModuleVersion = '1.6.0'
+    ModuleVersion = '1.6.1'
     GUID = 'c93bd47c-49fb-4ec2-afd6-8e8b24df8f7d'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'

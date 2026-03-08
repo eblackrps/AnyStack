@@ -1,6 +1,6 @@
 # VCF.SecurityBaseline
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Security baseline auditing for ESXi: lockdown mode, SSH state, NTP configuration, syslog, and AD integration validation.
 

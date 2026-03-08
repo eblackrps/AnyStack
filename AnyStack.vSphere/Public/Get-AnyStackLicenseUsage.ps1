@@ -1,4 +1,4 @@
-﻿function Get-AnyStackLicenseUsage {
+function Get-AnyStackLicenseUsage {
         <#
     .SYNOPSIS
         Get-AnyStackLicenseUsage - A VMWare admin utility.

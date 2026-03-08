@@ -1,6 +1,6 @@
 # AnyStack Enterprise Module Suite
 
-**Version:** 1.6.0 | **Author:** [The Any Stack Architect](https://www.anystackarchitect.com) | **License:** MIT
+**Version:** 1.6.1 | **Author:** [The Any Stack Architect](https://www.anystackarchitect.com) | **License:** MIT
 
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/AnyStack.vSphere?style=flat-square&logo=powershell&label=AnyStack.vSphere)](https://www.powershellgallery.com/packages/AnyStack.vSphere)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -111,3 +111,5 @@ All public cmdlets must support `-WhatIf` via `[CmdletBinding(SupportsShouldProc
 - [anystackarchitect.com](https://www.anystackarchitect.com)
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [Introducing AnyStack — blog post](https://www.anystackarchitect.com/introducing-anystack-powershell-automation-for-vsphere-and-vcf/)
+
+

@@ -1,4 +1,4 @@
-﻿function Write-AnyStackLog {
+function Write-AnyStackLog {
     <#
     .SYNOPSIS
         Writes a message to the AnyStack log.

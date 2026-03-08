@@ -1,4 +1,4 @@
-﻿$modules = Get-ChildItem -Directory -Path . | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
+$modules = Get-ChildItem -Directory -Path . | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
 
 foreach ($mod in $modules) {
     $testDir = Join-Path $mod "Tests"

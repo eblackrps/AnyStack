@@ -1,6 +1,6 @@
 # VCF.HostEvacuation
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Controlled host evacuation for maintenance windows. Handles vMotion of workloads off a host and returns it to service.
 

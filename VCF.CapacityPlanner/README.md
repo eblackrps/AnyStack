@@ -1,6 +1,6 @@
 # VCF.CapacityPlanner
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 Datastore growth forecasting, zombie VM detection, and right-sizing recommendations. Go beyond current utilization to understand where you are heading.
 

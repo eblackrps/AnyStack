@@ -5,13 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.6.0] - 2026-03-08
+## [1.6.1] - 2026-03-08
 ### Fixed
 - `Test-AnyStackDisasterRecoveryReadiness`: Removed hardcoded `HaEnabled = $true`; now walks up to the parent ClusterComputeResource and reads `DasConfig.Enabled`. Defaults to `$false` for standalone hosts.
 - `Get-AnyStackDatastoreGrowthRate`: Fixed inverted `Get-Stat` sample indices; `$stats[0]` is oldest, `$stats[-1]` is newest. Previously computed a negative delta on growing datastores, returning `$null` for both output fields.
 - All 27 test files: Replaced vacuous `if ($result)` guards with unconditional `Should -Not -BeNullOrEmpty` assertions. Added missing `Get-Datastore`, `Get-Stat`, `Test-NetConnection`, and `Get-Cluster` mocks where required. All mocks now return correctly shaped data to drive cmdlet logic through to output.
 ### Changed
-- All module versions incremented to 1.6.0.
+- All module versions incremented to 1.6.1.
 
 ## [1.5.0] - 2026-03-08
 ### Fixed

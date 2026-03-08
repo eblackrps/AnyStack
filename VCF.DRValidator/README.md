@@ -1,6 +1,6 @@
 # VCF.DRValidator
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.0 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.1 · MIT License**
 
 DR readiness validation: snapshot age, HA state, and network reachability checks across all VMs. Generates readiness reports and surfaces remediation targets.
 

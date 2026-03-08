@@ -1,4 +1,4 @@
-﻿function Get-AnyStackWorkloadDomain {
+function Get-AnyStackWorkloadDomain {
     <#
     .SYNOPSIS
         Gets SDDC workload domains.

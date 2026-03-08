@@ -1,4 +1,4 @@
-﻿function Disconnect-AnyStackServer {
+function Disconnect-AnyStackServer {
     <#
     .SYNOPSIS
         Disconnects from a vCenter Server or ESXi host.
