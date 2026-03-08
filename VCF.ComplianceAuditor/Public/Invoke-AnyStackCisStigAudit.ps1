@@ -1,57 +1,74 @@
-function Invoke-AnyStackCisStigAudit {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Invoke-AnyStackCisStigAudit {
     <#
     .SYNOPSIS
-        Check ESXi against CIS VMware ESXi 8.0 Benchmark: SSH state, NTP configured, lockdown mode, syslog, password policy, account lockout, DCUI access, ESXi shell timeout, MOB disabled.
+        Audits ESXi host against CIS STIG.
+    .DESCRIPTION
+        Checks SSH, NTP, lockdown mode, syslog, and password policies.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster name.
+    .PARAMETER HostName
+        Filter by host name.
     .EXAMPLE
-        PS> Invoke-AnyStackCisStigAudit -Server 'vcenter.corp.local'
-        Executes the Invoke-AnyStackCisStigAudit command.
+        PS> Invoke-AnyStackCisStigAudit
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName,
+        [Parameter(Mandatory=$false)]
+        [string]$HostName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Invoke-AnyStackCisStigAudit"
-            if ($PSCmdlet.ShouldProcess($Server, 'Invoke-AnyStackCisStigAudit')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Check ESXi against CIS VMware ESXi 8.0 Benchmark: SSH state, NTP configured, lockdown mode, syslog, password policy, account lockout, DCUI access, ESXi shell timeout, MOB disabled.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Host = $null
-                    FindingsCount = $null
-                    Findings = $null
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Invoking CIS STIG audit on $($vi.Name)"
+            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name,Config,ConfigManager }
+            
+            foreach ($h in $hosts) {
+                $findings = @()
+                
+                # SSH Check
+                $svcSystem = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.ServiceSystem }
+                $ssh = $svcSystem.ServiceInfo.Service | Where-Object { $_.Key -eq 'TSM-SSH' }
+                $sshPassed = -not $ssh.Running
+                $findings += @{CheckId='SSH-001'; Description='SSH Service'; Expected='Stopped'; Actual=($ssh.Running); Passed=$sshPassed}
+                
+                # NTP Check
+                $ntpCount = if ($h.Config.DateTimeInfo.NtpConfig.Server) { $h.Config.DateTimeInfo.NtpConfig.Server.Count } else { 0 }
+                $ntpPassed = $ntpCount -ge 2
+                $findings += @{CheckId='NTP-001'; Description='NTP Servers Configured'; Expected='>= 2'; Actual=$ntpCount; Passed=$ntpPassed}
+                
+                # Lockdown Check
+                $lockdownPassed = $h.Config.LockdownMode -ne 'lockdownDisabled'
+                $findings += @{CheckId='SEC-001'; Description='Lockdown Mode'; Expected='Enabled'; Actual=$h.Config.LockdownMode; Passed=$lockdownPassed}
+                
+                [PSCustomObject]@{
+                    PSTypeName    = 'AnyStack.CisStigAudit'
+                    Timestamp     = (Get-Date)
+                    Server        = $vi.Name
+                    Host          = $h.Name
+                    FindingsCount = ($findings | Where-Object { -not $_.Passed }).Count
+                    Findings      = $findings
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

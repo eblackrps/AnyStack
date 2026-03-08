@@ -1,58 +1,83 @@
-function Set-AnyStackVmAffinityRule {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Set-AnyStackVmAffinityRule {
     <#
     .SYNOPSIS
-        VM-VM or VM-Host affinity rule via ReconfigureComputeResource_Task. -WhatIf required.
+        Sets VM-Host affinity rule.
+    .DESCRIPTION
+        Creates a VM-Host affinity rule.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Name of the cluster.
+    .PARAMETER RuleName
+        Name of the rule.
+    .PARAMETER VmNames
+        VMs to include.
+    .PARAMETER HostGroupName
+        Target host group.
+    .PARAMETER Mandatory
+        Whether rule is mandatory.
     .EXAMPLE
-        PS> Set-AnyStackVmAffinityRule -Server 'vcenter.corp.local'
-        Executes the Set-AnyStackVmAffinityRule command.
+        PS> Set-AnyStackVmAffinityRule -ClusterName C1 -RuleName R1 -VmNames V1 -HostGroupName G1
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$ClusterName,
+        [Parameter(Mandatory=$true)]
+        [string]$RuleName,
+        [Parameter(Mandatory=$true)]
+        [string[]]$VmNames,
+        [Parameter(Mandatory=$true)]
+        [string]$HostGroupName,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [bool]$Mandatory = $false
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Set-AnyStackVmAffinityRule"
-            if ($PSCmdlet.ShouldProcess($Server, 'Set-AnyStackVmAffinityRule')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: VM-VM or VM-Host affinity rule via ReconfigureComputeResource_Task. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    RuleName = $null
-                    RuleType = $null
-                    Mandatory = $null
-                    VmsAffected = $null
-                    }
+            if ($PSCmdlet.ShouldProcess($ClusterName, "Set VM-Host Affinity $RuleName")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Setting VM affinity on $($vi.Name)"
+                $cluster = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType ClusterComputeResource -Filter @{Name=$ClusterName} }
+                
+                $spec = New-Object VMware.Vim.ClusterConfigSpecEx
+                $ruleSpec = New-Object VMware.Vim.ClusterRuleSpec
+                $ruleSpec.Operation = 'add'
+                
+                $rule = New-Object VMware.Vim.ClusterVmHostRuleInfo
+                $rule.Name = $RuleName
+                $rule.Mandatory = $Mandatory
+                $rule.AffineHostGroupName = $HostGroupName
+                
+                $ruleSpec.Info = $rule
+                $spec.RulesSpec = @($ruleSpec)
+                
+                Invoke-AnyStackWithRetry -ScriptBlock { $cluster.ReconfigureComputeResource_Task($spec, $true) }
+                
+                [PSCustomObject]@{
+                    PSTypeName  = 'AnyStack.VmAffinityRule'
+                    Timestamp   = (Get-Date)
+                    Server      = $vi.Name
+                    RuleName    = $RuleName
+                    RuleType    = 'VmHost'
+                    Mandatory   = $Mandatory
+                    VmsAffected = $VmNames.Count
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

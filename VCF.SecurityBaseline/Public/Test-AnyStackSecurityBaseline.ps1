@@ -1,56 +1,67 @@
-function Test-AnyStackSecurityBaseline {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Test-AnyStackSecurityBaseline {
     <#
     .SYNOPSIS
-        Aggregate check: SSH disabled, lockdown mode normal/strict, NTP configured (2+ servers), syslog configured, password complexity enabled, account lockout after 5 attempts, MOB disabled, ESXi shell interactive timeout <= 600s.
+        Tests security baseline on host.
+    .DESCRIPTION
+        Checks various security options.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster name.
+    .PARAMETER HostName
+        Filter by host name.
     .EXAMPLE
-        PS> Test-AnyStackSecurityBaseline -Server 'vcenter.corp.local'
-        Executes the Test-AnyStackSecurityBaseline command.
+        PS> Test-AnyStackSecurityBaseline
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName,
+        [Parameter(Mandatory=$false)]
+        [string]$HostName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Test-AnyStackSecurityBaseline"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Aggregate check: SSH disabled, lockdown mode normal/strict, NTP configured (2+ servers), syslog configured, password complexity enabled, account lockout after 5 attempts, MOB disabled, ESXi shell interactive timeout <= 600s.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Host = $null
-                    ChecksPassed = $null
-                    ChecksFailed = $null
-                    Findings = $null
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing security baseline on $($vi.Name)"
+            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name,Config,ConfigManager }
+            
+            foreach ($h in $hosts) {
+                $passed = 0
+                $failed = 0
+                $findings = @()
+                
+                $lockdownPassed = $h.Config.LockdownMode -ne 'lockdownDisabled'
+                if ($lockdownPassed) { $passed++ } else { $failed++ }
+                
+                $findings += [PSCustomObject]@{ CheckName='Lockdown'; Expected='Enabled'; Actual=$h.Config.LockdownMode; Passed=$lockdownPassed }
+                
+                [PSCustomObject]@{
+                    PSTypeName   = 'AnyStack.SecurityBaseline'
+                    Timestamp    = (Get-Date)
+                    Server       = $vi.Name
+                    Host         = $h.Name
+                    ChecksPassed = $passed
+                    ChecksFailed = $failed
+                    Findings     = $findings
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

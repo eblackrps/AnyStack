@@ -1,58 +1,68 @@
-function Add-AnyStackNvmeInterface {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Add-AnyStackNvmeInterface {
     <#
     .SYNOPSIS
-        AddNvmeOverRdmaAdapter() or AddSoftwareAdapter() on HostStorageSystem. -WhatIf required.
+        Adds an NVMe adapter.
+    .DESCRIPTION
+        Adds NVMe over RDMA or TCP adapter on Host.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER HostName
+        Name of the host.
+    .PARAMETER Protocol
+        Protocol: RDMA or TCP.
+    .PARAMETER TargetAddress
+        Address of target.
     .EXAMPLE
-        PS> Add-AnyStackNvmeInterface -Server 'vcenter.corp.local'
-        Executes the Add-AnyStackNvmeInterface command.
+        PS> Add-AnyStackNvmeInterface -HostName 'esx01' -Protocol TCP -TargetAddress '10.0.0.1'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$HostName,
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('RDMA','TCP')]
+        [string]$Protocol,
+        [Parameter(Mandatory=$true)]
+        [string]$TargetAddress
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Add-AnyStackNvmeInterface"
-            if ($PSCmdlet.ShouldProcess($Server, 'Add-AnyStackNvmeInterface')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: AddNvmeOverRdmaAdapter() or AddSoftwareAdapter() on HostStorageSystem. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Host = $null
-                    AdapterType = $null
-                    DeviceName = $null
-                    Status = $null
-                    }
+            if ($PSCmdlet.ShouldProcess($HostName, "Add NVMe $Protocol Adapter to $TargetAddress")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Adding NVMe adapter on $($vi.Name)"
+                $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$HostName} }
+                $storageSystem = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.StorageSystem }
+                
+                Invoke-AnyStackWithRetry -ScriptBlock {
+                    if ($Protocol -eq 'RDMA') { $storageSystem.AddNvmeOverRdmaAdapter($TargetAddress) }
+                    else { $storageSystem.AddNvmeTcpAdapter($TargetAddress) }
                 }
-                $result
+                
+                [PSCustomObject]@{
+                    PSTypeName    = 'AnyStack.NvmeAdapter'
+                    Timestamp     = (Get-Date)
+                    Server        = $vi.Name
+                    Host          = $HostName
+                    AdapterType   = $Protocol
+                    TargetAddress = $TargetAddress
+                    Status        = 'Added'
+                }
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

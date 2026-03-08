@@ -1,57 +1,67 @@
-function Test-AnyStackHostNtp {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Test-AnyStackHostNtp {
     <#
     .SYNOPSIS
-        HostDateTimeSystem.QueryDateTimeInfo(); compare ntpConfig.server.
+        Tests host NTP configuration.
+    .DESCRIPTION
+        Checks if NTP is configured and matches expected servers.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster name.
+    .PARAMETER ExpectedServers
+        Array of expected NTP servers.
     .EXAMPLE
-        PS> Test-AnyStackHostNtp -Server 'vcenter.corp.local'
-        Executes the Test-AnyStackHostNtp command.
+        PS> Test-AnyStackHostNtp -ExpectedServers 'time.apple.com'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName,
+        [Parameter(Mandatory=$false)]
+        [string[]]$ExpectedServers = @()
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Test-AnyStackHostNtp"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: HostDateTimeSystem.QueryDateTimeInfo(); compare ntpConfig.server.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Host = $null
-                    ConfiguredServers = $null
-                    ExpectedServers = $null
-                    Compliant = $null
-                    TimeDriftMs = $null
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing host NTP on $($vi.Name)"
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Config.DateTimeInfo }
+            
+            foreach ($h in $hosts) {
+                $ntp = $h.Config.DateTimeInfo.NtpConfig
+                $servers = $ntp.Server
+                $compliant = if ($ExpectedServers.Count -gt 0) {
+                    $diff = Compare-Object $ExpectedServers $servers
+                    $null -eq $diff
+                } else {
+                    $servers.Count -gt 0
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+                
+                [PSCustomObject]@{
+                    PSTypeName        = 'AnyStack.HostNtp'
+                    Timestamp         = (Get-Date)
+                    Server            = $vi.Name
+                    Host              = $h.Name
+                    ConfiguredServers = $servers -join ','
+                    ExpectedServers   = $ExpectedServers -join ','
+                    Compliant         = $compliant
+                    NtpEnabled        = ($null -ne $ntp)
+                }
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

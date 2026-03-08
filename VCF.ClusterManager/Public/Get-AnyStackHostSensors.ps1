@@ -1,59 +1,59 @@
-function Get-AnyStackHostSensor {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackHostSensors {
     <#
     .SYNOPSIS
-        HostRuntimeInfo.HealthSystemRuntime.SystemHealthInfo.NumericSensorInfo.
+        Retrieves hardware sensors for a host.
+    .DESCRIPTION
+        Queries SystemHealthInfo numeric sensors.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER HostName
+        Filter by host name.
     .EXAMPLE
-        PS> Get-AnyStackHostSensors -Server 'vcenter.corp.local'
-        Executes the Get-AnyStackHostSensors command.
+        PS> Get-AnyStackHostSensors
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$HostName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Get-AnyStackHostSensors"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: HostRuntimeInfo.HealthSystemRuntime.SystemHealthInfo.NumericSensorInfo.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching host sensors on $($vi.Name)"
+            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name,Runtime.HealthSystemRuntime }
+            
+            foreach ($h in $hosts) {
+                $sensors = $h.Runtime.HealthSystemRuntime.SystemHealthInfo.NumericSensorInfo
+                foreach ($s in $sensors) {
                     [PSCustomObject]@{
-                    Host = $null
-                    SensorName = $null
-                    Value = $null
-                    Units = $null
-                    BaseUnits = $null
-                    SensorType = $null
-                    Health = $null
+                        PSTypeName  = 'AnyStack.HostSensor'
+                        Timestamp   = (Get-Date)
+                        Server      = $vi.Name
+                        Host        = $h.Name
+                        SensorName  = $s.Name
+                        Value       = $s.CurrentReading
+                        Units       = $s.BaseUnits
+                        SensorType  = $s.SensorType
+                        Health      = if ($s.HealthState.Key -eq 'green') { 'Healthy' } else { $s.HealthState.Key }
                     }
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

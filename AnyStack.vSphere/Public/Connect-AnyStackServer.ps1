@@ -63,8 +63,8 @@ function Connect-AnyStackServer {
                 Timestamp = (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
                 Server    = $srv
                 Status    = 'Connecting'
-                SessionID = $null
-                Error     = $null
+                SessionID = ''
+                Error     = ''
             }
 
             try {

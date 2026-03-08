@@ -1,58 +1,68 @@
-function New-AnyStackHostProfile {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function New-AnyStackHostProfile {
     <#
     .SYNOPSIS
-        HostProfileManager.CreateProfile() from -ReferenceHost. -WhatIf required.
+        Creates a new Host Profile.
+    .DESCRIPTION
+        Uses a reference host to create a new profile.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ProfileName
+        Name of the new host profile.
+    .PARAMETER ReferenceHostName
+        Name of the reference ESXi host.
+    .PARAMETER Description
+        Description of the profile.
     .EXAMPLE
-        PS> New-AnyStackHostProfile -Server 'vcenter.corp.local'
-        Executes the New-AnyStackHostProfile command.
+        PS> New-AnyStackHostProfile -ProfileName 'Prod-Baseline' -ReferenceHostName 'esx01'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$ProfileName,
+        [Parameter(Mandatory=$true)]
+        [string]$ReferenceHostName,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$Description = ''
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing New-AnyStackHostProfile"
-            if ($PSCmdlet.ShouldProcess($Server, 'New-AnyStackHostProfile')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: HostProfileManager.CreateProfile() from -ReferenceHost. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    ProfileName = $null
-                    ReferenceHost = $null
-                    Description = $null
-                    Created = $null
-                    }
+            if ($PSCmdlet.ShouldProcess($ProfileName, "Create Host Profile from $ReferenceHostName")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Creating host profile on $($vi.Name)"
+                $hpMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.HostProfileManager }
+                $refHost = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$ReferenceHostName} }
+                
+                $spec = New-Object VMware.Vim.HostProfileCompleteConfigSpec
+                $spec.Annotation = $Description
+                $spec.Name = $ProfileName
+                
+                Invoke-AnyStackWithRetry -ScriptBlock { $hpMgr.CreateProfile($spec) }
+                
+                [PSCustomObject]@{
+                    PSTypeName    = 'AnyStack.HostProfile'
+                    Timestamp     = (Get-Date)
+                    Server        = $vi.Name
+                    ProfileName   = $ProfileName
+                    ReferenceHost = $ReferenceHostName
+                    Description   = $Description
+                    Created       = (Get-Date)
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

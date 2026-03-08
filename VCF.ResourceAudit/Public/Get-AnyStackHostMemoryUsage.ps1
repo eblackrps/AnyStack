@@ -1,58 +1,54 @@
-function Get-AnyStackHostMemoryUsage {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackHostMemoryUsage {
     <#
     .SYNOPSIS
-        mem.usage.average via PerformanceManager.
+        Gets host memory usage.
+    .DESCRIPTION
+        Queries Summary.Hardware and QuickStats for memory.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
     .EXAMPLE
-        PS> Get-AnyStackHostMemoryUsage -Server 'vcenter.corp.local'
-        Executes the Get-AnyStackHostMemoryUsage command.
+        PS> Get-AnyStackHostMemoryUsage
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Get-AnyStackHostMemoryUsage"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: mem.usage.average via PerformanceManager.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Host = $null
-                    UsedGB = $null
-                    TotalGB = $null
-                    UsedPct = $null
-                    BalloonGB = $null
-                    SwapGB = $null
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching memory usage on $($vi.Name)"
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Summary.Hardware.MemorySize,Summary.QuickStats }
+            
+            foreach ($h in $hosts) {
+                $totalGb = [Math]::Round($h.Summary.Hardware.MemorySize / 1GB, 2)
+                $usedGb = [Math]::Round($h.Summary.QuickStats.OverallMemoryUsage / 1024, 2)
+                $usedPct = if ($totalGb -gt 0) { [Math]::Round(($usedGb / $totalGb) * 100, 1) } else { 0 }
+                
+                [PSCustomObject]@{
+                    PSTypeName = 'AnyStack.HostMemoryUsage'
+                    Timestamp  = (Get-Date)
+                    Server     = $vi.Name
+                    Host       = $h.Name
+                    TotalGB    = $totalGb
+                    UsedGB     = $usedGb
+                    UsedPct    = $usedPct
+                    BalloonGB  = [Math]::Round($h.Summary.QuickStats.BalloonedMemory / 1024 / 1024, 2)
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

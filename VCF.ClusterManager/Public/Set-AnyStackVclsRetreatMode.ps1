@@ -1,57 +1,63 @@
-function Set-AnyStackVclsRetreatMode {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Set-AnyStackVclsRetreatMode {
     <#
     .SYNOPSIS
-        Toggle via OptionManager key config.vcls.clusters.<id>.enabled. -WhatIf required.
+        Toggles vCLS retreat mode for a cluster.
+    .DESCRIPTION
+        Updates config.vcls.clusters.<id>.enabled.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Name of the cluster.
+    .PARAMETER Enabled
+        True to enable retreat mode (disables vCLS).
     .EXAMPLE
-        PS> Set-AnyStackVclsRetreatMode -Server 'vcenter.corp.local'
-        Executes the Set-AnyStackVclsRetreatMode command.
+        PS> Set-AnyStackVclsRetreatMode -ClusterName 'C1' -Enabled $true
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$ClusterName,
+        [Parameter(Mandatory=$true)]
+        [bool]$Enabled
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Set-AnyStackVclsRetreatMode"
-            if ($PSCmdlet.ShouldProcess($Server, 'Set-AnyStackVclsRetreatMode')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Toggle via OptionManager key config.vcls.clusters.<id>.enabled. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Cluster = $null
-                    RetreatModeEnabled = $null
-                    VclsVmsPresent = $null
-                    }
+            if ($PSCmdlet.ShouldProcess($ClusterName, "Set vCLS Retreat Mode = $Enabled")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Setting vCLS retreat mode on $($vi.Name)"
+                $cluster = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType ClusterComputeResource -Filter @{Name=$ClusterName} }
+                $optMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.Setting }
+                
+                $valStr = if ($Enabled) { "false" } else { "true" } # retreat enabled means vcls disabled
+                $key = "config.vcls.clusters.$($cluster.MoRef.Value).enabled"
+                
+                Invoke-AnyStackWithRetry -ScriptBlock { 
+                    $optMgr.UpdateValues(@([VMware.Vim.OptionValue]@{Key=$key; Value=$valStr}))
                 }
-                $result
+                
+                [PSCustomObject]@{
+                    PSTypeName         = 'AnyStack.VclsRetreatMode'
+                    Timestamp          = (Get-Date)
+                    Server             = $vi.Name
+                    Cluster            = $ClusterName
+                    RetreatModeEnabled = $Enabled
+                }
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

@@ -1,56 +1,54 @@
-function Get-AnyStackHostFirmware {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackHostFirmware {
     <#
     .SYNOPSIS
-        QueryFirmwareConfigUploadURL() via HostConfigManager.FirmwareSystem.
+        Retrieves ESXi host firmware versions.
+    .DESCRIPTION
+        Queries BiosInfo and SystemInfo.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster.
     .EXAMPLE
-        PS> Get-AnyStackHostFirmware -Server 'vcenter.corp.local'
-        Executes the Get-AnyStackHostFirmware command.
+        PS> Get-AnyStackHostFirmware
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Get-AnyStackHostFirmware"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: QueryFirmwareConfigUploadURL() via HostConfigManager.FirmwareSystem.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Host = $null
-                    BiosVersion = $null
-                    BmcVersion = $null
-                    BiosReleaseDate = $null
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching host firmware on $($vi.Name)"
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Hardware.BiosInfo,Hardware.SystemInfo }
+            
+            foreach ($h in $hosts) {
+                [PSCustomObject]@{
+                    PSTypeName      = 'AnyStack.HostFirmware'
+                    Timestamp       = (Get-Date)
+                    Server          = $vi.Name
+                    Host            = $h.Name
+                    BiosVersion     = $h.Hardware.BiosInfo.BiosVersion
+                    BiosReleaseDate = $h.Hardware.BiosInfo.ReleaseDate
+                    Manufacturer    = $h.Hardware.SystemInfo.Vendor
+                    Model           = $h.Hardware.SystemInfo.Model
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

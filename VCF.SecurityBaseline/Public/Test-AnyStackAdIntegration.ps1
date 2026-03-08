@@ -1,58 +1,60 @@
-function Test-AnyStackAdIntegration {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Test-AnyStackAdIntegration {
     <#
     .SYNOPSIS
-        HostActiveDirectoryInfo; validate AD join status and test authentication roundtrip.
+        Tests AD integration on host.
+    .DESCRIPTION
+        Checks AuthManager info for AD membership.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster.
+    .PARAMETER HostName
+        Filter by host name.
     .EXAMPLE
-        PS> Test-AnyStackAdIntegration -Server 'vcenter.corp.local'
-        Executes the Test-AnyStackAdIntegration command.
+        PS> Test-AnyStackAdIntegration
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName,
+        [Parameter(Mandatory=$false)]
+        [string]$HostName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Test-AnyStackAdIntegration"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: HostActiveDirectoryInfo; validate AD join status and test authentication roundtrip.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Host = $null
-                    AdDomain = $null
-                    JoinState = $null
-                    MembershipValid = $null
-                    AuthTestPassed = $null
-                    ErrorDetail = $null
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing AD integration on $($vi.Name)"
+            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name,Config.AuthenticationManagerInfo }
+            
+            foreach ($h in $hosts) {
+                $adInfo = $h.Config.AuthenticationManagerInfo.AuthConfig | Where-Object { $_ -is [VMware.Vim.HostActiveDirectoryInfo] } | Select-Object -First 1
+                
+                [PSCustomObject]@{
+                    PSTypeName      = 'AnyStack.AdIntegration'
+                    Timestamp       = (Get-Date)
+                    Server          = $vi.Name
+                    Host            = $h.Name
+                    AdDomain        = if ($adInfo) { $adInfo.JoinedDomain } else { $null }
+                    JoinState       = if ($adInfo) { $adInfo.MembershipStatus } else { 'NotJoined' }
+                    MembershipValid = if ($adInfo) { $adInfo.MembershipStatus -eq 'ok' } else { $false }
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

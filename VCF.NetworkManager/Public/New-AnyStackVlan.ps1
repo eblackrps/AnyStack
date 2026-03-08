@@ -1,59 +1,77 @@
-function New-AnyStackVlan {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function New-AnyStackVlan {
     <#
     .SYNOPSIS
-        DVSManager.AddPortgroups_Task() with VlanIdSpec. -WhatIf required.
+        Creates a new distributed portgroup.
+    .DESCRIPTION
+        Adds a portgroup to a DVS with a specific VLAN ID.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER PortGroupName
+        Name of the new portgroup.
+    .PARAMETER VlanId
+        VLAN ID.
+    .PARAMETER DvsName
+        Name of the Distributed Virtual Switch.
+    .PARAMETER NumPorts
+        Number of ports (default 128).
     .EXAMPLE
-        PS> New-AnyStackVlan -Server 'vcenter.corp.local'
-        Executes the New-AnyStackVlan command.
+        PS> New-AnyStackVlan -PortGroupName 'VLAN-100' -VlanId 100 -DvsName 'DVS-Prod'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$PortGroupName,
+        [Parameter(Mandatory=$true)]
+        [int]$VlanId,
+        [Parameter(Mandatory=$true)]
+        [string]$DvsName,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [int]$NumPorts = 128
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing New-AnyStackVlan"
-            if ($PSCmdlet.ShouldProcess($Server, 'New-AnyStackVlan')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: DVSManager.AddPortgroups_Task() with VlanIdSpec. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    PortGroupName = $null
-                    VlanId = $null
-                    DvsName = $null
-                    NumPorts = $null
-                    Created = $null
-                    }
+            if ($PSCmdlet.ShouldProcess($DvsName, "Create Portgroup $PortGroupName (VLAN $VlanId)")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Creating VLAN on $($vi.Name)"
+                $dvs = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType DistributedVirtualSwitch -Filter @{Name=$DvsName} }
+                
+                $spec = New-Object VMware.Vim.DVPortgroupConfigSpec
+                $spec.Name = $PortGroupName
+                $spec.NumPorts = $NumPorts
+                $spec.Type = 'earlyBinding'
+                
+                $spec.DefaultPortConfig = New-Object VMware.Vim.VMwareDVSPortSetting
+                $spec.DefaultPortConfig.Vlan = New-Object VMware.Vim.VmwareDistributedVirtualSwitchVlanIdSpec
+                $spec.DefaultPortConfig.Vlan.VlanId = $VlanId
+                
+                Invoke-AnyStackWithRetry -ScriptBlock { $dvs.AddDVPortgroup_Task(@($spec)) }
+                
+                [PSCustomObject]@{
+                    PSTypeName    = 'AnyStack.VlanConfig'
+                    Timestamp     = (Get-Date)
+                    Server        = $vi.Name
+                    PortGroupName = $PortGroupName
+                    VlanId        = $VlanId
+                    DvsName       = $DvsName
+                    NumPorts      = $NumPorts
+                    Created       = $true
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

@@ -1,57 +1,50 @@
-function Get-AnyStackOrphanedState {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackOrphanedState {
     <#
     .SYNOPSIS
-        Scan datastores for VM folders not in vCenter inventory (orphaned registration).
+        Finds orphaned VMs.
+    .DESCRIPTION
+        Checks Runtime.ConnectionState.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
     .EXAMPLE
-        PS> Get-AnyStackOrphanedState -Server 'vcenter.corp.local'
-        Executes the Get-AnyStackOrphanedState command.
+        PS> Get-AnyStackOrphanedState
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Get-AnyStackOrphanedState"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Scan datastores for VM folders not in vCenter inventory (orphaned registration).
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    DatastorePath = $null
-                    VmxPath = $null
-                    LastModified = $null
-                    SizeGB = $null
-                    Datastore = $null
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Finding orphaned VMs on $($vi.Name)"
+            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Property Name,Runtime.ConnectionState,Config.DatastoreUrl }
+            
+            $orphans = $vms | Where-Object { $_.Runtime.ConnectionState -eq 'orphaned' }
+            
+            foreach ($vm in $orphans) {
+                [PSCustomObject]@{
+                    PSTypeName      = 'AnyStack.OrphanedVm'
+                    Timestamp       = (Get-Date)
+                    Server          = $vi.Name
+                    VmName          = $vm.Name
+                    DatastorePath   = $vm.Config.DatastoreUrl[0].Url
+                    ConnectionState = $vm.Runtime.ConnectionState
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

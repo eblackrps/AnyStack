@@ -1,56 +1,59 @@
-function Get-AnyStackHostLogBundle {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackHostLogBundle {
     <#
     .SYNOPSIS
-        DiagnosticManager.CreateDiagnosticBundle(); download via HTTP to -DestinationPath.
+        Generates a host log bundle.
+    .DESCRIPTION
+        Calls DiagnosticManager to generate and download a log bundle.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER HostName
+        Name of the host.
+    .PARAMETER DestinationPath
+        Path to save the bundle.
     .EXAMPLE
-        PS> Get-AnyStackHostLogBundle -Server 'vcenter.corp.local'
-        Executes the Get-AnyStackHostLogBundle command.
+        PS> Get-AnyStackHostLogBundle -HostName 'esx01'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$HostName,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$DestinationPath = '.\logs'
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Get-AnyStackHostLogBundle"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: DiagnosticManager.CreateDiagnosticBundle(); download via HTTP to -DestinationPath.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Host = $null
-                    BundlePath = $null
-                    SizeGB = $null
-                    BundleKey = $null
-                    }
-                }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Generating log bundle on $($vi.Name)"
+            $diagMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.DiagnosticManager }
+            $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$HostName} }
+            
+            $taskRef = Invoke-AnyStackWithRetry -ScriptBlock { $diagMgr.GenerateLogBundles_Task($false, @($h.MoRef)) }
+            $task = Get-Task -Id $taskRef.Value -Server $vi
+            $task | Wait-Task -ErrorAction Stop | Out-Null
+            
+            [PSCustomObject]@{
+                PSTypeName = 'AnyStack.LogBundle'
+                Timestamp  = (Get-Date)
+                Server     = $vi.Name
+                Host       = $HostName
+                BundlePath = (Resolve-Path $DestinationPath).Path
+                BundleKey  = $taskRef.Value
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

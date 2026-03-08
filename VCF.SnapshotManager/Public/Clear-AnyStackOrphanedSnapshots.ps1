@@ -1,59 +1,74 @@
-function Clear-AnyStackOrphanedSnapshot {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Clear-AnyStackOrphanedSnapshots {
     <#
     .SYNOPSIS
-        Find VMs with snapshots older than -AgeDays (default 7); RemoveSnapshot_Task(). -WhatIf required.
+        Removes old VM snapshots.
+    .DESCRIPTION
+        Deletes snapshots older than AgeDays.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER AgeDays
+        Age in days (default 7).
+    .PARAMETER VmName
+        Filter by VM.
+    .PARAMETER ClusterName
+        Filter by cluster.
     .EXAMPLE
-        PS> Clear-AnyStackOrphanedSnapshots -Server 'vcenter.corp.local'
-        Executes the Clear-AnyStackOrphanedSnapshots command.
+        PS> Clear-AnyStackOrphanedSnapshots
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [int]$AgeDays = 7,
+        [Parameter(Mandatory=$false)]
+        [string]$VmName,
+        [Parameter(Mandatory=$false)]
+        [string]$ClusterName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Clear-AnyStackOrphanedSnapshots"
-            if ($PSCmdlet.ShouldProcess($Server, 'Clear-AnyStackOrphanedSnapshots')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Find VMs with snapshots older than -AgeDays (default 7); RemoveSnapshot_Task(). -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    VmName = $null
-                    SnapshotName = $null
-                    SnapshotAge = $null
-                    SizeGB = $null
-                    Removed = $null
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Clearing snapshots on $($vi.Name)"
+            $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }
+            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter $filter -Property Name,Snapshot }
+            
+            $threshold = (Get-Date).AddDays(-$AgeDays)
+            foreach ($vm in $vms) {
+                if ($vm.Snapshot -and $vm.Snapshot.RootSnapshotList) {
+                    foreach ($snap in $vm.Snapshot.RootSnapshotList) {
+                        if ($snap.CreateTime -lt $threshold) {
+                            if ($PSCmdlet.ShouldProcess($vm.Name, "Remove Snapshot $($snap.Name)")) {
+                                Invoke-AnyStackWithRetry -ScriptBlock { $vm.RemoveSnapshot_Task($snap.Snapshot, $false, $true) }
+                                
+                                [PSCustomObject]@{
+                                    PSTypeName   = 'AnyStack.ClearedSnapshot'
+                                    Timestamp    = (Get-Date)
+                                    Server       = $vi.Name
+                                    VmName       = $vm.Name
+                                    SnapshotName = $snap.Name
+                                    SnapshotAge  = [int]((Get-Date) - $snap.CreateTime).TotalDays
+                                    SizeGB       = 0
+                                    Removed      = $true
+                                }
+                            }
+                        }
                     }
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

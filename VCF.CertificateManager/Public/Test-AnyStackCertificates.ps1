@@ -1,58 +1,65 @@
-function Test-AnyStackCertificate {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Test-AnyStackCertificates {
     <#
     .SYNOPSIS
-        Connect to each ESXi host via [System.Net.Security.SslStream]; check NotAfter; flag certs expiring within 60 days.
+        Tests host certificate validity.
+    .DESCRIPTION
+        Checks expiration dates of ESXi host certificates.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster name.
+    .PARAMETER WarnDays
+        Warning threshold in days (default 60).
     .EXAMPLE
-        PS> Test-AnyStackCertificates -Server 'vcenter.corp.local'
-        Executes the Test-AnyStackCertificates command.
+        PS> Test-AnyStackCertificates
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName,
+        [Parameter(Mandatory=$false)]
+        [int]$WarnDays = 60
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Test-AnyStackCertificates"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Connect to each ESXi host via [System.Net.Security.SslStream]; check NotAfter; flag certs expiring within 60 days.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Checking certificates on $($vi.Name)"
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Config.Certificate }
+            
+            foreach ($h in $hosts) {
+                if ($h.Config.Certificate) {
+                    $certBytes = $h.Config.Certificate[0]
+                    $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new($certBytes)
+                    $days = [int]($cert.NotAfter - (Get-Date)).TotalDays
+                    
                     [PSCustomObject]@{
-                    Host = $null
-                    Subject = $null
-                    Issuer = $null
-                    ExpiresOn = $null
-                    DaysRemaining = $null
-                    Status = $null
+                        PSTypeName    = 'AnyStack.CertificateStatus'
+                        Timestamp     = (Get-Date)
+                        Server        = $vi.Name
+                        Host          = $h.Name
+                        Subject       = $cert.Subject
+                        Issuer        = $cert.Issuer
+                        ExpiresOn     = $cert.NotAfter
+                        DaysRemaining = $days
+                        Status        = if ($days -lt $WarnDays) { 'WARNING' } else { 'OK' }
                     }
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

@@ -1,59 +1,60 @@
-function Remove-AnyStackOldTemplate {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Remove-AnyStackOldTemplates {
     <#
     .SYNOPSIS
-        Find templates where ModifiedTime > -AgeDays (default 180); remove with -Confirm.
+        Removes old VM templates.
+    .DESCRIPTION
+        Finds and deletes templates not modified in AgeDays.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER AgeDays
+        Age threshold in days (default 180).
     .EXAMPLE
-        PS> Remove-AnyStackOldTemplates -Server 'vcenter.corp.local'
-        Executes the Remove-AnyStackOldTemplates command.
+        PS> Remove-AnyStackOldTemplates
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [int]$AgeDays = 180
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Remove-AnyStackOldTemplates"
-            if ($PSCmdlet.ShouldProcess($Server, 'Remove-AnyStackOldTemplates')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Find templates where ModifiedTime > -AgeDays (default 180); remove with -Confirm.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    TemplateName = $null
-                    LastModified = $null
-                    SizeGB = $null
-                    Datastore = $null
-                    Removed = $null
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Finding old templates on $($vi.Name)"
+            $templates = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Property Name,Config.Modified,Summary.Storage.Committed -Filter @{'Config.Template'='True'} }
+            
+            $threshold = (Get-Date).AddDays(-$AgeDays)
+            foreach ($t in $templates) {
+                if ($t.Config.Modified -lt $threshold) {
+                    if ($PSCmdlet.ShouldProcess($t.Name, "Delete Old Template")) {
+                        Invoke-AnyStackWithRetry -ScriptBlock { $t.Destroy_Task() }
+                        
+                        [PSCustomObject]@{
+                            PSTypeName   = 'AnyStack.RemovedTemplate'
+                            Timestamp    = (Get-Date)
+                            Server       = $vi.Name
+                            TemplateName = $t.Name
+                            LastModified = $t.Config.Modified
+                            SizeGB       = [Math]::Round($t.Summary.Storage.Committed / 1GB, 2)
+                            Removed      = $true
+                        }
                     }
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

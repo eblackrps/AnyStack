@@ -1,57 +1,56 @@
-function Get-AnyStackClusterImage {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackClusterImage {
     <#
     .SYNOPSIS
-        LifecycleManager.GetClusterImage() for vLCM-managed clusters.
+        Retrieves vLCM cluster image info.
+    .DESCRIPTION
+        Checks if a cluster is vLCM managed and gets the base image version.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster name.
     .EXAMPLE
-        PS> Get-AnyStackClusterImage -Server 'vcenter.corp.local'
-        Executes the Get-AnyStackClusterImage command.
+        PS> Get-AnyStackClusterImage
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Get-AnyStackClusterImage"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: LifecycleManager.GetClusterImage() for vLCM-managed clusters.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Cluster = $null
-                    ImageName = $null
-                    BaseImageVersion = $null
-                    Components = $null
-                    LastUpdated = $null
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching cluster images on $($vi.Name)"
+            $filter = if ($ClusterName) { @{Name="*$ClusterName*"} } else { $null }
+            $clusters = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType ClusterComputeResource -Filter $filter -Property Name,ConfigurationEx }
+            
+            foreach ($c in $clusters) {
+                $vlcmManaged = ($null -ne $c.ConfigurationEx.DesiredSoftwareSpec)
+                $version = if ($vlcmManaged) { $c.ConfigurationEx.DesiredSoftwareSpec.BaseImageSpec.Version } else { 'N/A' }
+                
+                [PSCustomObject]@{
+                    PSTypeName       = 'AnyStack.ClusterImage'
+                    Timestamp        = (Get-Date)
+                    Server           = $vi.Name
+                    Cluster          = $c.Name
+                    VlcmManaged      = $vlcmManaged
+                    BaseImageVersion = $version
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

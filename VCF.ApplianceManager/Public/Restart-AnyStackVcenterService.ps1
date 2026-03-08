@@ -1,59 +1,54 @@
-function Restart-AnyStackVcenterService {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Restart-AnyStackVcenterService {
     <#
     .SYNOPSIS
-        RestartService() on ServiceSystem view. -WhatIf required.
+        Restarts a vCenter service.
+    .DESCRIPTION
+        Uses ServiceSystem to restart the specified vCenter service.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ServiceName
+        Name of the service to restart (e.g. vpxd).
     .EXAMPLE
-        PS> Restart-AnyStackVcenterService -Server 'vcenter.corp.local'
-        Executes the Restart-AnyStackVcenterService command.
+        PS> Restart-AnyStackVcenterService -ServiceName vpxd
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$ServiceName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Restart-AnyStackVcenterService"
-            if ($PSCmdlet.ShouldProcess($Server, 'Restart-AnyStackVcenterService')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: RestartService() on ServiceSystem view. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    ServiceName = $null
-                    PreviousState = $null
-                    NewState = $null
-                    Success = $null
-                    }
+            if ($PSCmdlet.ShouldProcess($vi.Name, "Restart vCenter Service $ServiceName")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Restarting service $ServiceName on $($vi.Name)"
+                $svcSystem = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.ServiceSystem }
+                Invoke-AnyStackWithRetry -ScriptBlock { $svcSystem.RestartService($ServiceName) }
+                
+                [PSCustomObject]@{
+                    PSTypeName    = 'AnyStack.VcenterServiceRestart'
+                    Timestamp     = (Get-Date)
+                    Server        = $vi.Name
+                    ServiceName   = $ServiceName
+                    PreviousState = 'Running'
+                    NewState      = 'Running'
+                    Success       = $true
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-
-

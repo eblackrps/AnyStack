@@ -1,59 +1,60 @@
-function Remove-AnyStackStaleTag {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Remove-AnyStackStaleTag {
     <#
     .SYNOPSIS
-        TagManager.ListTags(); find tags not attached to any object; remove with -Confirm.
+        Removes unused tags.
+    .DESCRIPTION
+        Deletes tags not assigned to any entity.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER CategoryName
+        Filter by category.
     .EXAMPLE
-        PS> Remove-AnyStackStaleTag -Server 'vcenter.corp.local'
-        Executes the Remove-AnyStackStaleTag command.
+        PS> Remove-AnyStackStaleTag
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$CategoryName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Remove-AnyStackStaleTag"
-            if ($PSCmdlet.ShouldProcess($Server, 'Remove-AnyStackStaleTag')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: TagManager.ListTags(); find tags not attached to any object; remove with -Confirm.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Finding stale tags on $($vi.Name)"
+            $allTags = Invoke-AnyStackWithRetry -ScriptBlock { Get-Tag -Server $vi }
+            $usedTags = Invoke-AnyStackWithRetry -ScriptBlock { Get-TagAssignment -Server $vi | Select-Object -ExpandProperty Tag }
+            
+            $staleTags = $allTags | Where-Object { $_.Name -notin $usedTags.Name }
+            
+            foreach ($t in $staleTags) {
+                if ($PSCmdlet.ShouldProcess($t.Name, "Remove Tag")) {
+                    Invoke-AnyStackWithRetry -ScriptBlock { Remove-Tag -Tag $t -Confirm:$false }
+                    
                     [PSCustomObject]@{
-                    TagName = $null
-                    Category = $null
-                    LastUsed = $null
-                    ObjectsTagged = $null
-                    Removed = $null
+                        PSTypeName    = 'AnyStack.RemovedTag'
+                        Timestamp     = (Get-Date)
+                        Server        = $vi.Name
+                        TagName       = $t.Name
+                        Category      = $t.Category.Name
+                        ObjectsTagged = 0
+                        Removed       = $true
                     }
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

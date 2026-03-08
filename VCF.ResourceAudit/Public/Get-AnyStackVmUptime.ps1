@@ -1,57 +1,62 @@
-function Get-AnyStackVmUptime {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackVmUptime {
     <#
     .SYNOPSIS
-        VM Runtime.BootTime; calculate uptime.
+        Calculates VM uptime.
+    .DESCRIPTION
+        Uses Runtime.BootTime to calculate uptime.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER VmName
+        Filter by VM name.
+    .PARAMETER ClusterName
+        Filter by cluster name.
     .EXAMPLE
-        PS> Get-AnyStackVmUptime -Server 'vcenter.corp.local'
-        Executes the Get-AnyStackVmUptime command.
+        PS> Get-AnyStackVmUptime
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$VmName,
+        [Parameter(Mandatory=$false)]
+        [string]$ClusterName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Get-AnyStackVmUptime"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: VM Runtime.BootTime; calculate uptime.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Calculating VM uptimes on $($vi.Name)"
+            $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }
+            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter $filter -Property Name,Runtime.BootTime,Runtime.PowerState }
+            
+            foreach ($vm in $vms) {
+                if ($vm.Runtime.PowerState -eq 'poweredOn') {
+                    $uptime = (Get-Date) - $vm.Runtime.BootTime
                     [PSCustomObject]@{
-                    VmName = $null
-                    BootTime = $null
-                    UptimeDays = $null
-                    UptimeHours = $null
-                    PowerState = $null
+                        PSTypeName  = 'AnyStack.VmUptime'
+                        Timestamp   = (Get-Date)
+                        Server      = $vi.Name
+                        VmName      = $vm.Name
+                        BootTime    = $vm.Runtime.BootTime
+                        UptimeDays  = [Math]::Round($uptime.TotalDays, 1)
+                        UptimeHours = [Math]::Round($uptime.TotalHours, 1)
+                        PowerState  = $vm.Runtime.PowerState
                     }
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

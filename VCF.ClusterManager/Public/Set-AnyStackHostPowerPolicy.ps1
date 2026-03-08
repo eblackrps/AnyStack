@@ -1,57 +1,61 @@
-function Set-AnyStackHostPowerPolicy {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+ï»¿function Set-AnyStackHostPowerPolicy {
     <#
     .SYNOPSIS
-        PowerSystem.ConfigurePowerPolicy() — PolicyId: 1=HighPerf, 2=Balanced, 3=LowPower. -WhatIf required.
+        Configures host power policy.
+    .DESCRIPTION
+        Sets power policy to HighPerformance, Balanced, or LowPower.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER HostName
+        Name of the ESXi host.
+    .PARAMETER Policy
+        Power policy to apply.
     .EXAMPLE
-        PS> Set-AnyStackHostPowerPolicy -Server 'vcenter.corp.local'
-        Executes the Set-AnyStackHostPowerPolicy command.
+        PS> Set-AnyStackHostPowerPolicy -HostName 'esx01' -Policy HighPerformance
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$HostName,
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('HighPerformance','Balanced','LowPower')]
+        [string]$Policy
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Set-AnyStackHostPowerPolicy"
-            if ($PSCmdlet.ShouldProcess($Server, 'Set-AnyStackHostPowerPolicy')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: PowerSystem.ConfigurePowerPolicy() — PolicyId: 1=HighPerf, 2=Balanced, 3=LowPower. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Host = $null
-                    PreviousPolicy = $null
-                    NewPolicy = $null
-                    }
+            if ($PSCmdlet.ShouldProcess($HostName, "Set Power Policy to $Policy")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Setting power policy on $($vi.Name)"
+                $policyMap = @{HighPerformance=1; Balanced=2; LowPower=3}
+                $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$HostName} }
+                $powerSystem = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.PowerSystem }
+                
+                Invoke-AnyStackWithRetry -ScriptBlock { $powerSystem.ConfigurePowerPolicy($policyMap[$Policy]) }
+                
+                [PSCustomObject]@{
+                    PSTypeName     = 'AnyStack.HostPowerPolicy'
+                    Timestamp      = (Get-Date)
+                    Server         = $vi.Name
+                    Host           = $HostName
+                    PreviousPolicy = 'Unknown'
+                    NewPolicy      = $Policy
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

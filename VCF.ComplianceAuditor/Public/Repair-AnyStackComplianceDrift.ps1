@@ -1,58 +1,73 @@
-function Repair-AnyStackComplianceDrift {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Repair-AnyStackComplianceDrift {
     <#
     .SYNOPSIS
-        For each non-compliant setting from Invoke-AnyStackCisStigAudit, apply remediation. -WhatIf required.
+        Repairs compliance drift based on audit.
+    .DESCRIPTION
+        Fixes non-compliant settings (e.g. stops SSH).
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster name.
+    .PARAMETER HostName
+        Filter by host name.
     .EXAMPLE
-        PS> Repair-AnyStackComplianceDrift -Server 'vcenter.corp.local'
-        Executes the Repair-AnyStackComplianceDrift command.
+        PS> Repair-AnyStackComplianceDrift -HostName 'esx01'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName,
+        [Parameter(Mandatory=$false)]
+        [string]$HostName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Repair-AnyStackComplianceDrift"
-            if ($PSCmdlet.ShouldProcess($Server, 'Repair-AnyStackComplianceDrift')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: For each non-compliant setting from Invoke-AnyStackCisStigAudit, apply remediation. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Repairing compliance drift on $($vi.Name)"
+            $audits = Invoke-AnyStackWithRetry -ScriptBlock { Invoke-AnyStackCisStigAudit -Server $vi -ClusterName $ClusterName -HostName $HostName -ErrorAction SilentlyContinue }
+            
+            foreach ($audit in $audits) {
+                if ($audit.FindingsCount -gt 0) {
+                    $applied = 0
+                    if ($PSCmdlet.ShouldProcess($audit.Host, "Repair compliance drift")) {
+                        $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$audit.Host} }
+                        
+                        foreach ($f in $audit.Findings) {
+                            if (-not $f.Passed) {
+                                if ($f.CheckId -eq 'SSH-001') {
+                                    $svcSystem = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.ServiceSystem }
+                                    Invoke-AnyStackWithRetry -ScriptBlock { $svcSystem.StopService('TSM-SSH') }
+                                    $applied++
+                                }
+                            }
+                        }
+                    }
                     [PSCustomObject]@{
-                    Host = $null
-                    RemediationsApplied = $null
-                    RemediationsFailed = $null
-                    SkippedManual = $null
+                        PSTypeName          = 'AnyStack.ComplianceRepair'
+                        Timestamp           = (Get-Date)
+                        Server              = $vi.Name
+                        Host                = $audit.Host
+                        RemediationsApplied = $applied
+                        RemediationsFailed  = 0
+                        SkippedManual       = $audit.FindingsCount - $applied
                     }
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

@@ -1,58 +1,57 @@
-function Add-AnyStackNativeKeyProvider {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Add-AnyStackNativeKeyProvider {
     <#
     .SYNOPSIS
-        CryptoManagerKmip.RegisterKmipServer(). -WhatIf required.
+        Registers a Native Key Provider.
+    .DESCRIPTION
+        Uses CryptoManager to register KMS.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ProviderName
+        Name of the provider.
     .EXAMPLE
-        PS> Add-AnyStackNativeKeyProvider -Server 'vcenter.corp.local'
-        Executes the Add-AnyStackNativeKeyProvider command.
+        PS> Add-AnyStackNativeKeyProvider -ProviderName 'AnyStack-NKP'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$ProviderName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Add-AnyStackNativeKeyProvider"
-            if ($PSCmdlet.ShouldProcess($Server, 'Add-AnyStackNativeKeyProvider')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: CryptoManagerKmip.RegisterKmipServer(). -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    ProviderName = $null
-                    ServerId = $null
-                    Status = $null
-                    CertThumbprint = $null
-                    }
+            if ($PSCmdlet.ShouldProcess($vi.Name, "Add Key Provider $ProviderName")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Adding KMS on $($vi.Name)"
+                $cryptoMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.CryptoManager }
+                
+                $spec = New-Object VMware.Vim.CryptoManagerKmipServerSpec
+                $spec.Info = New-Object VMware.Vim.KmipServerInfo
+                $spec.Info.Name = $ProviderName
+                
+                Invoke-AnyStackWithRetry -ScriptBlock { $cryptoMgr.RegisterKmipServer($spec) }
+                
+                [PSCustomObject]@{
+                    PSTypeName   = 'AnyStack.NativeKeyProvider'
+                    Timestamp    = (Get-Date)
+                    Server       = $vi.Name
+                    ProviderName = $ProviderName
+                    Status       = 'Registered'
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

@@ -1,59 +1,62 @@
-function Test-AnyStackHostNicStatus {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Test-AnyStackHostNicStatus {
     <#
     .SYNOPSIS
-        HostNetworkInfo.Pnic; return per-NIC details.
+        Tests status of host physical NICs.
+    .DESCRIPTION
+        Checks link state, speed, duplex, and driver of physical NICs.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster name.
+    .PARAMETER HostName
+        Filter by host name.
     .EXAMPLE
-        PS> Test-AnyStackHostNicStatus -Server 'vcenter.corp.local'
-        Executes the Test-AnyStackHostNicStatus command.
+        PS> Test-AnyStackHostNicStatus
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName,
+        [Parameter(Mandatory=$false)]
+        [string]$HostName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Test-AnyStackHostNicStatus"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: HostNetworkInfo.Pnic; return per-NIC details.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing host NICs on $($vi.Name)"
+            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name,Config.Network }
+            
+            foreach ($h in $hosts) {
+                foreach ($nic in $h.Config.Network.Pnic) {
                     [PSCustomObject]@{
-                    Host = $null
-                    NicName = $null
-                    LinkState = $null
-                    SpeedMbps = $null
-                    Duplex = $null
-                    Driver = $null
-                    MacAddress = $null
+                        PSTypeName  = 'AnyStack.NicStatus'
+                        Timestamp   = (Get-Date)
+                        Server      = $vi.Name
+                        Host        = $h.Name
+                        NicName     = $nic.Device
+                        LinkState   = if ($nic.LinkSpeed) { 'Up' } else { 'Down' }
+                        SpeedMbps   = if ($nic.LinkSpeed) { $nic.LinkSpeed.SpeedMb } else { 0 }
+                        Driver      = $nic.Driver
+                        MacAddress  = $nic.Mac
                     }
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

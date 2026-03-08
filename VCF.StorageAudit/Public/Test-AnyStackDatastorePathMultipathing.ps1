@@ -1,58 +1,62 @@
-function Test-AnyStackDatastorePathMultipathing {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Test-AnyStackDatastorePathMultipathing {
     <#
     .SYNOPSIS
-        HostStorageSystem.StorageDeviceInfo.MultipathInfo; verify pathSelectionPolicy and active path count >= 2.
+        Tests multipathing status.
+    .DESCRIPTION
+        Checks StorageDeviceInfo.MultipathInfo for compliant paths.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER HostName
+        Filter by host name.
     .EXAMPLE
-        PS> Test-AnyStackDatastorePathMultipathing -Server 'vcenter.corp.local'
-        Executes the Test-AnyStackDatastorePathMultipathing command.
+        PS> Test-AnyStackDatastorePathMultipathing
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$HostName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Test-AnyStackDatastorePathMultipathing"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: HostStorageSystem.StorageDeviceInfo.MultipathInfo; verify pathSelectionPolicy and active path count >= 2.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing multipathing on $($vi.Name)"
+            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name,ConfigManager }
+            
+            foreach ($h in $hosts) {
+                $storageSystem = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.StorageSystem }
+                $luns = $storageSystem.StorageDeviceInfo.MultipathInfo.Lun
+                
+                foreach ($lun in $luns) {
+                    $activeCount = ($lun.Path | Where-Object { $_.State -eq 'active' }).Count
                     [PSCustomObject]@{
-                    Host = $null
-                    Device = $null
-                    Policy = $null
-                    TotalPaths = $null
-                    ActivePaths = $null
-                    Compliant = $null
+                        PSTypeName  = 'AnyStack.Multipathing'
+                        Timestamp   = (Get-Date)
+                        Server      = $vi.Name
+                        Host        = $h.Name
+                        Device      = $lun.Id
+                        Policy      = $lun.PathSelectionPolicy.Policy
+                        TotalPaths  = $lun.Path.Count
+                        ActivePaths = $activeCount
+                        Compliant   = ($activeCount -ge 2)
                     }
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

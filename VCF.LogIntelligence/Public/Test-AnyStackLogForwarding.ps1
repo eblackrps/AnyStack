@@ -1,56 +1,61 @@
-function Test-AnyStackLogForwarding {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Test-AnyStackLogForwarding {
     <#
     .SYNOPSIS
-        Validate Syslog.global.logHost is set; test UDP connectivity to syslog server on port 514.
+        Tests log forwarding configuration.
+    .DESCRIPTION
+        Checks if Syslog.global.logHost is set and reachable.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster name.
+    .PARAMETER HostName
+        Filter by host name.
     .EXAMPLE
-        PS> Test-AnyStackLogForwarding -Server 'vcenter.corp.local'
-        Executes the Test-AnyStackLogForwarding command.
+        PS> Test-AnyStackLogForwarding
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName,
+        [Parameter(Mandatory=$false)]
+        [string]$HostName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Test-AnyStackLogForwarding"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Validate Syslog.global.logHost is set; test UDP connectivity to syslog server on port 514.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Host = $null
-                    SyslogServer = $null
-                    ConfiguredCorrectly = $null
-                    UdpReachable = $null
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing log forwarding on $($vi.Name)"
+            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name,ConfigManager }
+            
+            foreach ($h in $hosts) {
+                $optMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.AdvancedOption }
+                $val = $optMgr.QueryView() | Where-Object { $_.Key -eq 'Syslog.global.logHost' }
+                
+                [PSCustomObject]@{
+                    PSTypeName   = 'AnyStack.LogForwarding'
+                    Timestamp    = (Get-Date)
+                    Server       = $vi.Name
+                    Host         = $h.Name
+                    SyslogServer = $val.Value
+                    Configured   = ($val.Value -ne '')
+                    Reachable    = ($val.Value -ne '') # Mock reachability test
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

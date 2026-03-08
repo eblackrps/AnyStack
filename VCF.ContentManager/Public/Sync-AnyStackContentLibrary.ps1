@@ -1,59 +1,58 @@
-function Sync-AnyStackContentLibrary {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Sync-AnyStackContentLibrary {
     <#
     .SYNOPSIS
-        Invoke ContentLibrary.Sync() on subscribed library.
+        Syncs a content library.
+    .DESCRIPTION
+        Invokes Sync-ContentLibrary on a subscribed library.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER LibraryName
+        Name of the library to sync.
     .EXAMPLE
-        PS> Sync-AnyStackContentLibrary -Server 'vcenter.corp.local'
-        Executes the Sync-AnyStackContentLibrary command.
+        PS> Sync-AnyStackContentLibrary -LibraryName 'SubscribedLib'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$LibraryName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Sync-AnyStackContentLibrary"
-            if ($PSCmdlet.ShouldProcess($Server, 'Sync-AnyStackContentLibrary')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Invoke ContentLibrary.Sync() on subscribed library.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
+            if ($PSCmdlet.ShouldProcess($LibraryName, "Sync Content Library")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Syncing content library on $($vi.Name)"
+                $lib = Invoke-AnyStackWithRetry -ScriptBlock { Get-ContentLibrary -Name $LibraryName -Server $vi }
+                if ($lib) {
+                    Invoke-AnyStackWithRetry -ScriptBlock { Sync-ContentLibrary -ContentLibrary $lib }
+                    $items = Invoke-AnyStackWithRetry -ScriptBlock { Get-ContentLibraryItem -ContentLibrary $lib -Server $vi }
+                    
                     [PSCustomObject]@{
-                    LibraryName = $null
-                    SyncStatus = $null
-                    ItemCount = $null
-                    LastSync = $null
-                    Errors = $null
+                        PSTypeName  = 'AnyStack.ContentLibrarySync'
+                        Timestamp   = (Get-Date)
+                        Server      = $vi.Name
+                        LibraryName = $LibraryName
+                        SyncStatus  = 'Complete'
+                        ItemCount   = if ($items) { $items.Count } else { 0 }
+                        LastSync    = (Get-Date)
+                        Errors      = 0
                     }
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

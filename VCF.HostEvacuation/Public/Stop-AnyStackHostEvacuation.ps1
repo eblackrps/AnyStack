@@ -1,58 +1,61 @@
-function Stop-AnyStackHostEvacuation {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Stop-AnyStackHostEvacuation {
     <#
     .SYNOPSIS
-        ExitMaintenanceMode_Task. -WhatIf required.
+        Stops host evacuation (exits Maintenance Mode).
+    .DESCRIPTION
+        Exits maintenance mode.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER HostName
+        Name of the host.
+    .PARAMETER TimeoutSeconds
+        Wait timeout.
     .EXAMPLE
-        PS> Stop-AnyStackHostEvacuation -Server 'vcenter.corp.local'
-        Executes the Stop-AnyStackHostEvacuation command.
+        PS> Stop-AnyStackHostEvacuation -HostName 'esx01'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$HostName,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [int]$TimeoutSeconds = 600
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Stop-AnyStackHostEvacuation"
-            if ($PSCmdlet.ShouldProcess($Server, 'Stop-AnyStackHostEvacuation')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: ExitMaintenanceMode_Task. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Host = $null
-                    PreviousState = $null
-                    MaintenanceMode = $null
-                    Success = $null
-                    }
+            if ($PSCmdlet.ShouldProcess($HostName, "Exit Maintenance Mode")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Exiting maintenance mode on $($vi.Name)"
+                $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$HostName} }
+                
+                $taskRef = Invoke-AnyStackWithRetry -ScriptBlock { $h.ExitMaintenanceMode_Task(15) }
+                $task = Get-Task -Id $taskRef.Value -Server $vi
+                $task | Wait-Task -TimeoutSeconds $TimeoutSeconds | Out-Null
+                
+                [PSCustomObject]@{
+                    PSTypeName      = 'AnyStack.HostEvacuationStop'
+                    Timestamp       = (Get-Date)
+                    Server          = $vi.Name
+                    Host            = $HostName
+                    PreviousState   = 'Maintenance'
+                    MaintenanceMode = $false
+                    Success         = $true
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

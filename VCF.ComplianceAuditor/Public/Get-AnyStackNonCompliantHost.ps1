@@ -1,56 +1,63 @@
-function Get-AnyStackNonCompliantHost {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackNonCompliantHost {
     <#
     .SYNOPSIS
-        Query HostComplianceManager; filter ComplianceStatus != 'compliant'.
+        Gets non-compliant hosts.
+    .DESCRIPTION
+        Queries HostComplianceManager for hosts not compliant.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster name.
     .EXAMPLE
-        PS> Get-AnyStackNonCompliantHost -Server 'vcenter.corp.local'
-        Executes the Get-AnyStackNonCompliantHost command.
+        PS> Get-AnyStackNonCompliantHost
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Get-AnyStackNonCompliantHost"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Query HostComplianceManager; filter ComplianceStatus != 'compliant'.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching non-compliant hosts on $($vi.Name)"
+            $hpMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.HostProfileManager }
+            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Config }
+            
+            $taskRef = Invoke-AnyStackWithRetry -ScriptBlock { $hpMgr.CheckCompliance_Task($hosts.MoRef) }
+            $task = Get-Task -Id $taskRef.Value -Server $vi
+            $task | Wait-Task -ErrorAction Stop | Out-Null
+            
+            $results = Invoke-AnyStackWithRetry -ScriptBlock { (Get-View -Server $vi -Id $taskRef).Info.Result }
+            
+            foreach ($res in $results) {
+                if ($res -and $res.ComplianceStatus -ne 'compliant') {
+                    $h = $hosts | Where-Object { $_.MoRef.Value -eq $res.Entity.Value }
                     [PSCustomObject]@{
-                    Host = $null
-                    BaselineProfile = $null
-                    NonCompliantSettings = $null
-                    LastChecked = $null
+                        PSTypeName           = 'AnyStack.NonCompliantHost'
+                        Timestamp            = (Get-Date)
+                        Server               = $vi.Name
+                        Host                 = $h.Name
+                        BaselineProfile      = 'Unknown'
+                        NonCompliantSettings = @($res.Failure | ForEach-Object { $_.Message })
+                        LastChecked          = (Get-Date)
                     }
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

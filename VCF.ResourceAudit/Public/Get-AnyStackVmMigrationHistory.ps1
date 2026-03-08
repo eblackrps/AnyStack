@@ -1,59 +1,70 @@
-function Get-AnyStackVmMigrationHistory {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackVmMigrationHistory {
     <#
     .SYNOPSIS
-        EventManager VmMigratedEvent per VM; last 10 migrations.
+        Gets VM vMotion history.
+    .DESCRIPTION
+        Queries the EventManager.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER VmName
+        Filter by VM.
+    .PARAMETER MaxEvents
+        Number of events to retrieve (default 10).
     .EXAMPLE
-        PS> Get-AnyStackVmMigrationHistory -Server 'vcenter.corp.local'
-        Executes the Get-AnyStackVmMigrationHistory command.
+        PS> Get-AnyStackVmMigrationHistory -VmName 'DB-01'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$VmName,
+        [Parameter(Mandatory=$false)]
+        [int]$MaxEvents = 10
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Get-AnyStackVmMigrationHistory"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: EventManager VmMigratedEvent per VM; last 10 migrations.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Querying migration history on $($vi.Name)"
+            $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }
+            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter $filter -Property Name }
+            
+            $eventMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.EventManager }
+            
+            foreach ($vm in $vms) {
+                $evFilter = New-Object VMware.Vim.EventFilterSpec
+                $evFilter.Entity = New-Object VMware.Vim.EventFilterSpecByEntity
+                $evFilter.Entity.Entity = $vm.MoRef
+                $evFilter.EventTypeId = @('VmMigratedEvent','VmBeingMigratedEvent')
+                
+                $events = Invoke-AnyStackWithRetry -ScriptBlock { $eventMgr.QueryEvents($evFilter) | Select-Object -Last $MaxEvents }
+                
+                foreach ($e in $events) {
                     [PSCustomObject]@{
-                    VmName = $null
-                    MigratedAt = $null
-                    SourceHost = $null
-                    DestHost = $null
-                    SourceDatastore = $null
-                    DestDatastore = $null
-                    Initiator = $null
+                        PSTypeName = 'AnyStack.VmMigration'
+                        Timestamp  = (Get-Date)
+                        Server     = $vi.Name
+                        VmName     = $vm.Name
+                        MigratedAt = $e.CreatedTime
+                        SourceHost = $e.SourceHost.Name
+                        DestHost   = $e.Host.Name
+                        Initiator  = $e.UserName
                     }
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

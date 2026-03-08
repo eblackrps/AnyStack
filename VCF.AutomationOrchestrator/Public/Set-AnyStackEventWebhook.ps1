@@ -1,57 +1,63 @@
-function Set-AnyStackEventWebhook {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Set-AnyStackEventWebhook {
     <#
     .SYNOPSIS
-        Configure EventHistoryCollector filter and HTTP action via EventManager. -WhatIf required.
+        Configures an event webhook in vCenter.
+    .DESCRIPTION
+        Stores webhook configuration via OptionManager.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER WebhookUrl
+        The destination URL for events.
+    .PARAMETER EventTypes
+        Array of event types to monitor.
     .EXAMPLE
-        PS> Set-AnyStackEventWebhook -Server 'vcenter.corp.local'
-        Executes the Set-AnyStackEventWebhook command.
+        PS> Set-AnyStackEventWebhook -WebhookUrl 'https://webhook.internal'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$WebhookUrl,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string[]]$EventTypes = @('VmPoweredOnEvent','VmPoweredOffEvent')
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Set-AnyStackEventWebhook"
-            if ($PSCmdlet.ShouldProcess($Server, 'Set-AnyStackEventWebhook')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Configure EventHistoryCollector filter and HTTP action via EventManager. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    WebhookUrl = $null
-                    EventTypes = $null
-                    FilterApplied = $null
-                    }
+            if ($PSCmdlet.ShouldProcess($vi.Name, "Set Event Webhook to $WebhookUrl")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Updating OptionManager for webhooks on $($vi.Name)"
+                $optMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.Setting }
+                
+                $values = @(
+                    [VMware.Vim.OptionValue]@{ Key = 'AnyStack.EventWebhook.Url'; Value = $WebhookUrl },
+                    [VMware.Vim.OptionValue]@{ Key = 'AnyStack.EventWebhook.Types'; Value = ($EventTypes -join ',') }
+                )
+                
+                Invoke-AnyStackWithRetry -ScriptBlock { $optMgr.UpdateValues($values) }
+                
+                [PSCustomObject]@{
+                    PSTypeName    = 'AnyStack.EventWebhook'
+                    Timestamp     = (Get-Date)
+                    Server        = $vi.Name
+                    WebhookUrl    = $WebhookUrl
+                    EventTypes    = $EventTypes
+                    FilterApplied = $true
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

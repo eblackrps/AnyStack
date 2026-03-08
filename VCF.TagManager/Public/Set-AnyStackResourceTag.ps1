@@ -1,59 +1,77 @@
-function Set-AnyStackResourceTag {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Set-AnyStackResourceTag {
     <#
     .SYNOPSIS
-        TagManager.AttachTag() to specified object. -WhatIf required.
+        Applies a tag to an object.
+    .DESCRIPTION
+        Calls New-TagAssignment.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ObjectName
+        Name of the object.
+    .PARAMETER ObjectType
+        VirtualMachine, Datastore, Cluster, or Host.
+    .PARAMETER TagName
+        Tag name.
+    .PARAMETER CategoryName
+        Category name.
     .EXAMPLE
-        PS> Set-AnyStackResourceTag -Server 'vcenter.corp.local'
-        Executes the Set-AnyStackResourceTag command.
+        PS> Set-AnyStackResourceTag -ObjectName 'VM1' -ObjectType VirtualMachine -TagName 'Prod' -CategoryName 'Env'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
+        [Parameter(Mandatory=$true)]
+        [string]$ObjectName,
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('VirtualMachine','Datastore','Cluster','Host')]
+        [string]$ObjectType,
+        [Parameter(Mandatory=$true)]
+        [string]$TagName,
+        [Parameter(Mandatory=$true)]
+        [string]$CategoryName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Set-AnyStackResourceTag"
-            if ($PSCmdlet.ShouldProcess($Server, 'Set-AnyStackResourceTag')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: TagManager.AttachTag() to specified object. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    ObjectName = $null
-                    ObjectType = $null
-                    TagName = $null
-                    Category = $null
-                    Applied = $null
+            if ($PSCmdlet.ShouldProcess($ObjectName, "Set Tag $TagName ($CategoryName)")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Applying tag on $($vi.Name)"
+                $tag = Invoke-AnyStackWithRetry -ScriptBlock { Get-Tag -Name $TagName -Category $CategoryName -Server $vi }
+                $entity = Invoke-AnyStackWithRetry -ScriptBlock {
+                    switch ($ObjectType) {
+                        'VirtualMachine' { Get-VM -Name $ObjectName -Server $vi }
+                        'Datastore'      { Get-Datastore -Name $ObjectName -Server $vi }
+                        'Cluster'        { Get-Cluster -Name $ObjectName -Server $vi }
+                        'Host'           { Get-VMHost -Name $ObjectName -Server $vi }
                     }
                 }
-                $result
+                
+                Invoke-AnyStackWithRetry -ScriptBlock { New-TagAssignment -Tag $tag -Entity $entity -Server $vi }
+                
+                [PSCustomObject]@{
+                    PSTypeName = 'AnyStack.ResourceTag'
+                    Timestamp  = (Get-Date)
+                    Server     = $vi.Name
+                    ObjectName = $ObjectName
+                    ObjectType = $ObjectType
+                    TagName    = $TagName
+                    Category   = $CategoryName
+                    Applied    = $true
+                }
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

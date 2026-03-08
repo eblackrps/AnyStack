@@ -1,59 +1,65 @@
-function Update-AnyStackVmHardware {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Update-AnyStackVmHardware {
     <#
     .SYNOPSIS
-        UpgradeVM_Task() to latest hardware version. -WhatIf required.
+        Upgrades VM hardware compatibility.
+    .DESCRIPTION
+        Calls UpgradeVM_Task.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER VmName
+        Filter by VM name.
+    .PARAMETER ClusterName
+        Filter by cluster name.
     .EXAMPLE
-        PS> Update-AnyStackVmHardware -Server 'vcenter.corp.local'
-        Executes the Update-AnyStackVmHardware command.
+        PS> Update-AnyStackVmHardware -VmName 'DB-01'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$VmName,
+        [Parameter(Mandatory=$false)]
+        [string]$ClusterName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Update-AnyStackVmHardware"
-            if ($PSCmdlet.ShouldProcess($Server, 'Update-AnyStackVmHardware')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: UpgradeVM_Task() to latest hardware version. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    VmName = $null
-                    CurrentVersion = $null
-                    TargetVersion = $null
-                    TaskId = $null
-                    Status = $null
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Upgrading VM hardware on $($vi.Name)"
+            $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }
+            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter $filter -Property Name,Config.Version,Runtime.PowerState }
+            
+            foreach ($vm in $vms) {
+                if ($vm.Runtime.PowerState -eq 'poweredOff') {
+                    if ($PSCmdlet.ShouldProcess($vm.Name, "Upgrade VM Hardware")) {
+                        $taskRef = Invoke-AnyStackWithRetry -ScriptBlock { $vm.UpgradeVM_Task($null) }
+                        
+                        [PSCustomObject]@{
+                            PSTypeName     = 'AnyStack.VmHardwareUpgrade'
+                            Timestamp      = (Get-Date)
+                            Server         = $vi.Name
+                            VmName         = $vm.Name
+                            CurrentVersion = $vm.Config.Version
+                            TargetVersion  = 'latest'
+                            TaskId         = $taskRef.Value
+                            Status         = 'Upgrading'
+                        }
                     }
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

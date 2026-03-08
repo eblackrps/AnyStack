@@ -1,57 +1,54 @@
-function Test-AnyStackProactiveHa {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Test-AnyStackProactiveHa {
     <#
     .SYNOPSIS
-        Query ProactiveHaConfigInfo via ClusterComputeResource.
+        Tests proactive HA configuration.
+    .DESCRIPTION
+        Checks cluster ProactiveDrsConfig.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster name.
     .EXAMPLE
-        PS> Test-AnyStackProactiveHa -Server 'vcenter.corp.local'
-        Executes the Test-AnyStackProactiveHa command.
+        PS> Test-AnyStackProactiveHa
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Test-AnyStackProactiveHa"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Query ProactiveHaConfigInfo via ClusterComputeResource.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    Cluster = $null
-                    Enabled = $null
-                    RemediationMode = $null
-                    ProviderCount = $null
-                    ProvidersHealthy = $null
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing Proactive HA on $($vi.Name)"
+            $filter = if ($ClusterName) { @{Name="*$ClusterName*"} } else { $null }
+            $clusters = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType ClusterComputeResource -Filter $filter -Property Name,Configuration }
+            
+            foreach ($c in $clusters) {
+                $proHa = $c.Configuration.ProactiveDrsConfig
+                [PSCustomObject]@{
+                    PSTypeName      = 'AnyStack.ProactiveHa'
+                    Timestamp       = (Get-Date)
+                    Server          = $vi.Name
+                    Cluster         = $c.Name
+                    Enabled         = $proHa.Enabled
+                    RemediationMode = if ($proHa) { $proHa.VmRemediation } else { 'Unknown' }
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

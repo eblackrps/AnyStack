@@ -1,57 +1,56 @@
-function Get-AnyStackFailedScheduledTask {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Get-AnyStackFailedScheduledTask {
     <#
     .SYNOPSIS
-        Query ScheduledTaskManager; filter State -eq 'error'.
+        Retrieves failed scheduled tasks in vCenter.
+    .DESCRIPTION
+        Queries the ScheduledTaskManager for tasks with an error state.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
     .EXAMPLE
-        PS> Get-AnyStackFailedScheduledTask -Server 'vcenter.corp.local'
-        Executes the Get-AnyStackFailedScheduledTask command.
+        PS> Get-AnyStackFailedScheduledTask
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$false)]
-        [string]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Get-AnyStackFailedScheduledTask"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Query ScheduledTaskManager; filter State -eq 'error'.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching scheduled tasks on $($vi.Name)"
+            $stMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.ScheduledTaskManager }
+            
+            if ($stMgr.ScheduledTask) {
+                $tasks = Invoke-AnyStackWithRetry -ScriptBlock {
+                    $stMgr.ScheduledTask | ForEach-Object { Get-View -Server $vi -Id $_ -Property Info }
+                }
+                
+                $tasks | Where-Object { $_.Info.State -eq 'error' } | ForEach-Object {
                     [PSCustomObject]@{
-                    TaskName = $null
-                    LastRun = $null
-                    NextRun = $null
-                    ErrorMessage = $null
-                    AffectedObject = $null
+                        PSTypeName     = 'AnyStack.FailedScheduledTask'
+                        Timestamp      = (Get-Date)
+                        Server         = $vi.Name
+                        TaskName       = $_.Info.Name
+                        LastRun        = $_.Info.LastModifiedTime
+                        NextRun        = $_.Info.NextRunTime
+                        ErrorMessage   = $_.Info.Error.LocalizedMessage
+                        AffectedObject = $_.Info.Entity.Value
                     }
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

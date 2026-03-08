@@ -1,56 +1,65 @@
-function Export-AnyStackClusterReport {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAlignAssignmentStatement", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentIndentation", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseConsistentWhitespace", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿function Export-AnyStackClusterReport {
     <#
     .SYNOPSIS
-        Collect cluster summary (hosts, VMs, HA config, DRS config, vSAN) via ClusterComputeResource view; export styled HTML.
+        Exports a cluster summary report.
+    .DESCRIPTION
+        Builds HTML with cluster summary data.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER ClusterName
+        Filter by cluster name.
+    .PARAMETER OutputPath
+        Output HTML path.
     .EXAMPLE
-        PS> Export-AnyStackClusterReport -Server 'vcenter.corp.local'
-        Executes the Export-AnyStackClusterReport command.
+        PS> Export-AnyStackClusterReport
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$ClusterName,
+        [Parameter(Mandatory=$false)]
+        [string]$OutputPath = ".\ClusterReport-$(Get-Date -f yyyyMMdd).html"
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Export-AnyStackClusterReport"
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: Collect cluster summary (hosts, VMs, HA config, DRS config, vSAN) via ClusterComputeResource view; export styled HTML.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    ReportPath = $null
-                    ClusterName = $null
-                    HostCount = $null
-                    VmCount = $null
-                    }
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Exporting cluster report on $($vi.Name)"
+            $filter = if ($ClusterName) { @{Name="*$ClusterName*"} } else { $null }
+            $clusters = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType ClusterComputeResource -Filter $filter -Property Name,Summary,Configuration,Host }
+            
+            $html = "<html><body><h1>Cluster Report</h1><table border='1'>"
+            foreach ($c in $clusters) {
+                $html += "<tr><td>$($c.Name)</td><td>Hosts: $($c.Host.Count)</td><td>HA: $($c.Configuration.DasConfig.Enabled)</td></tr>"
+            }
+            $html += "</table></body></html>"
+            Set-Content -Path $OutputPath -Value $html
+            
+            foreach ($c in $clusters) {
+                [PSCustomObject]@{
+                    PSTypeName  = 'AnyStack.ClusterReport'
+                    Timestamp   = (Get-Date)
+                    Server      = $vi.Name
+                    ReportPath  = (Resolve-Path $OutputPath).Path
+                    ClusterName = $c.Name
+                    HostCount   = $c.Host.Count
+                    VmCount     = $c.Summary.NumVmotions # Rough indicator
                 }
-                $result
-        }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
+            }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
-

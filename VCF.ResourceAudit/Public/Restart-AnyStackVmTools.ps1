@@ -1,53 +1,64 @@
-function Restart-AnyStackVmTool {
+﻿function Restart-AnyStackVmTools {
     <#
     .SYNOPSIS
-        RestartGuest() where ToolsRunningStatus = 'guestToolsRunning'. -WhatIf required.
+        Restarts VM Tools inside the guest OS.
+    .DESCRIPTION
+        Calls RestartGuest.
+    .PARAMETER Server
+        vCenter Server hostname or VIServer object. Uses active connection if omitted.
+    .PARAMETER VmName
+        Filter by VM name.
+    .PARAMETER ClusterName
+        Filter by cluster.
     .EXAMPLE
-        PS> Restart-AnyStackVmTools -Server 'vcenter.corp.local'
-        Executes the Restart-AnyStackVmTools command.
+        PS> Restart-AnyStackVmTools -VmName 'DB-01'
+    .OUTPUTS
+        PSCustomObject
+    .NOTES
+        Author: The AnyStack Architect
+        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$false)]
-        [string]$Server
+        [string]$VmName,
+        [Parameter(Mandatory=$false)]
+        [string]$ClusterName
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
+        $ErrorActionPreference = 'Stop'
     }
-        process {
+    process {
         try {
-            Write-Verbose "Executing Restart-AnyStackVmTools"
-            if ($PSCmdlet.ShouldProcess($Server, 'Restart-AnyStackVmTools')) {
-                $result = Invoke-AnyStackWithRetry -ScriptBlock {
-                    # SPEC: RestartGuest() where ToolsRunningStatus = 'guestToolsRunning'. -WhatIf required.
-                    # IMPLEMENTATION: This is a production-ready stub following the gold standard.
-                    # In a live environment, this would call Get-View or REST API.
-                    [PSCustomObject]@{
-                    VmName = $null
-                    ToolsVersion = $null
-                    ToolsStatus = $null
-                    RestartInitiated = $null
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)] Restarting VM tools on $($vi.Name)"
+            $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }
+            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter $filter -Property Name,Guest.ToolsRunningStatus,Guest.ToolsVersion }
+            
+            foreach ($vm in $vms) {
+                if ($vm.Guest.ToolsRunningStatus -eq 'guestToolsRunning') {
+                    if ($PSCmdlet.ShouldProcess($vm.Name, "Restart Guest OS via Tools")) {
+                        Invoke-AnyStackWithRetry -ScriptBlock { $vm.RestartGuest() }
+                        
+                        [PSCustomObject]@{
+                            PSTypeName       = 'AnyStack.VmToolsRestart'
+                            Timestamp        = (Get-Date)
+                            Server           = $vi.Name
+                            VmName           = $vm.Name
+                            ToolsVersion     = $vm.Guest.ToolsVersion
+                            ToolsStatus      = $vm.Guest.ToolsRunningStatus
+                            RestartInitiated = $true
+                        }
                     }
                 }
-                $result
             }
         }
-        catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'AuthenticationError',
-                    [System.Management.Automation.ErrorCategory]::AuthenticationError,
-                    $Server))
-        }
         catch {
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $_, 'UnexpectedError',
-                    [System.Management.Automation.ErrorCategory]::NotSpecified,
-                    $Server))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $vi.Name))
         }
     }
 }
-
-
