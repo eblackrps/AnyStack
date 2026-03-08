@@ -14,7 +14,7 @@ $modules = Get-Module -Name AnyStack* | Measure-Object
 Write-Host "Modules loaded: $($modules.Count) (expected: 28)"
 
 $cmdlets = Get-Command -Module (Get-Module AnyStack*) | Measure-Object
-Write-Host "Cmdlets available: $($cmdlets.Count) (expected: 113+)"
+Write-Host "Cmdlets available: $($cmdlets.Count) (expected: 117)"
 ```
 
 ## Step 3 — Connect and Run Read-Only Cmdlets
