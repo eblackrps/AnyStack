@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.AlarmManager.psm1'
-    ModuleVersion = '1.6.5'
+    ModuleVersion = '1.6.7'
     GUID = 'af0a8e65-7c68-4fea-96ae-65278bc5009e'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,6 +30,8 @@
 
 
  
+
+
 
 
 

@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.LogIntelligence.psm1'
-    ModuleVersion = '1.6.5'
+    ModuleVersion = '1.6.7'
     GUID = '4fbd7b2e-6e82-44a1-a5cd-4e282b207c3f'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,6 +30,8 @@
 
 
  
+
+
 
 
 

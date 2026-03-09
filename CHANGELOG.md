@@ -5,17 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.6.5] - 2026-03-09
+## [1.6.7] - 2026-03-09
 ### Changed
 - **Migration to VCF.PowerCLI**: Replaced the deprecated `VMware.PowerCLI` (v13.0) with the new `VCF.PowerCLI` (v9.0+) across all module manifests and documentation.
 - **CI/CD Hardening**: Updated GitHub Action workflows (`ci.yml`, `publish.yml`) to explicitly install `VCF.PowerCLI` on runner nodes with `-AllowClobber`.
-- **Global Version Synchronization**: All 29 modules, manifests, and static files (`LICENSE`, `README`, etc.) synchronized to version 1.6.5.
+- **Global Version Synchronization**: All 29 modules, manifests, and static files (`LICENSE`, `README`, etc.) synchronized to version 1.6.7.
 ### Fixed
-- Resolved publication collision on PowerShell Gallery by incrementing version to 1.6.5.
+- Resolved publication collision on PowerShell Gallery by incrementing version to 1.6.7.
 - Ensured GitHub Actions workflows use correct version metadata.
 - Resolved meta-module publication issue by adding local workspace to `PSModulePath`.
 - Resolved assembly load conflicts (`VMware.Binding.Ls2`) caused by mixed PowerCLI versions.
-- Updated `tools/Validate-ForGallery.ps1` to support 1.6.5 metadata validation.
+- Updated `tools/Validate-ForGallery.ps1` to support 1.6.7 metadata validation.
 - Fixed module cleanup logic in `AnyStack.vSphere` to reference `VCF.VimAutomation.Core`.
 
 ## [1.6.1] - 2026-03-08
@@ -50,3 +50,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2026-03-07
 ### Added
 - Initial release of the AnyStack Enterprise PowerShell Module Suite.
+
+

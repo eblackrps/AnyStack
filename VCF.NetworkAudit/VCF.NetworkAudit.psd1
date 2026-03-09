@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.NetworkAudit.psm1'
-    ModuleVersion = '1.6.5'
+    ModuleVersion = '1.6.7'
     GUID = 'df84f8f4-61b7-435e-b2d9-04018f369b87'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,6 +30,8 @@
 
 
  
+
+
 
 
 

@@ -16,10 +16,13 @@ jobs:
         run: .\test-syntax.ps1
       - name: Build
         shell: pwsh
-        run: .\build.ps1
+        run: |
+          $env:PSModulePath = "$((Get-Item .).FullName);" + $env:PSModulePath
+          .\build.ps1
       - name: Pester Tests
         shell: pwsh
         run: |
+          $env:PSModulePath = "$((Get-Item .).FullName);" + $env:PSModulePath
           Import-Module Pester -MinimumVersion 5.0
           $config = New-PesterConfiguration
           $config.Run.Path = ".\"
