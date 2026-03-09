@@ -4,7 +4,7 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| v1.6.7  | :white_check_mark: |
+| v1.7.1  | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
@@ -14,6 +14,8 @@ Send an email to [security@anystack.example.com] or contact the maintainers dire
 
 We will acknowledge receipt of your vulnerability report and strive to send you regular updates about our progress. If the vulnerability is accepted, we will release a patch as soon as possible.
  
+
+
 
 
 

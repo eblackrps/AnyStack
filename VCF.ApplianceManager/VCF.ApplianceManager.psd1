@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.ApplianceManager.psm1'
-    ModuleVersion = '1.6.7'
+    ModuleVersion = '1.7.1'
     GUID = 'f65b0300-962a-42bb-b14f-705f88cdf65f'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,6 +30,8 @@
 
 
  
+
+
 
 
 
