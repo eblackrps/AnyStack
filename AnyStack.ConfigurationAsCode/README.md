@@ -1,6 +1,6 @@
 # AnyStack.ConfigurationAsCode
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.8 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.7 · MIT License**
 
 Export and sync vCenter configurations declaratively. Treat your vCenter config as code — export current state, version it, and sync it back after rebuilds or drift.
 
@@ -46,7 +46,6 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
-
 
 
 

@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.DRValidator.psm1'
-    ModuleVersion = '1.6.8'
+    ModuleVersion = '1.6.7'
     GUID = '57327433-fb2f-4506-a6ac-67d48b016bf2'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,7 +30,6 @@
 
 
  
-
 
 
 

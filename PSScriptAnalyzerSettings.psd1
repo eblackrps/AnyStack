@@ -1,4 +1,4 @@
-# AnyStack Enterprise v1.6.8 PSScriptAnalyzerSettings
+# AnyStack Enterprise v1.6.7 PSScriptAnalyzerSettings
 @{
     Severity     = @('Error')
     ExcludeRules = @(
@@ -11,7 +11,6 @@
     }
 }
  
-
 
 
 
