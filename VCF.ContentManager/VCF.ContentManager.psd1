@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.ContentManager.psm1'
-    ModuleVersion = '1.6.2'
+    ModuleVersion = '1.6.4'
     GUID = '27b14bf7-a39b-43d7-85b8-72a9281e9ceb'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,6 +30,9 @@
 
 
  
+
+
+
 
 
 

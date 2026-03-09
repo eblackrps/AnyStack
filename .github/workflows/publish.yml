@@ -1,4 +1,4 @@
-# AnyStack Enterprise v1.6.2 Publish
+# AnyStack Enterprise v1.6.4 Publish
 name: Publish to PSGallery
 on:
   push:
@@ -38,6 +38,9 @@ jobs:
         env:
           PSGALLERY_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
         run: |
+          # Add current directory to PSModulePath so Publish-Module can find local dependencies for the meta-module
+          $env:PSModulePath = "$PSScriptRoot;" + $env:PSModulePath
+          
           $publishOrder = @(
             'AnyStack.vSphere',
             'AnyStack.ConfigurationAsCode',
@@ -77,4 +80,5 @@ jobs:
           }
 
  
+
 

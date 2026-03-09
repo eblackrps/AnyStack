@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.NetworkManager.psm1'
-    ModuleVersion = '1.6.2'
+    ModuleVersion = '1.6.4'
     GUID = '3a2cf465-e79f-4ac2-b8f7-8c35635f4b1e'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,6 +30,9 @@
 
 
  
+
+
+
 
 
 

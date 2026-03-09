@@ -1,6 +1,6 @@
 # VCF.DRValidator
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.2 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.4 · MIT License**
 
 DR readiness validation: snapshot age, HA state, and network reachability checks across all VMs. Generates readiness reports and surfaces remediation targets.
 
@@ -52,6 +52,9 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
+
+
+
 
 
 

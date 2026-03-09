@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.ClusterManager.psm1'
-    ModuleVersion = '1.6.2'
+    ModuleVersion = '1.6.4'
     GUID = '708bbcca-7018-4679-8365-001cd7e4fce4'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,6 +30,9 @@
 
 
  
+
+
+
 
 
 

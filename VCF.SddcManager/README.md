@@ -1,6 +1,6 @@
 # VCF.SddcManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.2 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.4 · MIT License**
 
 SDDC Manager integration for VCF environments. Workload Domain management, password rotation, and SDDC health checks.
 
@@ -49,6 +49,9 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
+
+
+
 
 
 

@@ -19,3 +19,4 @@ Get-AnyStackOrphanedVmdk -Server $vi -DatastoreName $DatastoreName
 Set-AnyStackRightSizeRecommendation -Server $vi -VmName 'DB-01' -WhatIf
  
 
+
