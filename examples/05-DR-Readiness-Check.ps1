@@ -17,3 +17,4 @@ Get-AnyStackVsanHealth -Server $vi -ClusterName $ClusterName
 Export-AnyStackDRReadinessReport -Server $vi
  
 
+

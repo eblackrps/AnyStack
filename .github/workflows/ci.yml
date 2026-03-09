@@ -1,4 +1,4 @@
-# AnyStack Enterprise v1.6.2 CI
+# AnyStack Enterprise v1.6.4 CI
 name: CI
 on: [push, pull_request]
 jobs:
@@ -21,7 +21,13 @@ jobs:
         shell: pwsh
         run: |
           Import-Module Pester -MinimumVersion 5.0
-          Invoke-Pester .\* -Recurse -CI -OutputFormat JUnitXml -OutputFile test-results.xml
+          $config = New-PesterConfiguration
+          $config.Run.Path = ".\"
+          $config.Run.Exit = $true
+          $config.TestResult.Enabled = $true
+          $config.TestResult.OutputPath = "test-results.xml"
+          $config.TestResult.OutputFormat = "JUnitXml"
+          Invoke-Pester -Configuration $config
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         with:
@@ -29,4 +35,5 @@ jobs:
           path: test-results.xml
 
  
+
 

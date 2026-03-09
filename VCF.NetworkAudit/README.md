@@ -1,6 +1,6 @@
 # VCF.NetworkAudit
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.2 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.5 · MIT License**
 
 Network configuration auditing: MAC address conflicts, NIC status, vMotion network validation, and DVS configuration checks.
 
@@ -55,6 +55,10 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
+
+
+
+
 
 
 

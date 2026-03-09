@@ -1,6 +1,6 @@
 # VCF.ApplianceManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.2 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.5 · MIT License**
 
 Operational management of the vCenter Server Appliance (VCSA). Disk space monitoring, service control, and database health checks.
 
@@ -52,6 +52,10 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
+
+
+
+
 
 
 

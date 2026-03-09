@@ -18,10 +18,14 @@ When reporting an issue, please include the following information:
     *   Operating System version
     *   PowerShell version (`$PSVersionTable.PSVersion`)
     *   PowerCLI version (`Get-Module VCF.PowerCLI -ListAvailable | Select-Object Version`)
-    *   AnyStack version: v1.6.2
+    *   AnyStack version: v1.6.5
 
 Thank you for your cooperation!
  
+
+
+
+
 
 
 

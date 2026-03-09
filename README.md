@@ -1,6 +1,6 @@
 # AnyStack Enterprise Module Suite
 
-**Version:** 1.6.2 | **Author:** The Any Stack Architect
+**Version:** 1.6.5 | **Author:** The Any Stack Architect
 
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/AnyStack.vSphere?style=flat-square&logo=powershell&label=AnyStack.vSphere)](https://www.powershellgallery.com/packages/AnyStack.vSphere)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -25,7 +25,7 @@ AnyStack is a production-ready, enterprise-grade PowerShell automation suite for
 
 ## ⚠️ Dependency Notice — VCF.PowerCLI Required
 
-> **Important:** AnyStack v1.6.2+ requires **`VCF.PowerCLI`**, not the legacy `VMware.PowerCLI` module.
+> **Important:** AnyStack v1.6.5+ requires **`VCF.PowerCLI`**, not the legacy `VMware.PowerCLI` module.
 >
 > The legacy `VMware.PowerCLI` module is deprecated by Broadcom and does **not** include `Get-AnyStackConnection`, which all AnyStack cmdlets depend on. If you see the error below, your environment is using the wrong PowerCLI module:
 >
@@ -325,6 +325,10 @@ MIT License
 - [anystackarchitect.com](https://www.anystackarchitect.com)
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [Introducing AnyStack — blog post](https://www.anystackarchitect.com/introducing-anystack-powershell-automation-for-vsphere-and-vcf/)
+
+
+
+
 
 
 

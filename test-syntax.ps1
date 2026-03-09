@@ -1,4 +1,4 @@
-# AnyStack Enterprise Module Suite - Syntax Validation Script v1.6.2
+# AnyStack Enterprise Module Suite - Syntax Validation Script v1.6.5
 $errors = @()
 $files = Get-ChildItem -Path . -Recurse -Include *.ps1, *.psm1
 foreach ($file in $files) {
@@ -22,5 +22,9 @@ if ($errors.Count -gt 0) {
     Write-Host 'All files passed syntax check.'
 }
  
+
+
+
+
 
 
