@@ -32,7 +32,7 @@ foreach ($mod in $Modules) {
             Write-Host "    [RUNNING] Pester Tests for $mod..." -ForegroundColor DarkCyan
             $pesterConfig = New-PesterConfiguration
             $pesterConfig.Run.Path = $testPath
-            $pesterConfig.Output.Verbosity = 'Minimal'
+            $pesterConfig.Output.Verbosity = 'Detailed'
             $pesterConfig.Run.Exit = $true
             Invoke-Pester -Configuration $pesterConfig
         }
