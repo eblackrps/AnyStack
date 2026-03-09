@@ -15,7 +15,7 @@ function Get-AnyStackActiveAlarm {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -72,7 +72,7 @@ function Get-AnyStackLibraryItem {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -127,7 +127,7 @@ function Get-AnyStackGlobalPermission {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -181,7 +181,7 @@ function Get-AnyStackMacAddressConflict {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -243,7 +243,7 @@ function Get-AnyStackDistributedPortgroup {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -299,7 +299,7 @@ function Set-AnyStackEsxiLockdownMode {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -360,7 +360,7 @@ function Get-AnyStackEsxiLockdownMode {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -413,7 +413,7 @@ function Get-AnyStackUntaggedVm {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -457,3 +457,5 @@ foreach ($path in $cmdlets.Keys) {
 }
 Write-Host "Generated batch 3 of missing cmdlets."
  
+
+

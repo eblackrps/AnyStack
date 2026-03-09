@@ -1,4 +1,4 @@
-# AnyStack Enterprise v1.5.0 Publish
+# AnyStack Enterprise v1.6.2 Publish
 name: Publish to PSGallery
 on:
   push:
@@ -9,6 +9,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install VCF.PowerCLI
+        shell: pwsh
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module -Name VCF.PowerCLI -Scope CurrentUser -Force -AllowClobber
 
       - name: Validate Before Publish
         shell: pwsh
@@ -71,3 +77,4 @@ jobs:
           }
 
  
+

@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.CertificateManager.psm1'
-    ModuleVersion = '1.6.1'
+    ModuleVersion = '1.6.2'
     GUID = '48a5e0e4-ef1b-4ec2-badb-2f8e883dc086'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -8,7 +8,7 @@
     Description = 'Enterprise module for VCF.CertificateManager automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+        @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
     )
     FunctionsToExport = @('Test-AnyStackCertificates','Update-AnyStackEsxCertificate','Update-AnyStackVcsCertificate')
     CmdletsToExport = @()
@@ -30,3 +30,6 @@
 
 
  
+
+
+

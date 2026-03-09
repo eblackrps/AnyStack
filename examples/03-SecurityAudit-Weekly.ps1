@@ -17,3 +17,4 @@ Test-AnyStackCertificates -Server $vi -ClusterName $ClusterName
 Get-AnyStackEsxiLockdownMode -Server $vi -ClusterName $ClusterName
 Export-AnyStackAuditReport -Server $vi -ClusterName $ClusterName
  
+

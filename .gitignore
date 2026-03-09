@@ -1,4 +1,4 @@
-# AnyStack Enterprise v1.4.0 .gitignore
+# AnyStack Enterprise v1.6.2 .gitignore
 # PowerShell
 *.ps1xml
 *.pssc
@@ -51,3 +51,4 @@ AnyStack-*.json
 Thumbs.db
 
  
+

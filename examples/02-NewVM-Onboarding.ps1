@@ -17,3 +17,4 @@ Update-AnyStackVmTools -Server $vi -VmName $VmName -WhatIf
 Update-AnyStackVmHardware -Server $vi -VmName $VmName -WhatIf
 Get-AnyStackVmUptime -Server $vi -VmName $VmName
  
+

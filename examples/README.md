@@ -10,3 +10,4 @@ This folder contains end-to-end automation scripts that demonstrate how to chain
 | `04-CapacityReview-Monthly.ps1` | Finding zombie VMs, datastore growth, right-sizing | Monthly |
 | `05-DR-Readiness-Check.ps1` | Snapshot limits, HA failover checks, vSAN health | Weekly |
  
+

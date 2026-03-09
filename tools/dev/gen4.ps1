@@ -17,7 +17,7 @@ function Get-AnyStackWorkloadDomain {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -86,7 +86,7 @@ function Set-AnyStackPasswordRotation {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -142,7 +142,7 @@ function Test-AnyStackSddcHealth {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -191,7 +191,7 @@ function Add-AnyStackNativeKeyProvider {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -251,7 +251,7 @@ function Disable-AnyStackHostSsh {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -311,7 +311,7 @@ function Enable-AnyStackHostSsh {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -373,7 +373,7 @@ function Test-AnyStackAdIntegration {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -436,7 +436,7 @@ function Test-AnyStackHostSyslog {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -502,7 +502,7 @@ function Test-AnyStackSecurityBaseline {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -574,7 +574,7 @@ function Clear-AnyStackOrphanedSnapshots {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -649,7 +649,7 @@ function Optimize-AnyStackSnapshots {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -718,7 +718,7 @@ function Add-AnyStackNvmeInterface {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -785,7 +785,7 @@ function Get-AnyStackNvmeDevice {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -853,7 +853,7 @@ function Set-AnyStackNvmeQueueDepth {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -923,7 +923,7 @@ function Remove-AnyStackNvmeInterface {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -987,7 +987,7 @@ function Test-AnyStackNvmeConnectivity {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -1047,7 +1047,7 @@ function Get-AnyStackDatastoreIops {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -1106,7 +1106,7 @@ function Get-AnyStackDatastoreLatency {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -1164,7 +1164,7 @@ function Get-AnyStackOrphanedVmdk {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -1222,7 +1222,7 @@ function Get-AnyStackVmDiskLatency {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -1280,7 +1280,7 @@ function Get-AnyStackVsanHealth {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -1341,7 +1341,7 @@ function Invoke-AnyStackDatastoreUnmount {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -1403,7 +1403,7 @@ function Test-AnyStackDatastorePathMultipathing {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -1470,7 +1470,7 @@ function Test-AnyStackStorageConfiguration {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -1532,7 +1532,7 @@ function Test-AnyStackVsanCapacity {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -1595,7 +1595,7 @@ function Remove-AnyStackStaleTag {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -1664,7 +1664,7 @@ function Set-AnyStackResourceTag {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -1738,7 +1738,7 @@ function Sync-AnyStackTagCategory {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -1786,3 +1786,5 @@ foreach ($path in $cmdlets.Keys) {
 }
 Write-Host "Generated part 4 files."
  
+
+

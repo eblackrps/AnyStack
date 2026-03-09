@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.StorageAdvanced.psm1'
-    ModuleVersion = '1.6.1'
+    ModuleVersion = '1.6.2'
     GUID = '486d7e59-50bd-42eb-8a5b-bab558129ddb'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -8,7 +8,7 @@
     Description = 'Enterprise module for VCF.StorageAdvanced automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+        @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
     )
     FunctionsToExport = @('Add-AnyStackNvmeInterface','Get-AnyStackNvmeDevice','Remove-AnyStackNvmeInterface','Set-AnyStackNvmeQueueDepth','Test-AnyStackNvmeConnectivity')
     CmdletsToExport = @()
@@ -31,3 +31,6 @@
 
 
  
+
+
+

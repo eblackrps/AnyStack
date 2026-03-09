@@ -1,4 +1,4 @@
-## AnyStack v1.5.0 â€” Full Enterprise Implementation
+## AnyStack v1.6.2 â€” Full Enterprise Implementation
 
 ### What's New
 - **117 production cmdlets** â€” all enterprise stubs fully implemented with real vSphere API logic.
@@ -26,3 +26,5 @@ The following cmdlets in `VCF.DRValidator` were renamed for consistency in previ
  
 
  
+
+

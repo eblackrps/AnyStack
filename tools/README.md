@@ -17,3 +17,4 @@ This directory contains utility scripts for AnyStack development, publishing, an
 - **FixAndPublish.ps1**: Validation and publication script to deploy modules to PSGallery. (Replaced by GitHub Actions, kept for local testing)
 - **Validate-ForGallery.ps1**: Pre-publish validation script to ensure all modules pass PSScriptAnalyzer and meet manifest requirements.
  
+

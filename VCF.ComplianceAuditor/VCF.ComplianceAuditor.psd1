@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.ComplianceAuditor.psm1'
-    ModuleVersion = '1.6.1'
+    ModuleVersion = '1.6.2'
     GUID = 'c93bd47c-49fb-4ec2-afd6-8e8b24df8f7d'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -8,7 +8,7 @@
     Description = 'Enterprise module for VCF.ComplianceAuditor automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+        @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
     )
     FunctionsToExport = @('Export-AnyStackAuditReport','Get-AnyStackNonCompliantHost','Invoke-AnyStackCisStigAudit','Repair-AnyStackComplianceDrift')
     CmdletsToExport = @()
@@ -30,3 +30,6 @@
 
 
  
+
+
+

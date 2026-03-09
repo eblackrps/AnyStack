@@ -17,7 +17,7 @@ function Connect-AnyStackServer {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -79,7 +79,7 @@ function Disconnect-AnyStackServer {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -129,7 +129,7 @@ function Get-AnyStackVcenterServices {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -181,7 +181,7 @@ function Invoke-AnyStackHealthCheck {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
@@ -267,3 +267,5 @@ foreach ($path in $cmdlets.Keys) {
 }
 Write-Host "Generated batch 2 of missing cmdlets."
  
+
+

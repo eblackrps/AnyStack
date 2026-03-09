@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.NetworkManager.psm1'
-    ModuleVersion = '1.6.1'
+    ModuleVersion = '1.6.2'
     GUID = '3a2cf465-e79f-4ac2-b8f7-8c35635f4b1e'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -8,7 +8,7 @@
     Description = 'Enterprise module for VCF.NetworkManager automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+        @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
     )
     FunctionsToExport = @('Get-AnyStackDistributedPortgroup','New-AnyStackVlan','Set-AnyStackVlanTag')
     CmdletsToExport = @()
@@ -30,3 +30,6 @@
 
 
  
+
+
+

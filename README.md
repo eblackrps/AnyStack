@@ -1,6 +1,6 @@
 # AnyStack Enterprise Module Suite
 
-**Version:** 1.6.1 | **Author:** The Any Stack Architect
+**Version:** 1.6.2 | **Author:** The Any Stack Architect
 
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/AnyStack.vSphere?style=flat-square&logo=powershell&label=AnyStack.vSphere)](https://www.powershellgallery.com/packages/AnyStack.vSphere)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -14,9 +14,18 @@ AnyStack is a production-ready, enterprise-grade PowerShell automation suite for
 
 ---
 
+| Component | Supported | Notes |
+|---|---|---|
+| VMware vSphere | 8.0 U3 | vCenter + ESXi |
+| VMware VCF | 5.1, 5.2 | SDDC Manager required for VCF.SddcManager |
+| PowerShell | 7.2+, 7.4+ recommended | Windows PowerShell 5.1 not supported |
+| VCF.PowerCLI | 9.0+ | `Install-Module VCF.PowerCLI` |
+| Pester | 5.0+ | For test suite |
+| OS | Windows 10+, Ubuntu 22.04+, macOS 13+ | Via PowerShell 7 |
+
 ## ⚠️ Dependency Notice — VCF.PowerCLI Required
 
-> **Important:** AnyStack v1.6.1+ requires **`VCF.PowerCLI`**, not the legacy `VMware.PowerCLI` module.
+> **Important:** AnyStack v1.6.2+ requires **`VCF.PowerCLI`**, not the legacy `VMware.PowerCLI` module.
 >
 > The legacy `VMware.PowerCLI` module is deprecated by Broadcom and does **not** include `Get-AnyStackConnection`, which all AnyStack cmdlets depend on. If you see the error below, your environment is using the wrong PowerCLI module:
 >
@@ -312,3 +321,10 @@ All public cmdlets must support `-WhatIf` (via `[CmdletBinding(SupportsShouldPro
 ## 📄 License
 
 MIT License
+
+- [anystackarchitect.com](https://www.anystackarchitect.com)
+- [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
+- [Introducing AnyStack — blog post](https://www.anystackarchitect.com/introducing-anystack-powershell-automation-for-vsphere-and-vcf/)
+
+
+

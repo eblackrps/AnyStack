@@ -17,10 +17,11 @@ foreach ($Path in $ImportPaths) {
 # Module cleanup logic
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
     Write-Verbose "AnyStack.vSphere module is being unloaded. Cleaning up sessions..."
-    if (Get-Module -Name VMware.VimAutomation.Core -ErrorAction SilentlyContinue) {
+    if (Get-Module -Name VCF.VimAutomation.Core -ErrorAction SilentlyContinue) {
         # Optional: Force disconnect logic here if desired
     }
 }
 
 Write-Verbose "AnyStack.vSphere module loaded successfully."
  
+

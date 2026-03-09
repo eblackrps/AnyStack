@@ -20,7 +20,7 @@ function Set-AnyStackResourceTag {
         PSCustomObject
     .NOTES
         Author: The AnyStack Architect
-        Requires: VMware.PowerCLI 13.0+, vSphere 8.0 U3+
+        Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
@@ -77,3 +77,5 @@ function Set-AnyStackResourceTag {
 }
 
  
+
+

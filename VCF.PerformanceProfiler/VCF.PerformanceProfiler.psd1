@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.PerformanceProfiler.psm1'
-    ModuleVersion = '1.6.1'
+    ModuleVersion = '1.6.2'
     GUID = 'e577018e-c017-4682-88a9-b613e640d15e'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -8,7 +8,7 @@
     Description = 'Enterprise module for VCF.PerformanceProfiler automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        @{ModuleName='VMware.PowerCLI'; ModuleVersion='13.0'}
+        @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
     )
     FunctionsToExport = @('Export-AnyStackPerformanceBaseline','Get-AnyStackHostCpuCoStop','Get-AnyStackVmStorageLatency','Test-AnyStackNetworkDroppedPackets')
     CmdletsToExport = @()
@@ -30,3 +30,6 @@
 
 
  
+
+
+

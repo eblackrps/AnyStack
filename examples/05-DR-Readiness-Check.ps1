@@ -16,3 +16,4 @@ Test-AnyStackHaFailover -Server $vi -ClusterName $ClusterName
 Get-AnyStackVsanHealth -Server $vi -ClusterName $ClusterName
 Export-AnyStackDRReadinessReport -Server $vi
  
+

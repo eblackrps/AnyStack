@@ -6,7 +6,7 @@ SHORT DESCRIPTION
 
 LONG DESCRIPTION
     The VCF.ComplianceAuditor module is part of the AnyStack Enterprise PowerShell Module Suite.
-    It relies on VMware.PowerCLI 13.0+ and PowerShell 7.2+.
+    It relies on VCF.PowerCLI 9.0+ and PowerShell 7.2+.
 
     Authentication Model:
     Connect using Connect-AnyStackServer and pass the resulting VIServer object to functions.
@@ -18,3 +18,5 @@ EXAMPLES
 SEE ALSO
     https://github.com/eblackrps/AnyStack
  
+
+

@@ -47,3 +47,4 @@ foreach ($mod in $Modules) {
     Publish-Module -Path $mod.FullName -NuGetApiKey $ApiKey -Verbose -Force
 }
  
+

@@ -34,7 +34,7 @@ foreach ($mod in $Modules) {
 Write-Output "Metadata update complete. Starting Gallery push..." -ForegroundColor Green
 
 foreach ($mod in $Modules) {
-    Write-Output ">>> Uploading $($mod.Name) v1.4.0.1..." -ForegroundColor Cyan
+    Write-Output ">>> Uploading $($mod.Name) v1.6.2.1..." -ForegroundColor Cyan
     Publish-Module -Path $mod.FullName -NuGetApiKey $ApiKey -Verbose -Force
 }
 
@@ -42,3 +42,5 @@ Write-Output "Final Gallery Sync Complete! Your modules now point to your GitHub
 
 
  
+
+
