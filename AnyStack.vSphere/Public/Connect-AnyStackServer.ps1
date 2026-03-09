@@ -37,14 +37,8 @@ function Connect-AnyStackServer {
                 
                 $session = Invoke-AnyStackWithRetry -ScriptBlock { Connect-VIServer @connArgs }
                 
-                [PSCustomObject]@{
-                    PSTypeName = 'AnyStack.Connection'
-                    Timestamp  = (Get-Date)
-                    Status     = 'Connected'
-                    Server     = $srv
-                    SessionID  = $session.SessionId
-                    Version    = "$($session.Version) Build $($session.Build)"
-                }
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Connected to $srv | Session: $($session.SessionId) | Version: $($session.Version) Build $($session.Build)"
+                $session
             }
             catch {
                 Write-Error "Connection to $srv failed: $($_.Exception.Message)"

@@ -30,7 +30,11 @@ foreach ($mod in $Modules) {
         $testPath = Join-Path $PSScriptRoot "$mod\Tests"
         if (Test-Path $testPath) {
             Write-Host "    [RUNNING] Pester Tests for $mod..." -ForegroundColor DarkCyan
-            # Invoke-Pester -Path $testPath
+            $pesterConfig = New-PesterConfiguration
+            $pesterConfig.Run.Path = $testPath
+            $pesterConfig.Output.Verbosity = 'Minimal'
+            $pesterConfig.Run.Exit = $true
+            Invoke-Pester -Configuration $pesterConfig
         }
     }
     catch {

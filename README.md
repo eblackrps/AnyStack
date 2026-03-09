@@ -186,10 +186,10 @@ Every public cmdlet supports `-WhatIf`. Run it first to see exactly what any ope
 
 ### VCF.DRValidator
 
-- Export-DRReadinessReport
-- Repair-DisasterRecoveryReadiness
+- Export-AnyStackDRReadinessReport
+- Repair-AnyStackDisasterRecoveryReadiness
 - Start-AnyStackVmBackup
-- Test-DisasterRecoveryReadiness
+- Test-AnyStackDisasterRecoveryReadiness
 
 ### VCF.HostEvacuation
 

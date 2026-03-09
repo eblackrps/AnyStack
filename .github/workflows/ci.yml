@@ -1,4 +1,4 @@
-# AnyStack Enterprise v1.6.4 CI
+# AnyStack Enterprise v1.6.5 CI
 name: CI
 on: [push, pull_request]
 jobs:

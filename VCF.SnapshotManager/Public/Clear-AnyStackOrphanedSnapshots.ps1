@@ -1,3 +1,13 @@
+function Get-FlatSnapshotList {
+    param([object[]]$SnapshotTree)
+    foreach ($snap in $SnapshotTree) {
+        $snap
+        if ($snap.ChildSnapshotList) {
+            Get-FlatSnapshotList -SnapshotTree $snap.ChildSnapshotList
+        }
+    }
+}
+
 function Clear-AnyStackOrphanedSnapshots {
     <#
     .SYNOPSIS
@@ -46,7 +56,8 @@ function Clear-AnyStackOrphanedSnapshots {
             $threshold = (Get-Date).AddDays(-$AgeDays)
             foreach ($vm in $vms) {
                 if ($vm.Snapshot -and $vm.Snapshot.RootSnapshotList) {
-                    foreach ($snap in $vm.Snapshot.RootSnapshotList) {
+                    $allSnaps = Get-FlatSnapshotList -SnapshotTree $vm.Snapshot.RootSnapshotList
+                    foreach ($snap in $allSnaps) {
                         if ($snap.CreateTime -lt $threshold) {
                             if ($PSCmdlet.ShouldProcess($vm.Name, "Remove Snapshot $($snap.Name)")) {
                                 Invoke-AnyStackWithRetry -ScriptBlock { $vm.RemoveSnapshot_Task($snap.Snapshot, $false, $true) }
