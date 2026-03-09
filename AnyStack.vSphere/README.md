@@ -1,6 +1,6 @@
 # AnyStack.vSphere
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.5 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.6 · MIT License**
 
 Core connectivity and foundational utilities. All other AnyStack modules depend on this one. Handles server connections, health checks, license auditing, and logging.
 
@@ -58,6 +58,7 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
+
 
 
 

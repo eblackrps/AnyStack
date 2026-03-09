@@ -1,6 +1,6 @@
 # AnyStack.Reporting
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.5 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.6 · MIT License**
 
 Generate HTML infrastructure reports covering cluster health, capacity utilization, and environment state. Useful for weekly ops reviews or customer-facing reporting.
 
@@ -46,6 +46,7 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
+
 
 
 

@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.SddcManager.psm1'
-    ModuleVersion = '1.6.5'
+    ModuleVersion = '1.6.6'
     GUID = '8873f9b6-1cce-449b-8835-5d390fd6b623'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,6 +30,7 @@
 
 
  
+
 
 
 

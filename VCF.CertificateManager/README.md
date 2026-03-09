@@ -1,6 +1,6 @@
 # VCF.CertificateManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.5 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.6 · MIT License**
 
 Certificate lifecycle management for ESXi hosts and vCenter. Audit expiry, renew host certificates, and manage VMCA-signed certs without manual console work.
 
@@ -49,6 +49,7 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
+
 
 
 

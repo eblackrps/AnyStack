@@ -40,7 +40,7 @@ foreach ($mod in $Modules) {
 
     # 3. Check metadata
     $missingMeta = $false
-    if ($manifestContent -notmatch "ModuleVersion\s*=\s*'1\.6\.5'") { $missingMeta = $true; Write-Error "ModuleVersion not 1.6.5" }
+    if ($manifestContent -notmatch "ModuleVersion\s*=\s*'1\.6\.6'") { $missingMeta = $true; Write-Error "ModuleVersion not 1.6.6" }
     if ($manifestContent -notmatch "Author\s*=\s*'The AnyStack Architect'") { $missingMeta = $true; Write-Error "Author incorrect" }
     if ($manifestContent -notmatch "Tags\s*=\s*@\(") { $missingMeta = $true; Write-Error "Tags missing" }
     if ($manifestContent -notmatch "ProjectUri") { $missingMeta = $true; Write-Error "ProjectUri missing" }
@@ -82,6 +82,8 @@ if ($failed) {
     exit 0
 }
  
+
+
 
 
 
