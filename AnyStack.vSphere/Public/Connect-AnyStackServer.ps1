@@ -11,13 +11,13 @@ function Connect-AnyStackServer {
     .EXAMPLE
         PS> Connect-AnyStackServer -Server 'vcenter.corp.local' -Credential (Get-Credential)
     .OUTPUTS
-        PSCustomObject
+        VMware.VimAutomation.Types.VIServer
     .NOTES
         Author: The AnyStack Architect
         Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
     [CmdletBinding(SupportsShouldProcess=$false)]
-    [OutputType([PSCustomObject])]
+    [OutputType([VMware.VimAutomation.Types.VIServer])]
     param(
         [Parameter(Mandatory=$true, ValueFromPipeline=$true, Position=0)]
         [ValidateNotNullOrEmpty()]
@@ -41,19 +41,8 @@ function Connect-AnyStackServer {
                 $session
             }
             catch {
-                Write-Error "Connection to $srv failed: $($_.Exception.Message)"
-                [PSCustomObject]@{
-                    PSTypeName = 'AnyStack.Connection'
-                    Timestamp  = (Get-Date)
-                    Status     = 'Failed'
-                    Server     = $srv
-                    Error      = $_.Exception.Message
-                }
+                $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_.Exception, 'ConnectionFailed', [System.Management.Automation.ErrorCategory]::ConnectionError, $srv))
             }
         }
     }
 }
- 
-
-
-
