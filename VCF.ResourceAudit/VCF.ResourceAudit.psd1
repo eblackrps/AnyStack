@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.ResourceAudit.psm1'
-    ModuleVersion = '1.7.1'
+    ModuleVersion = '1.6.7'
     GUID = 'c4212e0c-bf47-4519-b333-aee9b0ed312e'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,8 +30,6 @@
 
 
  
-
-
 
 
 

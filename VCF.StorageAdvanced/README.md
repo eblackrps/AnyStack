@@ -1,6 +1,6 @@
 # VCF.StorageAdvanced
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.7.1 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.7 · MIT License**
 
 NVMe over Fabrics management for vSphere 8.0 U3 environments: interface provisioning, device discovery, queue depth tuning, and connectivity testing.
 
@@ -55,8 +55,6 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
-
-
 
 
 

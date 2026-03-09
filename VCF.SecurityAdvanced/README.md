@@ -1,6 +1,6 @@
 # VCF.SecurityAdvanced
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.7.1 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.7 · MIT License**
 
 Advanced security operations: native key provider management, SSH control, and ESXi lockdown mode enforcement.
 
@@ -52,8 +52,6 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
-
-
 
 
 

@@ -34,7 +34,7 @@ Describe "AnyStack.ConfigurationAsCode Suite" {
             
             $tempFile = [System.IO.Path]::GetTempFileName()
             try {
-                "{\"Server\":\"MockVC\"}" | Set-Content -Path $tempFile
+                '{"Server":"MockVC"}' | Set-Content -Path $tempFile
                 $result = Sync-AnyStackConfiguration -Server 'mock' -ConfigFilePath $tempFile -ErrorAction SilentlyContinue
                 $result | Should -Not -BeNullOrEmpty
                 $result.PSTypeName | Should -Be 'AnyStack.ConfigurationSync'

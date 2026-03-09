@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.SecurityBaseline.psm1'
-    ModuleVersion = '1.7.1'
+    ModuleVersion = '1.6.7'
     GUID = '519143fe-e924-4451-a767-f9c7e7f08a56'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,8 +30,6 @@
 
 
  
-
-
 
 
 

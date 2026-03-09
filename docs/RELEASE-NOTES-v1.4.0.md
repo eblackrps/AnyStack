@@ -1,4 +1,4 @@
-## AnyStack v1.7.1 — Full Enterprise Implementation
+## AnyStack v1.6.7 — Full Enterprise Implementation
 
 ### What's New
 - **117 production cmdlets** — all enterprise stubs fully implemented with real vSphere API logic.
@@ -22,8 +22,6 @@ The following cmdlets in `VCF.DRValidator` were renamed for consistency in previ
 | Test-DisasterRecoveryReadiness | Test-AnyStackDisasterRecoveryReadiness |
 | Repair-DisasterRecoveryReadiness | Repair-AnyStackDisasterRecoveryReadiness |
  
-
-
 
 
 

@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.StorageAudit.psm1'
-    ModuleVersion = '1.7.1'
+    ModuleVersion = '1.6.7'
     GUID = '4b043d6e-a2c6-40a9-b2ec-15bd2518b3fb'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -30,8 +30,6 @@
 
 
  
-
-
 
 
 
