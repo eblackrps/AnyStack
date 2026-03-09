@@ -8,7 +8,8 @@
     Description = 'Enterprise module for AnyStack.ConfigurationAsCode automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
+        'VCF.PowerCLI',
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.6.5'}
     )
     FunctionsToExport = @('Export-AnyStackConfiguration','Sync-AnyStackConfiguration')
     CmdletsToExport = @()
