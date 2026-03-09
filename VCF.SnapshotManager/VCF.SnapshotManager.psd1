@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.SnapshotManager.psm1'
-    ModuleVersion = '1.6.7'
+    ModuleVersion = '1.6.8'
     GUID = '6787a7ee-62f0-4167-9326-1f816aa6de6b'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -31,6 +31,7 @@
 
 
  
+
 
 
 
