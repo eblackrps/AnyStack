@@ -1,4 +1,4 @@
-# AnyStack Enterprise Module Suite - Pester Configuration v1.6.7
+# AnyStack Enterprise Module Suite - Pester Configuration v1.7.5
 @{
     Run          = @{
         Path = '*/Tests/*'

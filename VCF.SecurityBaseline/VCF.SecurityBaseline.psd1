@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.SecurityBaseline.psm1'
-    ModuleVersion = '1.6.7'
+    ModuleVersion = '1.7.5'
     GUID = '519143fe-e924-4451-a767-f9c7e7f08a56'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -8,7 +8,7 @@
     Description = 'Enterprise module for VCF.SecurityBaseline automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
+        @{ModuleName='VCF.PowerCLI'; ModuleVersion = '1.7.5'}
     )
     FunctionsToExport = @('Get-AnyStackEsxiLockdownMode','Test-AnyStackAdIntegration','Test-AnyStackHostSyslog','Test-AnyStackSecurityBaseline')
     CmdletsToExport = @()

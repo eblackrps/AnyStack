@@ -1,6 +1,6 @@
 @{
     RootModule = 'AnyStack.vSphere.psm1'
-    ModuleVersion = '1.6.7'
+    ModuleVersion = '1.7.5'
     GUID = 'f5053a10-87a3-4e68-b568-ce9245938e94'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -8,7 +8,7 @@
     Description = 'Enterprise module for AnyStack.vSphere automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
+        @{ModuleName='VCF.PowerCLI'; ModuleVersion = '1.7.5'}
     )
     FunctionsToExport = @('Connect-AnyStackServer','Disconnect-AnyStackServer','Get-AnyStackLicenseUsage','Get-AnyStackVcenterServices','Invoke-AnyStackHealthCheck','Write-AnyStackLog')
     CmdletsToExport = @()

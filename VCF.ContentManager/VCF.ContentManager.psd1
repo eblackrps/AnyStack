@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.ContentManager.psm1'
-    ModuleVersion = '1.6.7'
+    ModuleVersion = '1.7.5'
     GUID = '27b14bf7-a39b-43d7-85b8-72a9281e9ceb'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -8,7 +8,7 @@
     Description = 'Enterprise module for VCF.ContentManager automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
-        @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
+        @{ModuleName='VCF.PowerCLI'; ModuleVersion = '1.7.5'}
     )
     FunctionsToExport = @('Get-AnyStackLibraryItem','New-AnyStackVmTemplate','Remove-AnyStackOrphanedIso','Sync-AnyStackContentLibrary')
     CmdletsToExport = @()
