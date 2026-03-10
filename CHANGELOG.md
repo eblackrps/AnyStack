@@ -1,6 +1,6 @@
 # AnyStack Changelog
 
-## v1.7.5 (2026-03-10)
+## v1.7.6 (2026-03-10)
 
 ### Fixed
 - Resolved 292 CI test failures across all 27 modules
