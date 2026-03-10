@@ -26,7 +26,7 @@ Describe "VCF.ApplianceManager Suite" {
             Get-Command -Name 'Get-AnyStackVcenterDiskSpace' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Get-AnyStackVcenterDiskSpace -Server 'MockVC' -Credential (New-Object PSCredential('u',(ConvertTo-SecureString 'p' -AsPlainText -Force))) -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Get-AnyStackVcenterDiskSpace -Server 'MockVC' -Credential (New-Object PSCredential('u',(New-Object System.Security.SecureString))) -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
     Context "Restart-AnyStackVcenterService" {
@@ -42,7 +42,7 @@ Describe "VCF.ApplianceManager Suite" {
             Get-Command -Name 'Start-AnyStackVcenterBackup' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Start-AnyStackVcenterBackup -Server 'MockVC' -BackupLocation 'ftp://stub' -BackupCredential (New-Object PSCredential('u',(ConvertTo-SecureString 'p' -AsPlainText -Force))) -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Start-AnyStackVcenterBackup -Server 'MockVC' -BackupLocation 'ftp://stub' -BackupCredential (New-Object PSCredential('u',(New-Object System.Security.SecureString))) -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
     Context "Test-AnyStackVcenterDatabaseHealth" {
@@ -54,3 +54,4 @@ Describe "VCF.ApplianceManager Suite" {
         }
     }
 }
+

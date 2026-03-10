@@ -41,7 +41,8 @@ Describe "VCF.CertificateManager Suite" {
             Get-Command -Name 'Update-AnyStackVcsCertificate' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Update-AnyStackVcsCertificate -Server 'MockVC' -CertificatePemPath 'C:\Windows\Temp\c.pem' -KeyPemPath 'C:\Windows\Temp\k.pem' -Credential (New-Object PSCredential('u',(ConvertTo-SecureString 'p' -AsPlainText -Force))) -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Update-AnyStackVcsCertificate -Server 'MockVC' -CertificatePemPath 'C:\Windows\Temp\c.pem' -KeyPemPath 'C:\Windows\Temp\k.pem' -Credential (New-Object PSCredential('u',(New-Object System.Security.SecureString))) -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
 }
+

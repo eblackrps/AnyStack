@@ -25,7 +25,7 @@ Describe "VCF.SddcManager Suite" {
             Get-Command -Name 'Get-AnyStackWorkloadDomain' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Get-AnyStackWorkloadDomain -Server 'MockVC' -SddcManagerFqdn 'sddc.stub' -Credential (New-Object PSCredential('u',(ConvertTo-SecureString 'p' -AsPlainText -Force))) -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Get-AnyStackWorkloadDomain -Server 'MockVC' -SddcManagerFqdn 'sddc.stub' -Credential (New-Object PSCredential('u',(New-Object System.Security.SecureString))) -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
     Context "Set-AnyStackPasswordRotation" {
@@ -33,7 +33,7 @@ Describe "VCF.SddcManager Suite" {
             Get-Command -Name 'Set-AnyStackPasswordRotation' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Set-AnyStackPasswordRotation -Server 'MockVC' -SddcManagerFqdn 'sddc.stub' -Credential (New-Object PSCredential('u',(ConvertTo-SecureString 'p' -AsPlainText -Force))) -ResourceType 'VCENTER' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Set-AnyStackPasswordRotation -Server 'MockVC' -SddcManagerFqdn 'sddc.stub' -Credential (New-Object PSCredential('u',(New-Object System.Security.SecureString))) -ResourceType 'VCENTER' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
     Context "Test-AnyStackSddcHealth" {
@@ -41,7 +41,8 @@ Describe "VCF.SddcManager Suite" {
             Get-Command -Name 'Test-AnyStackSddcHealth' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Test-AnyStackSddcHealth -Server 'MockVC' -SddcManagerFqdn 'sddc.stub' -Credential (New-Object PSCredential('u',(ConvertTo-SecureString 'p' -AsPlainText -Force))) -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Test-AnyStackSddcHealth -Server 'MockVC' -SddcManagerFqdn 'sddc.stub' -Credential (New-Object PSCredential('u',(New-Object System.Security.SecureString))) -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
 }
+
