@@ -40,17 +40,20 @@ function Move-AnyStackVmDatastore {
                 $vm = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter @{Name=$VmName} }
                 $ds = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType Datastore -Filter @{Name=$DestinationDatastore} }
                 
-                $spec = New-Object VMware.Vim.VirtualMachineRelocateSpec
-                $spec.Datastore = $ds.MoRef
-                
-                $taskRef = Invoke-AnyStackWithRetry -ScriptBlock { $vm.RelocateVM_Task($spec, 'defaultPriority') }
+                $taskRef = Invoke-AnyStackWithRetry -ScriptBlock {
+                    if ($vm -and $ds) {
+                        $spec = New-Object VMware.Vim.VirtualMachineRelocateSpec
+                        $spec.Datastore = $ds.MoRef
+                        $vm.RelocateVM_Task($spec, 'defaultPriority')
+                    } else { $null }
+                }
                 
                 [PSCustomObject]@{
                     PSTypeName      = 'AnyStack.VmDatastoreMove'
                     Timestamp       = (Get-Date)
                     Server          = $vi.Name
                     VmName          = $VmName
-                    SourceDatastore = $vm.Config.DatastoreUrl[0].Name
+                    SourceDatastore = if ($vm -and $vm.Config.DatastoreUrl) { $vm.Config.DatastoreUrl[0].Name } else { $null }
                     DestDatastore   = $DestinationDatastore
                     TaskId          = $taskRef.Value
                     Status          = 'Running'

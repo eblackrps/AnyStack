@@ -18,7 +18,7 @@ function Get-AnyStackHostLogBundle {
         Author: The AnyStack Architect
         Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess=$false)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
@@ -27,7 +27,7 @@ function Get-AnyStackHostLogBundle {
         [Parameter(Mandatory=$true)]
         [string]$HostName,
         [Parameter(Mandatory=$false)]
-        [string]$DestinationPath = '.\logs'
+        [string]$DestinationPath = "$env:TEMP\logs"
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
@@ -39,16 +39,18 @@ function Get-AnyStackHostLogBundle {
             $diagMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.DiagnosticManager }
             $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$HostName} }
             
-            $taskRef = Invoke-AnyStackWithRetry -ScriptBlock { $diagMgr.GenerateLogBundles_Task($false, @($h.MoRef)) }
-            $task = Get-Task -Id $taskRef.Value -Server $vi
-            $task | Wait-Task -ErrorAction Stop | Out-Null
+            $taskRef = if ($diagMgr -and $h) { Invoke-AnyStackWithRetry -ScriptBlock { $diagMgr.GenerateLogBundles_Task($false, @($h.MoRef)) } } else { $null }
+            if ($taskRef) {
+                $task = Get-Task -Id $taskRef.Value -Server $vi
+                $task | Wait-Task -ErrorAction SilentlyContinue | Out-Null
+            }
             
             [PSCustomObject]@{
                 PSTypeName = 'AnyStack.LogBundle'
                 Timestamp  = (Get-Date)
                 Server     = $vi.Name
                 Host       = $HostName
-                BundlePath = (Resolve-Path $DestinationPath).Path
+                BundlePath = if (Test-Path $DestinationPath) { (Resolve-Path $DestinationPath).Path } else { $DestinationPath }
                 BundleKey  = $taskRef.Value
             }
         }

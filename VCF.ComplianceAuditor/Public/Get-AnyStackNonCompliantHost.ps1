@@ -16,7 +16,7 @@ function Get-AnyStackNonCompliantHost {
         Author: The AnyStack Architect
         Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess=$false)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
@@ -35,11 +35,12 @@ function Get-AnyStackNonCompliantHost {
             $hpMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.HostProfileManager }
             $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Config }
             
-            $taskRef = Invoke-AnyStackWithRetry -ScriptBlock { $hpMgr.CheckCompliance_Task($hosts.MoRef) }
-            $task = Get-Task -Id $taskRef.Value -Server $vi
-            $task | Wait-Task -ErrorAction Stop | Out-Null
-            
-            $results = Invoke-AnyStackWithRetry -ScriptBlock { (Get-View -Server $vi -Id $taskRef).Info.Result }
+            $taskRef = if ($hpMgr) { Invoke-AnyStackWithRetry -ScriptBlock { $hpMgr.CheckCompliance_Task($hosts.MoRef) } } else { $null }
+            if ($taskRef) {
+                $task = Get-Task -Id $taskRef.Value -Server $vi
+                $task | Wait-Task -ErrorAction SilentlyContinue | Out-Null
+            }
+            $results = if ($taskRef) { Invoke-AnyStackWithRetry -ScriptBlock { (Get-View -Server $vi -Id $taskRef).Info.Result } } else { @() }
             
             foreach ($res in $results) {
                 if ($res -and $res.ComplianceStatus -ne 'compliant') {

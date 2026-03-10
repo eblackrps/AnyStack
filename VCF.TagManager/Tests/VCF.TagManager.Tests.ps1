@@ -42,7 +42,7 @@ Describe "VCF.TagManager Suite" {
             Get-Command -Name 'Set-AnyStackResourceTag' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Set-AnyStackResourceTag -Server 'MockVC' -ObjectName 'vm01' -TagName 'env' -CategoryName 'Environment' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Set-AnyStackResourceTag -Server 'MockVC' -ObjectName 'vm01' -ObjectType 'VirtualMachine' -TagName 'env' -CategoryName 'Environment' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
     Context "Sync-AnyStackTagCategory" {

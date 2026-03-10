@@ -1,4 +1,9 @@
 BeforeAll {
+    Import-Module "$PSScriptRoot\..\AnyStack.vSphere.psd1" -Force -ErrorAction Stop
+    InModuleScope AnyStack.vSphere {
+        Mock Get-AnyStackConnection { return [PSCustomObject]@{ Name = 'MockVC'; IsConnected = $true } }
+        Mock Invoke-AnyStackWithRetry { return $null }
+    }
     function global:Get-AnyStackConnection {
         param($Server)
         return [PSCustomObject]@{ Name = 'MockVC'; IsConnected = $true }
@@ -7,7 +12,6 @@ BeforeAll {
         param($ScriptBlock, $MaxAttempts = 3, $DelaySeconds = 2)
         return $null
     }
-    Import-Module "$PSScriptRoot\..\AnyStack.vSphere.psd1" -Force -ErrorAction Stop
 }
 
 Describe "AnyStack.vSphere Suite" {
@@ -24,6 +28,11 @@ Describe "AnyStack.vSphere Suite" {
         }
     }
     Context "Connect-AnyStackServer" {
+        BeforeAll {
+            InModuleScope AnyStack.vSphere {
+                Mock Invoke-AnyStackWithRetry { throw "Simulated connection failure" }
+            }
+        }
         It "Should exist as an exported function" {
             Get-Command -Name 'Connect-AnyStackServer' | Should -Not -BeNullOrEmpty
         }

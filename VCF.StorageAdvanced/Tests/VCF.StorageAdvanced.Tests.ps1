@@ -27,7 +27,7 @@ Describe "VCF.StorageAdvanced Suite" {
             Get-Command -Name 'Add-AnyStackNvmeInterface' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Add-AnyStackNvmeInterface -Server 'MockVC' -HostName 'esxi1' -TargetAddress '192.168.1.100' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Add-AnyStackNvmeInterface -Server 'MockVC' -HostName 'esxi1' -Protocol 'TCP' -TargetAddress '192.168.1.100' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
     Context "Get-AnyStackNvmeDevice" {

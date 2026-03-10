@@ -19,7 +19,7 @@ jobs:
         run: |
           $env:PSModulePath = "$((Get-Item .).FullName);" + $env:PSModulePath
           $config = New-PesterConfiguration
-          $config.Run.Path = ".\"
+          $config.Run.Path = @(Get-ChildItem -Path "." -Recurse -Filter "*.Tests.ps1" | Where-Object { $_.FullName -like "*\Tests\*" } | Select-Object -ExpandProperty FullName)
           $config.Run.Exit = $true
           $config.Output.Verbosity = "Detailed"
           $config.TestResult.Enabled = $true

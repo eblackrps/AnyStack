@@ -39,9 +39,11 @@ function Stop-AnyStackHostEvacuation {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Exiting maintenance mode on $($vi.Name)"
                 $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$HostName} }
                 
-                $taskRef = Invoke-AnyStackWithRetry -ScriptBlock { $h.ExitMaintenanceMode_Task(15) }
-                $task = Get-Task -Id $taskRef.Value -Server $vi
-                $task | Wait-Task -TimeoutSeconds $TimeoutSeconds | Out-Null
+                $taskRef = Invoke-AnyStackWithRetry -ScriptBlock { if ($h) { $h.ExitMaintenanceMode_Task(15) } else { $null } }
+                if ($taskRef) {
+                    $task = Get-Task -Id $taskRef.Value -Server $vi
+                    $task | Wait-Task -TimeoutSeconds $TimeoutSeconds | Out-Null
+                }
                 
                 [PSCustomObject]@{
                     PSTypeName      = 'AnyStack.HostEvacuationStop'

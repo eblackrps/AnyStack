@@ -42,13 +42,13 @@ function Set-AnyStackNvmeQueueDepth {
             if ($PSCmdlet.ShouldProcess($HostName, "Set Queue Depth $QueueDepth on $DeviceName")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Updating queue depth on $($vi.Name)"
                 $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$HostName} }
-                $optMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.AdvancedOption }
+                $optMgr = if ($h) { Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.AdvancedOption } } else { $null }
                 
                 $key = "Disk.SchedNumReqOutstanding"
-                $prev = ($optMgr.QueryView() | Where-Object { $_.Key -eq $key }).Value
+                $prev = if ($optMgr) { ($optMgr.QueryView() | Where-Object { $_.Key -eq $key }).Value } else { $null }
                 
                 Invoke-AnyStackWithRetry -ScriptBlock { 
-                    $optMgr.UpdateValues(@([VMware.Vim.OptionValue]@{Key=$key; Value=[string]$QueueDepth})) 
+                    if ($optMgr) { $optMgr.UpdateValues(@([VMware.Vim.OptionValue]@{Key=$key; Value=[string]$QueueDepth})) }
                 }
                 
                 [PSCustomObject]@{

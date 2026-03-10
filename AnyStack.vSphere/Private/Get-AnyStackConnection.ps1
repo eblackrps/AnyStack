@@ -13,6 +13,11 @@ function Get-AnyStackConnection {
         return $Server
     }
 
+    # Support PSCustomObject mock objects (e.g. in unit tests)
+    if ($Server -is [PSCustomObject] -and $Server.PSObject.Properties.Name -contains 'IsConnected') {
+        return $Server
+    }
+
     if ($Server -is [string]) {
         $vi = Get-VIServer -Name $Server -ErrorAction SilentlyContinue | Select-Object -First 1
         if ($null -eq $vi) {

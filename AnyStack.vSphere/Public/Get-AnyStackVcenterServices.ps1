@@ -14,7 +14,7 @@ function Get-AnyStackVcenterServices {
         Author: The AnyStack Architect
         Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess=$false)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
@@ -29,9 +29,9 @@ function Get-AnyStackVcenterServices {
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching vCenter services on $($vi.Name)"
             $serviceInstance = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id 'ServiceInstance' -Property Content.ServiceManager }
-            $serviceManager = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $serviceInstance.Content.ServiceManager -Property Service }
+            $serviceManager = if ($serviceInstance) { Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $serviceInstance.Content.ServiceManager -Property Service } } else { $null }
 
-            foreach ($s in $serviceManager.Service) {
+            foreach ($s in @($serviceManager.Service)) {
                 [PSCustomObject]@{
                     PSTypeName  = 'AnyStack.VcenterService'
                     Timestamp   = (Get-Date)

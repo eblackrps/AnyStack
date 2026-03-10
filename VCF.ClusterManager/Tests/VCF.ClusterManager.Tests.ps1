@@ -65,7 +65,7 @@ Describe "VCF.ClusterManager Suite" {
             Get-Command -Name 'Set-AnyStackDrsRule' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Set-AnyStackDrsRule -Server 'MockVC' -ClusterName 'Cluster01' -RuleName 'Rule01' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Set-AnyStackDrsRule -Server 'MockVC' -ClusterName 'Cluster01' -RuleName 'Rule01' -RuleType 'Affinity' -VmNames @('vm01') -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
     Context "Set-AnyStackHostPowerPolicy" {
@@ -81,7 +81,7 @@ Describe "VCF.ClusterManager Suite" {
             Get-Command -Name 'Set-AnyStackVclsRetreatMode' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Set-AnyStackVclsRetreatMode -Server 'MockVC' -ClusterName 'Cluster01' -Enabled `$false -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Set-AnyStackVclsRetreatMode -Server 'MockVC' -ClusterName 'Cluster01' -Enabled $false -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
     Context "Set-AnyStackVmAffinityRule" {
@@ -89,7 +89,7 @@ Describe "VCF.ClusterManager Suite" {
             Get-Command -Name 'Set-AnyStackVmAffinityRule' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Set-AnyStackVmAffinityRule -Server 'MockVC' -ClusterName 'Cluster01' -RuleName 'Rule01' -HostGroupName 'HG01' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Set-AnyStackVmAffinityRule -Server 'MockVC' -ClusterName 'Cluster01' -RuleName 'Rule01' -VmNames @('vm01') -HostGroupName 'HG01' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
     Context "Test-AnyStackHaFailover" {

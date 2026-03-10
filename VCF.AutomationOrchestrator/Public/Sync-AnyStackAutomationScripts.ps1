@@ -38,7 +38,7 @@ function Sync-AnyStackAutomationScripts {
             if ($PSCmdlet.ShouldProcess($vi.Name, "Sync Automation Scripts from $LocalScriptPath")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Syncing scripts on $($vi.Name)"
                 $optMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.Setting }
-                $existingOpts = $optMgr.QueryView()
+                $existingOpts = if ($optMgr) { $optMgr.QueryView() } else { @() }
                 
                 $scripts = Get-ChildItem -Path $LocalScriptPath -Filter *.ps1
                 $synced = 0

@@ -21,6 +21,9 @@ function Set-AnyStackPasswordRotation {
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server,
         [Parameter(Mandatory=$true)]
         [string]$SddcManagerFqdn,
         [Parameter(Mandatory=$true)]

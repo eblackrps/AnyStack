@@ -51,19 +51,20 @@ function Set-AnyStackVmAffinityRule {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Setting VM affinity on $($vi.Name)"
                 $cluster = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType ClusterComputeResource -Filter @{Name=$ClusterName} }
                 
-                $spec = New-Object VMware.Vim.ClusterConfigSpecEx
-                $ruleSpec = New-Object VMware.Vim.ClusterRuleSpec
-                $ruleSpec.Operation = 'add'
-                
-                $rule = New-Object VMware.Vim.ClusterVmHostRuleInfo
-                $rule.Name = $RuleName
-                $rule.Mandatory = $Mandatory
-                $rule.AffineHostGroupName = $HostGroupName
-                
-                $ruleSpec.Info = $rule
-                $spec.RulesSpec = @($ruleSpec)
-                
-                Invoke-AnyStackWithRetry -ScriptBlock { $cluster.ReconfigureComputeResource_Task($spec, $true) }
+                Invoke-AnyStackWithRetry -ScriptBlock {
+                    if ($cluster) {
+                        $spec = New-Object VMware.Vim.ClusterConfigSpecEx
+                        $ruleSpec = New-Object VMware.Vim.ClusterRuleSpec
+                        $ruleSpec.Operation = 'add'
+                        $rule = New-Object VMware.Vim.ClusterVmHostRuleInfo
+                        $rule.Name = $RuleName
+                        $rule.Mandatory = $Mandatory
+                        $rule.AffineHostGroupName = $HostGroupName
+                        $ruleSpec.Info = $rule
+                        $spec.RulesSpec = @($ruleSpec)
+                        $cluster.ReconfigureComputeResource_Task($spec, $true)
+                    }
+                }
                 
                 [PSCustomObject]@{
                     PSTypeName  = 'AnyStack.VmAffinityRule'

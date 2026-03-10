@@ -11,25 +11,27 @@ function Get-AnyStackLicenseUsage {
     .LINK
         https://github.com/eblackrps/AnyStack
     #>
-    [CmdletBinding(SupportsShouldProcess=$false)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)] [ValidateNotNull()]
-        [VMware.VimAutomation.Types.VIServer]$Server
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
+        [ValidateNotNull()]
+        $Server
     )
     begin {
+        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
         try {
-            Write-Verbose "Fetching License Manager on $($Server.Name)..."
+            Write-Verbose "Fetching License Manager on $($vi.Name)..."
             $licenseManager = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $Server -Id 'LicenseManager' -Property Licenses }
 
             if ($null -eq $licenseManager -or $null -eq $licenseManager.Licenses) {
                 Write-Output ([PSCustomObject]@{
                     Timestamp = (Get-Date)
                     Status    = 'No Licenses Found'
-                    Server    = $Server.Name
+                    Server    = $vi.Name
                 })
                 return
             }

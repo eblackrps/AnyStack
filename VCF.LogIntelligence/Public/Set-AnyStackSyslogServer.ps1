@@ -40,10 +40,10 @@ function Set-AnyStackSyslogServer {
                 $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$HostName} }
                 $optMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.AdvancedOption }
                 
-                $prev = ($optMgr.QueryView() | Where-Object { $_.Key -eq 'Syslog.global.logHost' }).Value
+                $prev = if ($optMgr) { ($optMgr.QueryView() | Where-Object { $_.Key -eq 'Syslog.global.logHost' }).Value } else { $null }
                 
                 Invoke-AnyStackWithRetry -ScriptBlock {
-                    $optMgr.UpdateValues(@([VMware.Vim.OptionValue]@{ Key='Syslog.global.logHost'; Value=$SyslogServer }))
+                    if ($optMgr) { $optMgr.UpdateValues(@([VMware.Vim.OptionValue]@{ Key='Syslog.global.logHost'; Value=$SyslogServer })) }
                 }
                 
                 [PSCustomObject]@{

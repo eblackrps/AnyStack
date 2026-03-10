@@ -35,11 +35,12 @@ function Add-AnyStackNativeKeyProvider {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Adding KMS on $($vi.Name)"
                 $cryptoMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.CryptoManager }
                 
-                $spec = New-Object VMware.Vim.CryptoManagerKmipServerSpec
-                $spec.Info = New-Object VMware.Vim.KmipServerInfo
-                $spec.Info.Name = $ProviderName
-                
-                Invoke-AnyStackWithRetry -ScriptBlock { $cryptoMgr.RegisterKmipServer($spec) }
+                if ($cryptoMgr) {
+                    $spec = New-Object VMware.Vim.CryptoManagerKmipServerSpec
+                    $spec.Info = New-Object VMware.Vim.KmipServerInfo
+                    $spec.Info.Name = $ProviderName
+                    Invoke-AnyStackWithRetry -ScriptBlock { $cryptoMgr.RegisterKmipServer($spec) }
+                }
                 
                 [PSCustomObject]@{
                     PSTypeName   = 'AnyStack.NativeKeyProvider'

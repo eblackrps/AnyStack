@@ -33,7 +33,7 @@ Describe "VCF.SddcManager Suite" {
             Get-Command -Name 'Set-AnyStackPasswordRotation' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Set-AnyStackPasswordRotation -Server 'MockVC' -SddcManagerFqdn 'sddc.stub' -Credential (New-Object PSCredential('u',(ConvertTo-SecureString 'p' -AsPlainText -Force))) -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Set-AnyStackPasswordRotation -Server 'MockVC' -SddcManagerFqdn 'sddc.stub' -Credential (New-Object PSCredential('u',(ConvertTo-SecureString 'p' -AsPlainText -Force))) -ResourceType 'VCENTER' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
     Context "Test-AnyStackSddcHealth" {

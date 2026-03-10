@@ -18,7 +18,7 @@ function Export-AnyStackPerformanceBaseline {
         Author: The AnyStack Architect
         Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess=$false)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
@@ -27,7 +27,7 @@ function Export-AnyStackPerformanceBaseline {
         [Parameter(Mandatory=$false)]
         [string]$ClusterName,
         [Parameter(Mandatory=$false)]
-        [string]$OutputPath = ".\Baseline-$(Get-Date -f yyyyMMdd).json"
+        [string]$OutputPath = "$env:TEMP\Baseline-$(Get-Date -f yyyyMMdd).json"
     )
     begin {
         $vi = Get-AnyStackConnection -Server $Server
@@ -50,7 +50,7 @@ function Export-AnyStackPerformanceBaseline {
                 PSTypeName       = 'AnyStack.PerfBaseline'
                 Timestamp        = (Get-Date)
                 Server           = $vi.Name
-                BaselinePath     = (Resolve-Path $OutputPath).Path
+                BaselinePath     = if (Test-Path $OutputPath) { (Resolve-Path $OutputPath).Path } else { $OutputPath }
                 HostsProfiled    = if ($hosts) { $hosts.Count } else { 0 }
                 MetricsCollected = $metrics.Count * 2
             }

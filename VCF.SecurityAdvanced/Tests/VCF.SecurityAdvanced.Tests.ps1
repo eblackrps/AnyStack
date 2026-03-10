@@ -50,7 +50,7 @@ Describe "VCF.SecurityAdvanced Suite" {
             Get-Command -Name 'Set-AnyStackEsxiLockdownMode' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { Set-AnyStackEsxiLockdownMode -Server 'MockVC' -HostName 'esxi1' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { Set-AnyStackEsxiLockdownMode -Server 'MockVC' -HostName 'esxi1' -Mode 'lockdownNormal' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
 }

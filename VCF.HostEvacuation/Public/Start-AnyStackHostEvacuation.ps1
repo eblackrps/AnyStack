@@ -44,13 +44,16 @@ function Start-AnyStackHostEvacuation {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Evacuating host on $($vi.Name)"
                 $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$HostName} }
                 
-                $spec = New-Object VMware.Vim.MaintenanceSpec
-                $spec.VsanMode = New-Object VMware.Vim.VsanHostDecommissionMode
-                $spec.VsanMode.ObjectAction = $VsanMode
-                
-                $taskRef = Invoke-AnyStackWithRetry -ScriptBlock { $h.EnterMaintenanceMode_Task(15, $true, $spec) }
-                $task = Get-Task -Id $taskRef.Value -Server $vi
-                $task | Wait-Task -TimeoutSeconds $TimeoutSeconds | Out-Null
+                $taskRef = Invoke-AnyStackWithRetry -ScriptBlock {
+                    $spec = New-Object VMware.Vim.MaintenanceSpec
+                    $spec.VsanMode = New-Object VMware.Vim.VsanHostDecommissionMode
+                    $spec.VsanMode.ObjectAction = $VsanMode
+                    if ($h) { $h.EnterMaintenanceMode_Task(15, $true, $spec) } else { $null }
+                }
+                if ($taskRef) {
+                    $task = Get-Task -Id $taskRef.Value -Server $vi
+                    $task | Wait-Task -TimeoutSeconds $TimeoutSeconds | Out-Null
+                }
                 
                 [PSCustomObject]@{
                     PSTypeName        = 'AnyStack.HostEvacuation'

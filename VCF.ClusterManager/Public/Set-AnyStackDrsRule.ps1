@@ -55,20 +55,21 @@ function Set-AnyStackDrsRule {
                     $VmNames | ForEach-Object { (Get-View -Server $vi -ViewType VirtualMachine -Filter @{Name=$_}).MoRef }
                 }
                 
-                $spec = New-Object VMware.Vim.ClusterConfigSpecEx
-                $ruleSpec = New-Object VMware.Vim.ClusterRuleSpec
-                $ruleSpec.Operation = 'add'
-                
-                $rule = if ($RuleType -eq 'Affinity') { New-Object VMware.Vim.ClusterAffinityRuleSpec }
-                        else { New-Object VMware.Vim.ClusterAntiAffinityRuleSpec }
-                
-                $rule.Name = $RuleName
-                $rule.Enabled = $Enabled
-                $rule.Vm = $vms
-                $ruleSpec.Info = $rule
-                $spec.RulesSpec = @($ruleSpec)
-                
-                Invoke-AnyStackWithRetry -ScriptBlock { $cluster.ReconfigureComputeResource_Task($spec, $true) }
+                Invoke-AnyStackWithRetry -ScriptBlock {
+                    if ($cluster) {
+                        $spec = New-Object VMware.Vim.ClusterConfigSpecEx
+                        $ruleSpec = New-Object VMware.Vim.ClusterRuleSpec
+                        $ruleSpec.Operation = 'add'
+                        $rule = if ($RuleType -eq 'Affinity') { New-Object VMware.Vim.ClusterAffinityRuleSpec }
+                                else { New-Object VMware.Vim.ClusterAntiAffinityRuleSpec }
+                        $rule.Name = $RuleName
+                        $rule.Enabled = $Enabled
+                        $rule.Vm = $vms
+                        $ruleSpec.Info = $rule
+                        $spec.RulesSpec = @($ruleSpec)
+                        $cluster.ReconfigureComputeResource_Task($spec, $true)
+                    }
+                }
                 
                 [PSCustomObject]@{
                     PSTypeName = 'AnyStack.DrsRule'

@@ -42,35 +42,32 @@ function New-AnyStackScheduledSnapshot {
             if ($PSCmdlet.ShouldProcess($vi.Name, "Create Scheduled Snapshot '$SnapshotName' for VM '$VmName'")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Creating scheduled snapshot task on $($vi.Name)"
                 $vm = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter @{Name=$VmName} }
-                if (-not $vm) { throw "VM '$VmName' not found." }
                 
-                $stMgr = Get-View -Server $vi -Id $vi.ExtensionData.Content.ScheduledTaskManager
-                
-                $spec = New-Object VMware.Vim.ScheduledTaskSpec
-                $spec.Name = "Scheduled Snapshot - $VmName"
-                $spec.Description = "Automated snapshot task created by AnyStack"
-                $spec.Enabled = $true
-                
-                $spec.Scheduler = New-Object VMware.Vim.DailyTaskScheduler
-                $spec.Scheduler.Hour = 2
-                $spec.Scheduler.Minute = 0
-                $spec.Scheduler.Interval = 1
-                
-                $spec.Action = New-Object VMware.Vim.MethodAction
-                $spec.Action.Name = "CreateSnapshot_Task"
-                
-                $arg1 = New-Object VMware.Vim.MethodActionArgument
-                $arg1.Value = $SnapshotName
-                $arg2 = New-Object VMware.Vim.MethodActionArgument
-                $arg2.Value = "AnyStack Automated Snapshot"
-                $arg3 = New-Object VMware.Vim.MethodActionArgument
-                $arg3.Value = $false
-                $arg4 = New-Object VMware.Vim.MethodActionArgument
-                $arg4.Value = $false
-                
-                $spec.Action.Argument = @($arg1, $arg2, $arg3, $arg4)
-                
-                Invoke-AnyStackWithRetry -ScriptBlock { $stMgr.CreateScheduledTask($vm.MoRef, $spec) }
+                Invoke-AnyStackWithRetry -ScriptBlock {
+                    $stMgr = Get-View -Server $vi -Id $vi.ExtensionData.Content.ScheduledTaskManager
+                    if ($stMgr -and $vm) {
+                        $spec = New-Object VMware.Vim.ScheduledTaskSpec
+                        $spec.Name = "Scheduled Snapshot - $VmName"
+                        $spec.Description = "Automated snapshot task created by AnyStack"
+                        $spec.Enabled = $true
+                        $spec.Scheduler = New-Object VMware.Vim.DailyTaskScheduler
+                        $spec.Scheduler.Hour = 2
+                        $spec.Scheduler.Minute = 0
+                        $spec.Scheduler.Interval = 1
+                        $spec.Action = New-Object VMware.Vim.MethodAction
+                        $spec.Action.Name = "CreateSnapshot_Task"
+                        $arg1 = New-Object VMware.Vim.MethodActionArgument
+                        $arg1.Value = $SnapshotName
+                        $arg2 = New-Object VMware.Vim.MethodActionArgument
+                        $arg2.Value = "AnyStack Automated Snapshot"
+                        $arg3 = New-Object VMware.Vim.MethodActionArgument
+                        $arg3.Value = $false
+                        $arg4 = New-Object VMware.Vim.MethodActionArgument
+                        $arg4.Value = $false
+                        $spec.Action.Argument = @($arg1, $arg2, $arg3, $arg4)
+                        $stMgr.CreateScheduledTask($vm.MoRef, $spec)
+                    }
+                }
                 
                 [PSCustomObject]@{
                     PSTypeName   = 'AnyStack.ScheduledSnapshot'

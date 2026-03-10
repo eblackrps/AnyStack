@@ -16,7 +16,7 @@ function Get-AnyStackVcenterDiskSpace {
         Author: The AnyStack Architect
         Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess=$false)]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
@@ -41,7 +41,7 @@ function Get-AnyStackVcenterDiskSpace {
                 Invoke-RestMethod -Method Get -Uri $url -Headers @{Authorization="Basic $auth"} -SkipCertificateCheck
             }
             
-            foreach ($kv in $response.PSObject.Properties) {
+            foreach ($kv in @(if ($response) { $response.PSObject.Properties } else { @() })) {
                 $partition = $kv.Name
                 $data = $kv.Value
                 [PSCustomObject]@{

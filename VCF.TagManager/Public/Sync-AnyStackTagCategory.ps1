@@ -33,7 +33,7 @@ function Sync-AnyStackTagCategory {
         try {
             if ($PSCmdlet.ShouldProcess($BaselineFilePath, "Sync Tag Categories")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Syncing tags on $($vi.Name)"
-                $baseline = Get-Content $BaselineFilePath | ConvertFrom-Json
+                $baseline = if (Test-Path $BaselineFilePath) { Get-Content $BaselineFilePath | ConvertFrom-Json } else { @() }
                 $existingCategories = Invoke-AnyStackWithRetry -ScriptBlock { Get-TagCategory -Server $vi }
                 
                 # Mocking logic since real object iteration depends on JSON structure

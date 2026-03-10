@@ -42,7 +42,7 @@ Describe "VCF.IdentityManager Suite" {
             Get-Command -Name 'New-AnyStackCustomRole' | Should -Not -BeNullOrEmpty
         }
         It "Should be callable without throwing a syntax error" {
-            { New-AnyStackCustomRole -Server 'MockVC' -RoleName 'TestRole' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+            { New-AnyStackCustomRole -Server 'MockVC' -RoleName 'TestRole' -Privileges @('System.Read') -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
     Context "Test-AnyStackSsoConfiguration" {

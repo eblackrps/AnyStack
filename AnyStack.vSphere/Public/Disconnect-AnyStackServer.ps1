@@ -22,21 +22,16 @@ function Disconnect-AnyStackServer {
     )
     process {
         try {
-            $targets = if ($Server) { 
-                if ($Server -is [string]) { Get-VIServer -Name $Server } else { $Server }
-            } else { $global:DefaultVIServers }
-
-            foreach ($srv in $targets) {
-                if ($PSCmdlet.ShouldProcess($srv.Name, "Disconnect from vSphere")) {
-                    Write-Verbose "[$($MyInvocation.MyCommand.Name)] Disconnecting from $($srv.Name)"
-                    Invoke-AnyStackWithRetry -ScriptBlock { Disconnect-VIServer -Server $srv -Confirm:$false }
-                    
-                    [PSCustomObject]@{
-                        PSTypeName = 'AnyStack.Disconnection'
-                        Timestamp  = (Get-Date)
-                        Status     = 'Disconnected'
-                        Server     = $srv.Name
-                    }
+            $vi = Get-AnyStackConnection -Server $Server
+            if ($PSCmdlet.ShouldProcess($vi.Name, "Disconnect from vSphere")) {
+                Write-Verbose "[$($MyInvocation.MyCommand.Name)] Disconnecting from $($vi.Name)"
+                Invoke-AnyStackWithRetry -ScriptBlock { Disconnect-VIServer -Server $vi -Confirm:$false }
+                
+                [PSCustomObject]@{
+                    PSTypeName = 'AnyStack.Disconnection'
+                    Timestamp  = (Get-Date)
+                    Status     = 'Disconnected'
+                    Server     = $vi.Name
                 }
             }
         }
