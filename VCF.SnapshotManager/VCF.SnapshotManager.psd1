@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.SnapshotManager.psm1'
-    ModuleVersion = '1.7.6'
+    ModuleVersion = '1.7.7'
     GUID = '6787a7ee-62f0-4167-9326-1f816aa6de6b'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -9,7 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.6'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.7'}
     )
     FunctionsToExport = @('Clear-AnyStackOrphanedSnapshots','Optimize-AnyStackSnapshots')
     CmdletsToExport = @()

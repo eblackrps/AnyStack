@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.IdentityManager.psm1'
-    ModuleVersion = '1.7.6'
+    ModuleVersion = '1.7.7'
     GUID = 'bfd98cf4-0261-4e5f-ad55-b818f8e22ce5'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -9,7 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.6'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.7'}
     )
     FunctionsToExport = @('Export-AnyStackAccessMatrix','Get-AnyStackGlobalPermission','New-AnyStackCustomRole','Test-AnyStackSsoConfiguration')
     CmdletsToExport = @()

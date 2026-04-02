@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.DRValidator.psm1'
-    ModuleVersion = '1.7.6'
+    ModuleVersion = '1.7.7'
     GUID = '57327433-fb2f-4506-a6ac-67d48b016bf2'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -9,7 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.6'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.7'}
     )
     FunctionsToExport = @('Export-AnyStackDRReadinessReport','Repair-AnyStackDisasterRecoveryReadiness','Start-AnyStackVmBackup','Test-AnyStackDisasterRecoveryReadiness')
     CmdletsToExport = @()
