@@ -4,7 +4,7 @@
 
 If you have a question or need help with AnyStack Enterprise PowerShell Module Suite, you can use one of the following channels:
 
-*   **GitHub Discussions:** Ask questions, share ideas, and engage with the community [here](https://github.com/eblackrps/AnyStack/discussions).
+*   **Repository Docs:** Start with the README, examples, and release notes in the repository [here](https://github.com/eblackrps/AnyStack).
 *   **GitHub Issues:** If you encounter a bug or have a feature request, please [open an issue](https://github.com/eblackrps/AnyStack/issues) and fill out the provided template.
 
 ## What to include when reporting problems

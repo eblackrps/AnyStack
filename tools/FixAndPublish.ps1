@@ -1,6 +1,14 @@
 param(
     [Parameter(Mandatory = $true)]
-    [string]$NuGetApiKey
+    [string]$NuGetApiKey,
+
+    [string]$SmokeTestServer,
+
+    [System.Management.Automation.PSCredential]$SmokeTestCredential,
+
+    [string]$SmokeTestClusterName,
+
+    [switch]$SkipLiveSmokeTest
 )
 
 $ErrorActionPreference = 'Stop'
@@ -13,6 +21,28 @@ $modules = Get-ChildItem -Directory -Path $repoRoot | Where-Object {
 & (Join-Path $repoRoot 'test-syntax.ps1')
 & (Join-Path $repoRoot 'build.ps1')
 & (Join-Path $PSScriptRoot 'Validate-ForGallery.ps1')
+
+if ($SkipLiveSmokeTest) {
+    Write-Warning 'Skipping live smoke test. Use this only when a lab environment is unavailable and the release risk is understood.'
+}
+else {
+    if (-not $SmokeTestServer) {
+        throw 'SmokeTestServer is required unless -SkipLiveSmokeTest is specified.'
+    }
+
+    if (-not $SmokeTestCredential) {
+        throw 'SmokeTestCredential is required unless -SkipLiveSmokeTest is specified.'
+    }
+
+    if (-not $SmokeTestClusterName) {
+        throw 'SmokeTestClusterName is required unless -SkipLiveSmokeTest is specified.'
+    }
+
+    & (Join-Path $PSScriptRoot 'Invoke-SmokeTest.ps1') `
+        -Server $SmokeTestServer `
+        -Credential $SmokeTestCredential `
+        -ClusterName $SmokeTestClusterName
+}
 
 foreach ($module in $modules) {
     Write-Host "Publishing $($module.Name)..." -ForegroundColor Cyan

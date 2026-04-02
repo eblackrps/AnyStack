@@ -18,7 +18,7 @@ Export and sync vCenter configurations declaratively. Treat your vCenter config 
 Install-Module -Name AnyStack -Scope CurrentUser
 
 # Or install this module individually
-Install-Module -Name AnyStack.vSphere -Scope CurrentUser
+Install-Module -Name AnyStack.ConfigurationAsCode -Scope CurrentUser
 ```
 
 ## Cmdlets
@@ -43,6 +43,6 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 ## Links
 
 - [Full module suite on GitHub](https://github.com/eblackrps/AnyStack)
-- [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
+- [PowerShell Gallery](https://www.powershellgallery.com/packages/AnyStack.ConfigurationAsCode)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
