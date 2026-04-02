@@ -1,15 +1,15 @@
 @{
     RootModule = 'VCF.ApplianceManager.psm1'
-    ModuleVersion = '1.7.8'
+    ModuleVersion = '1.7.9'
     GUID = 'f65b0300-962a-42bb-b14f-705f88cdf65f'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
-    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Copyright = '(c) 2026 The AnyStack Architect. Released under the MIT License.'
     Description = 'Enterprise module for VCF.ApplianceManager automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.8'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.9'}
     )
     FunctionsToExport = @('Get-AnyStackVcenterDiskSpace','Restart-AnyStackVcenterService','Start-AnyStackVcenterBackup','Test-AnyStackVcenterDatabaseHealth')
     CmdletsToExport = @()
@@ -31,3 +31,4 @@
 
 
  
+

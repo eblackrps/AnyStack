@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Installs the AnyStack Enterprise Module Suite v1.7.8 into your local PowerShell environment.
+    Installs the AnyStack Enterprise Module Suite v1.7.9 into your local PowerShell environment.
 #>
 [CmdletBinding()]
 param(
@@ -31,7 +31,7 @@ if ($Global) {
     }
 }
 
-$moduleVersion = '1.7.8'
+$moduleVersion = '1.7.9'
 $dependencyScope = if ($Global) { 'AllUsers' } else { 'CurrentUser' }
 
 Write-Host "Checking for VCF.PowerCLI dependency..." -ForegroundColor Cyan
@@ -94,3 +94,4 @@ Write-Host "Installation Complete!" -ForegroundColor Green
 Write-Host "Run 'Import-Module AnyStack.vSphere' to begin." -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Green
  
+

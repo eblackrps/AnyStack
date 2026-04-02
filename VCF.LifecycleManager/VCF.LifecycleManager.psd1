@@ -1,15 +1,15 @@
 @{
     RootModule = 'VCF.LifecycleManager.psm1'
-    ModuleVersion = '1.7.8'
+    ModuleVersion = '1.7.9'
     GUID = 'b9926487-f43a-41c3-925f-34525f82ba52'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
-    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Copyright = '(c) 2026 The AnyStack Architect. Released under the MIT License.'
     Description = 'Enterprise module for VCF.LifecycleManager automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.8'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.9'}
     )
     FunctionsToExport = @('Export-AnyStackHardwareCompatibility','Get-AnyStackClusterImage','Start-AnyStackHostRemediation','Test-AnyStackCompliance')
     CmdletsToExport = @()
@@ -31,3 +31,4 @@
 
 
  
+
