@@ -30,14 +30,13 @@ function Test-AnyStackHostSyslog {
         [string]$HostName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing syslog on $($vi.Name)"
-            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name,ConfigManager }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -HostName $HostName -Property @('Name','ConfigManager')
             
             foreach ($h in $hosts) {
                 $optMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $h.ConfigManager.AdvancedOption }

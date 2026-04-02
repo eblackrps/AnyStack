@@ -30,13 +30,13 @@ function Repair-AnyStackNetworkConfiguration {
         [int]$ExpectedMtu = 9000
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Repairing network config on $($vi.Name)"
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Config.Network,ConfigManager }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -Property @('Name','Config.Network','ConfigManager')
             
             foreach ($h in $hosts) {
                 if ($PSCmdlet.ShouldProcess($h.Name, "Repair Network Configuration MTU")) {

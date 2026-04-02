@@ -34,10 +34,10 @@ function Update-AnyStackEsxCertificate {
         [string]$KeyPath
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($HostName, "Update ESX Certificate")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Updating certificate on $HostName via $($vi.Name)"

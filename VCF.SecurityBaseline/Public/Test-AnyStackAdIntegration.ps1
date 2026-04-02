@@ -30,14 +30,13 @@ function Test-AnyStackAdIntegration {
         [string]$HostName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing AD integration on $($vi.Name)"
-            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name,Config.AuthenticationManagerInfo }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -HostName $HostName -Property @('Name','Config.AuthenticationManagerInfo')
             
             foreach ($h in $hosts) {
                 $adInfo = $h.Config.AuthenticationManagerInfo.AuthConfig | Where-Object { $_ -is [VMware.Vim.HostActiveDirectoryInfo] } | Select-Object -First 1

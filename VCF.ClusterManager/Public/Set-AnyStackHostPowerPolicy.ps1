@@ -31,10 +31,10 @@ function Set-AnyStackHostPowerPolicy {
         [string]$Policy
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($HostName, "Set Power Policy to $Policy")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Setting power policy on $($vi.Name)"

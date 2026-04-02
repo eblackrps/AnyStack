@@ -26,10 +26,10 @@ function Repair-AnyStackDisasterRecoveryReadiness {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Repairing DR readiness on $($vi.Name)"
             $results = Invoke-AnyStackWithRetry -ScriptBlock { Test-AnyStackDisasterRecoveryReadiness -Server $vi -ClusterName $ClusterName -ErrorAction SilentlyContinue }

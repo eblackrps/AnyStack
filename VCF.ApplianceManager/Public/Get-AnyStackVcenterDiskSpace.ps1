@@ -16,7 +16,7 @@ function Get-AnyStackVcenterDiskSpace {
         Author: The AnyStack Architect
         Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
@@ -26,10 +26,10 @@ function Get-AnyStackVcenterDiskSpace {
         [System.Management.Automation.PSCredential]$Credential
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching vCenter Disk Space via VAMI on $($vi.Name)"
             $user = $Credential.UserName

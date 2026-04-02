@@ -30,16 +30,18 @@ function Get-AnyStackHostLogBundle {
         [string]$DestinationPath = "$env:TEMP\logs"
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Generating log bundle on $($vi.Name)"
             $diagMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.DiagnosticManager }
-            $h = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter @{Name=$HostName} }
+            $h = Get-AnyStackHostView -Server $vi -HostName $HostName -Property @('Name')
             
-            $taskRef = if ($diagMgr -and $h) { Invoke-AnyStackWithRetry -ScriptBlock { $diagMgr.GenerateLogBundles_Task($false, @($h.MoRef)) } } else { $null }
+            $taskRef = if ($diagMgr -and $h -and $PSCmdlet.ShouldProcess($HostName, 'Generate host log bundle')) {
+                Invoke-AnyStackWithRetry -ScriptBlock { $diagMgr.GenerateLogBundles_Task($false, @($h.MoRef)) }
+            } else { $null }
             if ($taskRef) {
                 $task = Get-Task -Id $taskRef.Value -Server $vi
                 $task | Wait-Task -ErrorAction SilentlyContinue | Out-Null

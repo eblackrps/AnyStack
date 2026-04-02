@@ -30,14 +30,13 @@ function Test-AnyStackStorageConfiguration {
         [string]$HostName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing storage config on $($vi.Name)"
-            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name,ConfigManager,Runtime }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -HostName $HostName -Property @('Name','ConfigManager','Runtime')
             
             foreach ($h in $hosts) {
                 [PSCustomObject]@{

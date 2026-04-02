@@ -30,10 +30,10 @@ function Clear-AnyStackStaleLogs {
         [int]$AgeDays = 30
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($HostName, "Clear stale logs older than $AgeDays days")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Clearing logs on $($vi.Name)"

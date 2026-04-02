@@ -30,10 +30,10 @@ function Move-AnyStackVmDatastore {
         [string]$DestinationDatastore
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($VmName, "Move to datastore $DestinationDatastore")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Initiating storage vMotion on $($vi.Name)"

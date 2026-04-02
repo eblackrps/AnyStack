@@ -26,10 +26,10 @@ function Test-AnyStackHaFailover {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing HA failover on $($vi.Name)"
             $filter = if ($ClusterName) { @{Name="*$ClusterName*"} } else { $null }

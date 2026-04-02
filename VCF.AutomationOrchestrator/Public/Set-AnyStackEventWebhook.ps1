@@ -30,10 +30,10 @@ function Set-AnyStackEventWebhook {
         [string[]]$EventTypes = @('VmPoweredOnEvent','VmPoweredOffEvent')
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($vi.Name, "Set Event Webhook to $WebhookUrl")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Updating OptionManager for webhooks on $($vi.Name)"

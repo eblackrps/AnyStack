@@ -22,10 +22,10 @@ function Get-AnyStackFailedScheduledTask {
         $Server
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching scheduled tasks on $($vi.Name)"
             $stMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.ScheduledTaskManager }

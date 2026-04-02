@@ -30,15 +30,13 @@ function Get-AnyStackZombieVm {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Finding zombie VMs on $($vi.Name)"
-            $vms = Invoke-AnyStackWithRetry -ScriptBlock { 
-                Get-View -Server $vi -ViewType VirtualMachine -Property Name,Runtime.PowerState,Config.Modified,Summary.Storage.Committed
-            }
+            $vms = Get-AnyStackVirtualMachineView -Server $vi -ClusterName $ClusterName -Property @('Name','Runtime.PowerState','Config.Modified','Summary.Storage.Committed')
             
             $threshold = (Get-Date).AddDays(-$AgeDays)
             $zombies = $vms | Where-Object { $_.Runtime.PowerState -eq 'poweredOff' -and $_.Config.Modified -lt $threshold }

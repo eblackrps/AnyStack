@@ -9,6 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.6'}
     )
     FunctionsToExport = @('Clear-AnyStackOrphanedSnapshots','Optimize-AnyStackSnapshots')
     CmdletsToExport = @()
@@ -31,12 +32,3 @@
 
 
  
-
-
-
-
-
-
-
-
-

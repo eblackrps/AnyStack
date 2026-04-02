@@ -10,7 +10,7 @@
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
     )
-    FunctionsToExport = @('Connect-AnyStackServer','Disconnect-AnyStackServer','Get-AnyStackLicenseUsage','Get-AnyStackVcenterServices','Invoke-AnyStackHealthCheck','Write-AnyStackLog')
+    FunctionsToExport = @('Connect-AnyStackServer','Disconnect-AnyStackServer','Get-AnyStackClusterHostIdSet','Get-AnyStackConnection','Get-AnyStackHostView','Get-AnyStackLicenseUsage','Get-AnyStackVcenterServices','Get-AnyStackVirtualMachineView','Invoke-AnyStackHealthCheck','Invoke-AnyStackWithRetry','Write-AnyStackLog')
     CmdletsToExport = @()
     VariablesToExport = @()
     AliasesToExport = @()
@@ -25,12 +25,3 @@
 
 
  
-
-
-
-
-
-
-
-
-

@@ -30,10 +30,10 @@ function Set-AnyStackSyslogServer {
         [string]$SyslogServer
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($HostName, "Set Syslog Server to $SyslogServer")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Updating syslog on $($vi.Name)"

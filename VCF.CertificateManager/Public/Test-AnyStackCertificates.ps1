@@ -30,13 +30,13 @@ function Test-AnyStackCertificates {
         [int]$WarnDays = 60
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Checking certificates on $($vi.Name)"
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Config.Certificate }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -Property @('Name','Config.Certificate')
             
             foreach ($h in $hosts) {
                 if ($h.Config.Certificate) {

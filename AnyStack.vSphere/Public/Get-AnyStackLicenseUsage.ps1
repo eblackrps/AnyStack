@@ -11,7 +11,7 @@ function Get-AnyStackLicenseUsage {
     .LINK
         https://github.com/eblackrps/AnyStack
     #>
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
@@ -19,13 +19,13 @@ function Get-AnyStackLicenseUsage {
         $Server
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "Fetching License Manager on $($vi.Name)..."
-            $licenseManager = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $Server -Id 'LicenseManager' -Property Licenses }
+            $licenseManager = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id 'LicenseManager' -Property Licenses }
 
             if ($null -eq $licenseManager -or $null -eq $licenseManager.Licenses) {
                 Write-Output ([PSCustomObject]@{
@@ -40,7 +40,7 @@ function Get-AnyStackLicenseUsage {
                 [PSCustomObject]@{
                     Timestamp   = (Get-Date)
                     Status      = 'Success'
-                    Server      = $Server.Name
+                    Server      = $vi.Name
                     LicenseName = $lic.Name
                     LicenseKey  = $lic.LicenseKey
                     Total       = $lic.Total
@@ -58,5 +58,3 @@ function Get-AnyStackLicenseUsage {
 
 
  
-
-

@@ -35,10 +35,10 @@ function Add-AnyStackNvmeInterface {
         [string]$TargetAddress
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($HostName, "Add NVMe $Protocol Adapter to $TargetAddress")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Adding NVMe adapter on $($vi.Name)"

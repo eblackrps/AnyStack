@@ -5,6 +5,9 @@
     Compiles, tests, and prepares all sub-modules for deployment.
 #>
 $ErrorActionPreference = 'Stop'
+$env:PSModulePath = "$PSScriptRoot;$env:PSModulePath"
+
+Import-Module Pester -MinimumVersion 5.0.0 -Force
 
 $Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
 

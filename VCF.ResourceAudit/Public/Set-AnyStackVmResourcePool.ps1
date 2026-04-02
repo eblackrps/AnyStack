@@ -30,10 +30,10 @@ function Set-AnyStackVmResourcePool {
         [string]$ResourcePoolName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($VmName, "Move to Resource Pool $ResourcePoolName")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Moving VM to resource pool on $($vi.Name)"

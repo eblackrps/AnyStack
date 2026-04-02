@@ -30,10 +30,10 @@ function Set-AnyStackVclsRetreatMode {
         [bool]$Enabled
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($ClusterName, "Set vCLS Retreat Mode = $Enabled")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Setting vCLS retreat mode on $($vi.Name)"

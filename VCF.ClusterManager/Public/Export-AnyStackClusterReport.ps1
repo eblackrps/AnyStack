@@ -30,10 +30,10 @@ function Export-AnyStackClusterReport {
         [string]$OutputPath = ".\ClusterReport-$(Get-Date -f yyyyMMdd).html"
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Exporting cluster report on $($vi.Name)"
             $filter = if ($ClusterName) { @{Name="*$ClusterName*"} } else { $null }

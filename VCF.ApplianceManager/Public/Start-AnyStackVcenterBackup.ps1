@@ -30,10 +30,10 @@ function Start-AnyStackVcenterBackup {
         [System.Management.Automation.PSCredential]$BackupCredential
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($vi.Name, "Start vCenter Backup to $BackupLocation")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Starting backup job on $($vi.Name)"

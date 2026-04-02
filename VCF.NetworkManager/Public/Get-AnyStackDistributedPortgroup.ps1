@@ -22,10 +22,10 @@ function Get-AnyStackDistributedPortgroup {
         $Server
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching portgroups on $($vi.Name)"
             $pgs = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType DistributedVirtualPortgroup -Property Name,Config }

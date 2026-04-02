@@ -26,10 +26,10 @@ function Export-AnyStackHtmlReport {
         [string]$OutputPath = ".\AnyStackReport-$(Get-Date -f yyyyMMdd).html"
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Generating HTML report for $($vi.Name)"
             

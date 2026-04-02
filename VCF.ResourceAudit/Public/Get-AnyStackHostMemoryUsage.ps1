@@ -22,10 +22,10 @@ function Get-AnyStackHostMemoryUsage {
         $Server
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching memory usage on $($vi.Name)"
             $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Summary.Hardware.MemorySize,Summary.QuickStats }

@@ -26,10 +26,10 @@ function Export-AnyStackConfiguration {
         [string]$OutputPath = ".\vCenterConfig-$(Get-Date -f yyyyMMdd).json"
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Exporting configuration from $($vi.Name)"
             $config = @{
@@ -56,6 +56,3 @@ function Export-AnyStackConfiguration {
 }
 
  
-
-
-
