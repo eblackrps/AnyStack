@@ -20,5 +20,3 @@ function Invoke-AnyStackWithRetry {
     } while ($attempt -lt $MaxAttempts)
 }
  
-
-

@@ -39,5 +39,3 @@ After each new vSphere/VCF release, prioritize testing:
 - **Minor (1.x.0):** New cmdlets added, no breaking changes.
 - **Major (x.0.0):** Breaking changes (renames, dropped version support).
  
-
-

@@ -1,6 +1,6 @@
 # VCF.NetworkManager
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.7 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · MIT License**
 
 Distributed Virtual Switch management: port group inventory, VLAN provisioning, and tag assignment.
 
@@ -49,12 +49,3 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
-
-
-
-
-
-
-
-
-

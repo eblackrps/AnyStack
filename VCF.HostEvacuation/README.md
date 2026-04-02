@@ -1,6 +1,6 @@
 # VCF.HostEvacuation
 
-**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · v1.6.7 · MIT License**
+**Part of the [AnyStack Enterprise Module Suite](https://github.com/eblackrps/AnyStack) · MIT License**
 
 Controlled host evacuation for maintenance windows. Handles vMotion of workloads off a host and returns it to service.
 
@@ -46,12 +46,3 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
-
-
-
-
-
-
-
-
-

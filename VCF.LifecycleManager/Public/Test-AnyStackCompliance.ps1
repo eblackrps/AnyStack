@@ -39,8 +39,9 @@ function Test-AnyStackCompliance {
                 Invoke-AnyStackWithRetry -ScriptBlock { $hpMgr.CheckCompliance_Task($hosts.MoRef) }
             } else { $null }
             if ($taskRef) {
-                $task = Get-Task -Id $taskRef.Value -Server $vi
-                $task | Wait-Task -ErrorAction SilentlyContinue | Out-Null
+                Invoke-AnyStackWithRetry -ScriptBlock {
+                    Get-Task -Id $taskRef.Value -Server $vi | Wait-Task -ErrorAction SilentlyContinue | Out-Null
+                } | Out-Null
             }
             $results = if ($taskRef) { Invoke-AnyStackWithRetry -ScriptBlock { (Get-View -Server $vi -Id $taskRef).Info.Result } } else { @() }
             
@@ -61,7 +62,7 @@ function Test-AnyStackCompliance {
             }
         }
         catch {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
+            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($_.Exception, 'UnexpectedError', [System.Management.Automation.ErrorCategory]::NotSpecified, $null))
         }
     }
 }

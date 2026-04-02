@@ -22,11 +22,3 @@ The following cmdlets in `VCF.DRValidator` were renamed for consistency in previ
 | Test-DisasterRecoveryReadiness | Test-AnyStackDisasterRecoveryReadiness |
 | Repair-DisasterRecoveryReadiness | Repair-AnyStackDisasterRecoveryReadiness |
  
-
-
-
-
-
-
-
-
