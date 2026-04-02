@@ -34,10 +34,10 @@ function New-AnyStackCustomRole {
         [string]$Description = ''
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($RoleName, "Create Custom Role")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Creating custom role on $($vi.Name)"

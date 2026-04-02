@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.LogIntelligence.psm1'
-    ModuleVersion = '1.7.6'
+    ModuleVersion = '1.7.7'
     GUID = '4fbd7b2e-6e82-44a1-a5cd-4e282b207c3f'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -9,6 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.7'}
     )
     FunctionsToExport = @('Clear-AnyStackStaleLogs','Get-AnyStackHostLogBundle','Set-AnyStackSyslogServer','Test-AnyStackLogForwarding')
     CmdletsToExport = @()
@@ -30,12 +31,3 @@
 
 
  
-
-
-
-
-
-
-
-
-

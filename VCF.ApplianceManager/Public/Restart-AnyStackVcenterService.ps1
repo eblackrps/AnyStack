@@ -26,10 +26,10 @@ function Restart-AnyStackVcenterService {
         [string]$ServiceName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($vi.Name, "Restart vCenter Service $ServiceName")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Restarting service $ServiceName on $($vi.Name)"

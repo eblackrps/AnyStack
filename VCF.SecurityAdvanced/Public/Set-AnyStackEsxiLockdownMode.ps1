@@ -31,10 +31,10 @@ function Set-AnyStackEsxiLockdownMode {
         [string]$Mode
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($HostName, "Set Lockdown Mode to $Mode")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Updating lockdown mode on $($vi.Name)"

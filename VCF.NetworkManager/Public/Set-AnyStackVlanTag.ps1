@@ -30,10 +30,10 @@ function Set-AnyStackVlanTag {
         [int]$NewVlanId
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($PortGroupName, "Update VLAN ID to $NewVlanId")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Updating VLAN on $($vi.Name)"

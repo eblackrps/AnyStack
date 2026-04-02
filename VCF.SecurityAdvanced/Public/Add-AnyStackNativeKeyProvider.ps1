@@ -26,10 +26,10 @@ function Add-AnyStackNativeKeyProvider {
         [string]$ProviderName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($vi.Name, "Add Key Provider $ProviderName")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Adding KMS on $($vi.Name)"

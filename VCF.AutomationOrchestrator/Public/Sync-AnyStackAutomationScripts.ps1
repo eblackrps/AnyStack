@@ -30,10 +30,10 @@ function Sync-AnyStackAutomationScripts {
         [string]$RemoteLibraryPath
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($vi.Name, "Sync Automation Scripts from $LocalScriptPath")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Syncing scripts on $($vi.Name)"

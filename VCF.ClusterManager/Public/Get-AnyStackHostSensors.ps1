@@ -26,10 +26,10 @@ function Get-AnyStackHostSensors {
         [string]$HostName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching host sensors on $($vi.Name)"
             $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }

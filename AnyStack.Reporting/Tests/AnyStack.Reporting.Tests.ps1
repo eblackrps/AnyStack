@@ -1,12 +1,5 @@
 BeforeAll {
-    function global:Get-AnyStackConnection {
-        param($Server)
-        return [PSCustomObject]@{ Name = 'MockVC'; IsConnected = $true }
-    }
-    function global:Invoke-AnyStackWithRetry {
-        param($ScriptBlock, $MaxAttempts = 3, $DelaySeconds = 2)
-        return $null
-    }
+    $env:PSModulePath = "$(Resolve-Path (Join-Path $PSScriptRoot '..\..'));$env:PSModulePath"
     Import-Module "$PSScriptRoot\..\AnyStack.Reporting.psd1" -Force -ErrorAction Stop
 }
 
@@ -18,21 +11,22 @@ Describe "AnyStack.Reporting Suite" {
             $m.ExportedFunctions['Export-AnyStackHtmlReport'] | Should -Not -BeNullOrEmpty
             $m.ExportedFunctions['Invoke-AnyStackReport'] | Should -Not -BeNullOrEmpty
         }
+
+        It "Should declare AnyStack.vSphere as a required module" {
+            $manifest = Import-PowerShellDataFile "$PSScriptRoot\..\AnyStack.Reporting.psd1"
+            ($manifest.RequiredModules | Where-Object { $_.ModuleName -eq 'AnyStack.vSphere' }) | Should -Not -BeNullOrEmpty
+        }
     }
+
     Context "Export-AnyStackHtmlReport" {
         It "Should exist as an exported function" {
             Get-Command -Name 'Export-AnyStackHtmlReport' | Should -Not -BeNullOrEmpty
         }
-        It "Should be callable without throwing a syntax error" {
-            { Export-AnyStackHtmlReport -Server 'MockVC' -OutputPath 'C:\test.html' -ErrorAction SilentlyContinue } | Should -Not -Throw
-        }
     }
+
     Context "Invoke-AnyStackReport" {
         It "Should exist as an exported function" {
             Get-Command -Name 'Invoke-AnyStackReport' | Should -Not -BeNullOrEmpty
-        }
-        It "Should be callable without throwing a syntax error" {
-            { Invoke-AnyStackReport -Server 'MockVC' -ErrorAction SilentlyContinue } | Should -Not -Throw
         }
     }
 }

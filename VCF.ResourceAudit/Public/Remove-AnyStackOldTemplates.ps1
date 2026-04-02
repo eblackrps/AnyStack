@@ -26,10 +26,10 @@ function Remove-AnyStackOldTemplates {
         [int]$AgeDays = 180
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Finding old templates on $($vi.Name)"
             $templates = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Property Name,Config.Modified,Summary.Storage.Committed -Filter @{'Config.Template'='True'} }

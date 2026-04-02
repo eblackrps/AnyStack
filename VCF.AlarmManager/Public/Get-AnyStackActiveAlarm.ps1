@@ -22,10 +22,10 @@ function Get-AnyStackActiveAlarm {
         $Server
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching active alarms on $($vi.Name)"
             $alarmManager = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Id $vi.ExtensionData.Content.AlarmManager -Server $vi }

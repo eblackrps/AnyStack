@@ -26,10 +26,10 @@ function Export-AnyStackDRReadinessReport {
         [string]$OutputPath = ".\DR-Readiness-$(Get-Date -f yyyyMMdd).html"
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Exporting DR report on $($vi.Name)"
             $results = Invoke-AnyStackWithRetry -ScriptBlock { Test-AnyStackDisasterRecoveryReadiness -Server $vi -ErrorAction SilentlyContinue }

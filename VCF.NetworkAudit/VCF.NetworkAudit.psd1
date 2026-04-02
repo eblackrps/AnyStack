@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.NetworkAudit.psm1'
-    ModuleVersion = '1.7.6'
+    ModuleVersion = '1.7.7'
     GUID = 'df84f8f4-61b7-435e-b2d9-04018f369b87'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -9,6 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.7'}
     )
     FunctionsToExport = @('Get-AnyStackMacAddressConflict','Repair-AnyStackNetworkConfiguration','Test-AnyStackHostNicStatus','Test-AnyStackNetworkConfiguration','Test-AnyStackVmotionNetwork')
     CmdletsToExport = @()
@@ -30,12 +31,3 @@
 
 
  
-
-
-
-
-
-
-
-
-

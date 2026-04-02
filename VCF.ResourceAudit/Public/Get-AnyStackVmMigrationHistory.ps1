@@ -30,10 +30,10 @@ function Get-AnyStackVmMigrationHistory {
         [int]$MaxEvents = 10
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Querying migration history on $($vi.Name)"
             $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }

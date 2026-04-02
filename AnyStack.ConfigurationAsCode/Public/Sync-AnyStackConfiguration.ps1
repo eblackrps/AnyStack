@@ -26,10 +26,10 @@ function Sync-AnyStackConfiguration {
         [string]$ConfigFilePath
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($vi.Name, "Sync configuration from $ConfigFilePath")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Applying configuration to $($vi.Name)"

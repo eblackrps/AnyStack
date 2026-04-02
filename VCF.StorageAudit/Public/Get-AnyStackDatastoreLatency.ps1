@@ -26,10 +26,10 @@ function Get-AnyStackDatastoreLatency {
         [string]$DatastoreName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching datastore latency on $($vi.Name)"
             $filter = if ($DatastoreName) { @{Name="*$DatastoreName*"} } else { $null }

@@ -26,10 +26,10 @@ function Get-AnyStackVmDiskLatency {
         [string]$VmName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching VM disk latency on $($vi.Name)"
             $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }

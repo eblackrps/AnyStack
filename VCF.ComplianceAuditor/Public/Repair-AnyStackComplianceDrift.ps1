@@ -30,10 +30,10 @@ function Repair-AnyStackComplianceDrift {
         [string]$HostName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Repairing compliance drift on $($vi.Name)"
             $audits = Invoke-AnyStackWithRetry -ScriptBlock { Invoke-AnyStackCisStigAudit -Server $vi -ClusterName $ClusterName -HostName $HostName -ErrorAction SilentlyContinue }

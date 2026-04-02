@@ -26,13 +26,13 @@ function Test-AnyStackVmotionNetwork {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing vMotion network on $($vi.Name)"
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Config.Network.Vnic,ConfigManager }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -Property @('Name','Config.Network.Vnic','ConfigManager')
             
             # Simplified mock of pair testing due to cross-host Ping limits in this environment
             foreach ($h in $hosts) {

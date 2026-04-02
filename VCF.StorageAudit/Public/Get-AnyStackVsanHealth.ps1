@@ -26,10 +26,10 @@ function Get-AnyStackVsanHealth {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Checking vSAN health on $($vi.Name)"
             $filter = if ($ClusterName) { @{Name="*$ClusterName*"} } else { $null }

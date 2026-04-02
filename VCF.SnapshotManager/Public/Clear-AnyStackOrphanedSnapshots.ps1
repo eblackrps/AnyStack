@@ -44,14 +44,34 @@ function Clear-AnyStackOrphanedSnapshots {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Clearing snapshots on $($vi.Name)"
             $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }
-            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter $filter -Property Name,Snapshot }
+            $clusterHostIds = $null
+            if ($ClusterName) {
+                $clusters = Invoke-AnyStackWithRetry -ScriptBlock {
+                    Get-View -Server $vi -ViewType ClusterComputeResource -Filter @{Name="*$ClusterName*"} -Property Name,Host
+                }
+                $clusterHostIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                foreach ($cluster in @($clusters)) {
+                    foreach ($hostRef in @($cluster.Host)) {
+                        if ($hostRef) {
+                            $null = $clusterHostIds.Add($hostRef.Value)
+                        }
+                    }
+                }
+            }
+
+            $vms = Invoke-AnyStackWithRetry -ScriptBlock {
+                Get-View -Server $vi -ViewType VirtualMachine -Filter $filter -Property Name,Snapshot,Runtime.Host
+            }
+            if ($null -ne $clusterHostIds) {
+                $vms = @($vms | Where-Object { $_.Runtime.Host -and $clusterHostIds.Contains($_.Runtime.Host.Value) })
+            }
             
             $threshold = (Get-Date).AddDays(-$AgeDays)
             foreach ($vm in $vms) {
@@ -60,7 +80,8 @@ function Clear-AnyStackOrphanedSnapshots {
                     foreach ($snap in $allSnaps) {
                         if ($snap.CreateTime -lt $threshold) {
                             if ($PSCmdlet.ShouldProcess($vm.Name, "Remove Snapshot $($snap.Name)")) {
-                                Invoke-AnyStackWithRetry -ScriptBlock { $vm.RemoveSnapshot_Task($snap.Snapshot, $false, $true) }
+                                $snapshotView = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $snap.Snapshot }
+                                $taskRef = Invoke-AnyStackWithRetry -ScriptBlock { $snapshotView.RemoveSnapshot_Task($false, $true) }
                                 
                                 [PSCustomObject]@{
                                     PSTypeName   = 'AnyStack.ClearedSnapshot'
@@ -70,6 +91,7 @@ function Clear-AnyStackOrphanedSnapshots {
                                     SnapshotName = $snap.Name
                                     SnapshotAge  = [int]((Get-Date) - $snap.CreateTime).TotalDays
                                     SizeGB       = 0
+                                    TaskId       = $taskRef.Value
                                     Removed      = $true
                                 }
                             }

@@ -1,15 +1,18 @@
 <#
 .SYNOPSIS
-    CI/CD Build Pipeline for the AnyStack Enterprise Module Suite v1.7.6.
+    CI/CD Build Pipeline for the AnyStack Enterprise Module Suite v1.7.7.
 .DESCRIPTION
     Compiles, tests, and prepares all sub-modules for deployment.
 #>
 $ErrorActionPreference = 'Stop'
+$env:PSModulePath = "$PSScriptRoot;$env:PSModulePath"
+
+Import-Module Pester -MinimumVersion 5.0.0 -Force
 
 $Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
 
 Write-Host "=========================================" -ForegroundColor Green
-Write-Host "Starting AnyStack Enterprise Build Pipeline v1.7.6" -ForegroundColor Green
+Write-Host "Starting AnyStack Enterprise Build Pipeline v1.7.7" -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Green
 
 foreach ($mod in $Modules) {

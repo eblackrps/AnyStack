@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.SddcManager.psm1'
-    ModuleVersion = '1.7.6'
+    ModuleVersion = '1.7.7'
     GUID = '8873f9b6-1cce-449b-8835-5d390fd6b623'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -9,6 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.7'}
     )
     FunctionsToExport = @('Get-AnyStackWorkloadDomain','Set-AnyStackPasswordRotation','Test-AnyStackSddcHealth')
     CmdletsToExport = @()
@@ -30,12 +31,3 @@
 
 
  
-
-
-
-
-
-
-
-
-

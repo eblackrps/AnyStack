@@ -26,10 +26,10 @@ function New-AnyStackVmTemplate {
         [string]$VmName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($VmName, "Mark VM as template")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Converting VM to template on $($vi.Name)"

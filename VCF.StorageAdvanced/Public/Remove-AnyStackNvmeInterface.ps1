@@ -30,10 +30,10 @@ function Remove-AnyStackNvmeInterface {
         [string]$AdapterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($HostName, "Remove NVMe Adapter $AdapterName")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Removing NVMe adapter on $($vi.Name)"

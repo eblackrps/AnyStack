@@ -39,10 +39,10 @@ function Set-AnyStackResourceTag {
         [string]$CategoryName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($ObjectName, "Set Tag $TagName ($CategoryName)")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Applying tag on $($vi.Name)"

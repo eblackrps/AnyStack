@@ -26,10 +26,10 @@ function Start-AnyStackHostRemediation {
         [string]$HostName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($HostName, "Start Host Remediation")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Starting remediation on $($vi.Name)"

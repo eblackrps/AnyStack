@@ -35,10 +35,10 @@ function Start-AnyStackHostEvacuation {
         [int]$TimeoutSeconds = 3600
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($HostName, "Enter Maintenance Mode with $VsanMode")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Evacuating host on $($vi.Name)"

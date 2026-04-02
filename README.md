@@ -1,6 +1,6 @@
 # AnyStack Enterprise Module Suite
 
-**Version:** 1.6.7 | **Author:** The Any Stack Architect
+**Version:** 1.7.7 | **Author:** The Any Stack Architect
 
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/AnyStack.vSphere?style=flat-square&logo=powershell&label=AnyStack.vSphere)](https://www.powershellgallery.com/packages/AnyStack.vSphere)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -25,13 +25,9 @@ AnyStack is a production-ready, enterprise-grade PowerShell automation suite for
 
 ## ⚠️ Dependency Notice — VCF.PowerCLI Required
 
-> **Important:** AnyStack v1.6.7+ requires **`VCF.PowerCLI`**, not the legacy `VMware.PowerCLI` module.
+> **Important:** AnyStack v1.7.7 requires **`VCF.PowerCLI`**, not the legacy `VMware.PowerCLI` module.
 >
-> The legacy `VMware.PowerCLI` module is deprecated by Broadcom and does **not** include `Get-AnyStackConnection`, which all AnyStack cmdlets depend on. If you see the error below, your environment is using the wrong PowerCLI module:
->
-> ```
-> The term 'Get-AnyStackConnection' is not recognized as a name of a cmdlet, function, script file, or executable program.
-> ```
+> The AnyStack modules are built and tested against Broadcom's `VCF.PowerCLI` stack. If you see missing VMware cmdlets or connection-resolution failures, install `VCF.PowerCLI` first and import the AnyStack modules from the repo root or via the install script.
 >
 > **Fix:** Run `Install-Module -Name VCF.PowerCLI -Scope CurrentUser -Force` before importing AnyStack modules.
 
@@ -87,20 +83,26 @@ Install-Module -Name AnyStack.vSphere -Scope CurrentUser
 # Import the core module
 Import-Module AnyStack.vSphere
 
-# Connect — capture the server object, don't pass a string
+# Connect once
 $viServer = Connect-AnyStackServer -Server 'vcenter.yourenv.local'
 
-# Pass the server object to cmdlets
+# Use the connected object
 Export-AnyStackConfiguration -Server $viServer
 Get-AnyStackActiveAlarm -Server $viServer
 Get-AnyStackLicenseUsage -Server $viServer
+
+# Or omit -Server entirely when exactly one vCenter connection is active
+Invoke-AnyStackHealthCheck
+
+# Or pass the name of an already-connected vCenter
+Get-AnyStackLicenseUsage -Server 'vcenter.yourenv.local'
 ```
 
-> **Note:** Always store the result of `Connect-AnyStackServer` in a variable and pass it via `-Server`. Passing a plain hostname string will fail — the parameter expects a `VIServer` object.
+> **Note:** `-Server` can be omitted, passed a connected `VIServer` object, or passed the name of an already-connected vCenter. Omitting `-Server` works when exactly one active connection is available.
 
 💡 **Validate Before You Touch Production**
 
-Every public cmdlet supports `-WhatIf`. Run it first to see exactly what any operation will do before it executes against a live environment.
+Mutation cmdlets support `-WhatIf`. Run it first to see exactly what an operation will do before it executes against a live environment.
 
 ---
 
@@ -120,9 +122,14 @@ Every public cmdlet supports `-WhatIf`. Run it first to see exactly what any ope
 
 - Connect-AnyStackServer
 - Disconnect-AnyStackServer
+- Get-AnyStackClusterHostIdSet
+- Get-AnyStackConnection
+- Get-AnyStackHostView
 - Get-AnyStackLicenseUsage
 - Get-AnyStackVcenterServices
+- Get-AnyStackVirtualMachineView
 - Invoke-AnyStackHealthCheck
+- Invoke-AnyStackWithRetry
 - Write-AnyStackLog
 
 ### VCF.AlarmManager
@@ -303,6 +310,15 @@ Every public cmdlet supports `-WhatIf`. Run it first to see exactly what any ope
 ---
 
 ## 🧪 Development & Testing
+
+Install the local test prerequisites first:
+
+```powershell
+Install-Module -Name VCF.PowerCLI -Scope CurrentUser -Force
+Install-Module -Name Pester -MinimumVersion 5.0.0 -Scope CurrentUser -Force
+```
+
+Then run the repo checks from the repository root:
 
 ```powershell
 .\test-syntax.ps1

@@ -26,10 +26,10 @@ function Remove-AnyStackStaleTag {
         [string]$CategoryName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Finding stale tags on $($vi.Name)"
             $allTags = Invoke-AnyStackWithRetry -ScriptBlock { Get-Tag -Server $vi }

@@ -34,10 +34,10 @@ function New-AnyStackScheduledSnapshot {
         [string]$CronExpression = '0 2 * * *'
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($vi.Name, "Create Scheduled Snapshot '$SnapshotName' for VM '$VmName'")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Creating scheduled snapshot task on $($vi.Name)"

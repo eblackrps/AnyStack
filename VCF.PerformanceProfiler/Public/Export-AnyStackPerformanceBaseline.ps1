@@ -30,21 +30,22 @@ function Export-AnyStackPerformanceBaseline {
         [string]$OutputPath = "$env:TEMP\Baseline-$(Get-Date -f yyyyMMdd).json"
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Exporting perf baseline on $($vi.Name)"
-            $filter = if ($ClusterName) { @{Name="*$ClusterName*"} } else { $null }
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -Property @('Name')
             
             $metrics = @()
             foreach ($h in $hosts) {
                 $metrics += @{ Host = $h.Name; AvgCpu = 15; AvgMem = 35 } # Mocking PerfManager query output
             }
-            
-            $metrics | ConvertTo-Json -Depth 3 | Set-Content -Path $OutputPath -Encoding UTF8
+
+            if ($PSCmdlet.ShouldProcess($OutputPath, 'Write performance baseline')) {
+                $metrics | ConvertTo-Json -Depth 3 | Set-Content -Path $OutputPath -Encoding UTF8
+            }
             
             [PSCustomObject]@{
                 PSTypeName       = 'AnyStack.PerfBaseline'

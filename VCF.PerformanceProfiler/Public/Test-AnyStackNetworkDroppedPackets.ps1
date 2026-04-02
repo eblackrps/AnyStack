@@ -34,14 +34,13 @@ function Test-AnyStackNetworkDroppedPackets {
         [int]$Threshold = 100
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching dropped packets on $($vi.Name)"
-            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -HostName $HostName -Property @('Name')
             
             foreach ($h in $hosts) {
                 [PSCustomObject]@{

@@ -30,10 +30,10 @@ function Stop-AnyStackHostEvacuation {
         [int]$TimeoutSeconds = 600
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($HostName, "Exit Maintenance Mode")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Exiting maintenance mode on $($vi.Name)"

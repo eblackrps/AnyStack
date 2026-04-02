@@ -30,14 +30,13 @@ function Get-AnyStackHostCpuCoStop {
         [string]$HostName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching CPU co-stop on $($vi.Name)"
-            $filter = if ($HostName) { @{Name="*$HostName*"} } else { $null }
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Filter $filter -Property Name }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -HostName $HostName -Property @('Name')
             
             foreach ($h in $hosts) {
                 # Mocking PerfManager query output

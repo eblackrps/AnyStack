@@ -26,10 +26,10 @@ function Disable-AnyStackHostSsh {
         [string]$HostName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($HostName, "Disable SSH")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Disabling SSH on $($vi.Name)"

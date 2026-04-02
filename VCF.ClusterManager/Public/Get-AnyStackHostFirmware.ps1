@@ -26,13 +26,13 @@ function Get-AnyStackHostFirmware {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching host firmware on $($vi.Name)"
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Hardware.BiosInfo,Hardware.SystemInfo }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -Property @('Name','Hardware.BiosInfo','Hardware.SystemInfo')
             
             foreach ($h in $hosts) {
                 [PSCustomObject]@{

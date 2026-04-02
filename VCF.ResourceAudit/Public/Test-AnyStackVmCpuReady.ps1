@@ -34,14 +34,13 @@ function Test-AnyStackVmCpuReady {
         [float]$Threshold = 5.0
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Checking CPU Ready on $($vi.Name)"
-            $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }
-            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter $filter -Property Name,Config.Hardware.NumCPU }
+            $vms = Get-AnyStackVirtualMachineView -Server $vi -ClusterName $ClusterName -VmName $VmName -Property @('Name','Config.Hardware.NumCPU')
             
             foreach ($vm in $vms) {
                 # Mocking PerfManager query

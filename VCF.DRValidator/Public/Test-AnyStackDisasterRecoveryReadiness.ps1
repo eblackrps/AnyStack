@@ -26,13 +26,13 @@ function Test-AnyStackDisasterRecoveryReadiness {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing DR readiness on $($vi.Name)"
-            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Property Name,Snapshot,Guest }
+            $vms = Get-AnyStackVirtualMachineView -Server $vi -ClusterName $ClusterName -Property @('Name','Snapshot','Guest')
             
             foreach ($vm in $vms) {
                 $snapAge = 0

@@ -26,10 +26,10 @@ function Sync-AnyStackContentLibrary {
         [string]$LibraryName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($LibraryName, "Sync Content Library")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Syncing content library on $($vi.Name)"

@@ -30,10 +30,10 @@ function Start-AnyStackVmBackup {
         [string]$SnapshotName = "AnyStack-Backup-$(Get-Date -f yyyyMMdd-HHmm)"
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($VmName, "Create backup snapshot $SnapshotName")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Creating backup snapshot on $($vi.Name)"

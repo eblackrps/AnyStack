@@ -14,7 +14,7 @@ function Invoke-AnyStackHealthCheck {
         Author: The AnyStack Architect
         Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
@@ -22,21 +22,35 @@ function Invoke-AnyStackHealthCheck {
         $Server
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Running health check on $($vi.Name)"
-            
-            $dbHealth = Invoke-AnyStackWithRetry -ScriptBlock { Test-AnyStackVcenterDatabaseHealth -Server $vi -ErrorAction SilentlyContinue }
+
+            $databaseState = 'Unknown'
+            if (
+                $vi.PSObject.Properties.Name -contains 'ExtensionData' -and
+                $vi.ExtensionData -and
+                $vi.ExtensionData.Content -and
+                $vi.ExtensionData.Content.HealthStatusManager
+            ) {
+                $healthMgr = Invoke-AnyStackWithRetry -ScriptBlock {
+                    Get-View -Server $vi -Id $vi.ExtensionData.Content.HealthStatusManager
+                }
+                $dbHealth = Invoke-AnyStackWithRetry -ScriptBlock { $healthMgr.QueryHealthStatus() }
+                if ($dbHealth -and $dbHealth.OverallHealth) {
+                    $databaseState = $dbHealth.OverallHealth
+                }
+            }
             
             [PSCustomObject]@{
                 PSTypeName    = 'AnyStack.HealthCheck'
                 Timestamp     = (Get-Date)
                 Status        = 'Healthy'
                 Server        = $vi.Name
-                DatabaseState = if ($dbHealth) { $dbHealth.OverallHealth } else { 'Unknown' }
+                DatabaseState = $databaseState
                 Licensed      = $true
             }
         }

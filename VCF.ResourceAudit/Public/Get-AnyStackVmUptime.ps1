@@ -30,14 +30,13 @@ function Get-AnyStackVmUptime {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Calculating VM uptimes on $($vi.Name)"
-            $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }
-            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter $filter -Property Name,Runtime.BootTime,Runtime.PowerState }
+            $vms = Get-AnyStackVirtualMachineView -Server $vi -ClusterName $ClusterName -VmName $VmName -Property @('Name','Runtime.BootTime','Runtime.PowerState')
             
             foreach ($vm in $vms) {
                 if ($vm.Runtime.PowerState -eq 'poweredOn') {

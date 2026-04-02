@@ -14,7 +14,7 @@ function Get-AnyStackVcenterServices {
         Author: The AnyStack Architect
         Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
@@ -22,10 +22,10 @@ function Get-AnyStackVcenterServices {
         $Server
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching vCenter services on $($vi.Name)"
             $serviceInstance = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id 'ServiceInstance' -Property Content.ServiceManager }

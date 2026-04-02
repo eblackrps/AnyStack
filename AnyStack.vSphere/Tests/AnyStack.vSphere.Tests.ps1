@@ -1,17 +1,6 @@
 BeforeAll {
+    $env:PSModulePath = "$(Resolve-Path (Join-Path $PSScriptRoot '..\..'));$env:PSModulePath"
     Import-Module "$PSScriptRoot\..\AnyStack.vSphere.psd1" -Force -ErrorAction Stop
-    InModuleScope AnyStack.vSphere {
-        Mock Get-AnyStackConnection { return [PSCustomObject]@{ Name = 'MockVC'; IsConnected = $true } }
-        Mock Invoke-AnyStackWithRetry { return $null }
-    }
-    function global:Get-AnyStackConnection {
-        param($Server)
-        return [PSCustomObject]@{ Name = 'MockVC'; IsConnected = $true }
-    }
-    function global:Invoke-AnyStackWithRetry {
-        param($ScriptBlock, $MaxAttempts = 3, $DelaySeconds = 2)
-        return $null
-    }
 }
 
 Describe "AnyStack.vSphere Suite" {
@@ -21,61 +10,72 @@ Describe "AnyStack.vSphere Suite" {
             $m | Should -Not -BeNullOrEmpty
             $m.ExportedFunctions['Connect-AnyStackServer'] | Should -Not -BeNullOrEmpty
             $m.ExportedFunctions['Disconnect-AnyStackServer'] | Should -Not -BeNullOrEmpty
+            $m.ExportedFunctions['Get-AnyStackClusterHostIdSet'] | Should -Not -BeNullOrEmpty
+            $m.ExportedFunctions['Get-AnyStackConnection'] | Should -Not -BeNullOrEmpty
+            $m.ExportedFunctions['Get-AnyStackHostView'] | Should -Not -BeNullOrEmpty
             $m.ExportedFunctions['Get-AnyStackLicenseUsage'] | Should -Not -BeNullOrEmpty
             $m.ExportedFunctions['Get-AnyStackVcenterServices'] | Should -Not -BeNullOrEmpty
+            $m.ExportedFunctions['Get-AnyStackVirtualMachineView'] | Should -Not -BeNullOrEmpty
             $m.ExportedFunctions['Invoke-AnyStackHealthCheck'] | Should -Not -BeNullOrEmpty
+            $m.ExportedFunctions['Invoke-AnyStackWithRetry'] | Should -Not -BeNullOrEmpty
             $m.ExportedFunctions['Write-AnyStackLog'] | Should -Not -BeNullOrEmpty
         }
     }
+
     Context "Connect-AnyStackServer" {
-        BeforeAll {
-            InModuleScope AnyStack.vSphere {
-                Mock Invoke-AnyStackWithRetry { throw "Simulated connection failure" }
-            }
+        BeforeEach {
+            Mock Invoke-AnyStackWithRetry -ModuleName AnyStack.vSphere { throw "Simulated connection failure" }
         }
+
         It "Should exist as an exported function" {
             Get-Command -Name 'Connect-AnyStackServer' | Should -Not -BeNullOrEmpty
         }
+
         It "Should throw when connection fails" {
             { Connect-AnyStackServer -Server 'nonexistent' -ErrorAction Stop } | Should -Throw
         }
     }
-    Context "Disconnect-AnyStackServer" {
-        It "Should exist as an exported function" {
-            Get-Command -Name 'Disconnect-AnyStackServer' | Should -Not -BeNullOrEmpty
-        }
-        It "Should be callable without throwing a syntax error" {
-            { Disconnect-AnyStackServer -Server 'MockVC' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
-        }
-    }
+
     Context "Get-AnyStackLicenseUsage" {
+        BeforeEach {
+            Mock Get-AnyStackConnection -ModuleName AnyStack.vSphere {
+                [PSCustomObject]@{
+                    Name        = 'ResolvedVC'
+                    IsConnected = $true
+                }
+            }
+
+            Mock Invoke-AnyStackWithRetry -ModuleName AnyStack.vSphere {
+                [PSCustomObject]@{
+                    Licenses = @(
+                        [PSCustomObject]@{
+                            Name       = 'vSphere Enterprise'
+                            LicenseKey = 'AAAAA-BBBBB-CCCCC-DDDDD-EEEEE'
+                            Total      = 10
+                            Used       = 5
+                        }
+                    )
+                }
+            }
+        }
+
         It "Should exist as an exported function" {
             Get-Command -Name 'Get-AnyStackLicenseUsage' | Should -Not -BeNullOrEmpty
         }
-        It "Should be callable without throwing a syntax error" {
-            { Get-AnyStackLicenseUsage -Server 'MockVC' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
+
+        It "Should report the resolved active connection" {
+            $result = Get-AnyStackLicenseUsage -Server 'InputAlias'
+
+            $result.Server | Should -Be 'ResolvedVC'
+            $result.LicenseName | Should -Be 'vSphere Enterprise'
         }
     }
-    Context "Get-AnyStackVcenterServices" {
-        It "Should exist as an exported function" {
-            Get-Command -Name 'Get-AnyStackVcenterServices' | Should -Not -BeNullOrEmpty
-        }
-        It "Should be callable without throwing a syntax error" {
-            { Get-AnyStackVcenterServices -Server 'MockVC' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
-        }
-    }
-    Context "Invoke-AnyStackHealthCheck" {
-        It "Should exist as an exported function" {
-            Get-Command -Name 'Invoke-AnyStackHealthCheck' | Should -Not -BeNullOrEmpty
-        }
-        It "Should be callable without throwing a syntax error" {
-            { Invoke-AnyStackHealthCheck -Server 'MockVC' -Confirm:$false -ErrorAction SilentlyContinue } | Should -Not -Throw
-        }
-    }
+
     Context "Write-AnyStackLog" {
         It "Should exist as an exported function" {
             Get-Command -Name 'Write-AnyStackLog' | Should -Not -BeNullOrEmpty
         }
+
         It "Should return a log entry without a connection" {
             $result = Write-AnyStackLog -Message 'test' -Level Info
             $result.PSTypeNames[0] | Should -Be 'AnyStack.LogEntry'

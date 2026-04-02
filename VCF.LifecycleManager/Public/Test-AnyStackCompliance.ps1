@@ -26,16 +26,18 @@ function Test-AnyStackCompliance {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing compliance on $($vi.Name)"
             $hpMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.HostProfileManager }
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -Property @('Name')
             
-            $taskRef = if ($hpMgr) { Invoke-AnyStackWithRetry -ScriptBlock { $hpMgr.CheckCompliance_Task($hosts.MoRef) } } else { $null }
+            $taskRef = if ($hpMgr -and $hosts -and $PSCmdlet.ShouldProcess($vi.Name, 'Run lifecycle compliance check')) {
+                Invoke-AnyStackWithRetry -ScriptBlock { $hpMgr.CheckCompliance_Task($hosts.MoRef) }
+            } else { $null }
             if ($taskRef) {
                 $task = Get-Task -Id $taskRef.Value -Server $vi
                 $task | Wait-Task -ErrorAction SilentlyContinue | Out-Null

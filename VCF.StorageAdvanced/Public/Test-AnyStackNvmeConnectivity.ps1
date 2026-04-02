@@ -20,7 +20,7 @@ function Test-AnyStackNvmeConnectivity {
         Author: The AnyStack Architect
         Requires: VCF.PowerCLI 9.0+, vSphere 8.0 U3+
     #>
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$false)]
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
@@ -34,10 +34,10 @@ function Test-AnyStackNvmeConnectivity {
         [int]$Port = 4420
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing NVMe connectivity on $($vi.Name)"
             $res = Invoke-AnyStackWithRetry -ScriptBlock { Test-NetConnection -ComputerName $TargetAddress -Port $Port -InformationLevel Quiet -ErrorAction SilentlyContinue }

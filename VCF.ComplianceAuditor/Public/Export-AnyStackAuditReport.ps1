@@ -30,10 +30,10 @@ function Export-AnyStackAuditReport {
         [string]$OutputPath = ".\AuditReport-$(Get-Date -f yyyyMMdd).html"
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Exporting audit report on $($vi.Name)"
             $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-AnyStackNonCompliantHost -Server $vi -ClusterName $ClusterName -ErrorAction SilentlyContinue }

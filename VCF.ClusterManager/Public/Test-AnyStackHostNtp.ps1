@@ -30,13 +30,13 @@ function Test-AnyStackHostNtp {
         [string[]]$ExpectedServers = @()
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing host NTP on $($vi.Name)"
-            $hosts = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType HostSystem -Property Name,Config.DateTimeInfo }
+            $hosts = Get-AnyStackHostView -Server $vi -ClusterName $ClusterName -Property @('Name','Config.DateTimeInfo')
             
             foreach ($h in $hosts) {
                 $ntp = $h.Config.DateTimeInfo.NtpConfig

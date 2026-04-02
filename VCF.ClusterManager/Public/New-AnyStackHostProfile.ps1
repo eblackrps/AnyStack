@@ -34,10 +34,10 @@ function New-AnyStackHostProfile {
         [string]$Description = ''
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             if ($PSCmdlet.ShouldProcess($ProfileName, "Create Host Profile from $ReferenceHostName")) {
                 Write-Verbose "[$($MyInvocation.MyCommand.Name)] Creating host profile on $($vi.Name)"

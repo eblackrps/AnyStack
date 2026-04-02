@@ -26,10 +26,10 @@ function Test-AnyStackSsoConfiguration {
         [string[]]$ExpectedDomains = @()
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Testing SSO configuration on $($vi.Name)"
             $ssoMgr = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -Id $vi.ExtensionData.Content.UserDirectory }

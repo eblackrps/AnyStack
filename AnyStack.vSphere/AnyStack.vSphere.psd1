@@ -1,6 +1,6 @@
 @{
     RootModule = 'AnyStack.vSphere.psm1'
-    ModuleVersion = '1.7.6'
+    ModuleVersion = '1.7.7'
     GUID = 'f5053a10-87a3-4e68-b568-ce9245938e94'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -10,7 +10,7 @@
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
     )
-    FunctionsToExport = @('Connect-AnyStackServer','Disconnect-AnyStackServer','Get-AnyStackLicenseUsage','Get-AnyStackVcenterServices','Invoke-AnyStackHealthCheck','Write-AnyStackLog')
+    FunctionsToExport = @('Connect-AnyStackServer','Disconnect-AnyStackServer','Get-AnyStackClusterHostIdSet','Get-AnyStackConnection','Get-AnyStackHostView','Get-AnyStackLicenseUsage','Get-AnyStackVcenterServices','Get-AnyStackVirtualMachineView','Invoke-AnyStackHealthCheck','Invoke-AnyStackWithRetry','Write-AnyStackLog')
     CmdletsToExport = @()
     VariablesToExport = @()
     AliasesToExport = @()
@@ -25,12 +25,3 @@
 
 
  
-
-
-
-
-
-
-
-
-

@@ -30,14 +30,13 @@ function Get-AnyStackVmStorageLatency {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Fetching VM latency on $($vi.Name)"
-            $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }
-            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter $filter -Property Name }
+            $vms = Get-AnyStackVirtualMachineView -Server $vi -ClusterName $ClusterName -VmName $VmName -Property @('Name')
             
             foreach ($vm in $vms) {
                 [PSCustomObject]@{

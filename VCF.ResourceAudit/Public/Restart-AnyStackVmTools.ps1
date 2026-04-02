@@ -30,14 +30,13 @@ function Restart-AnyStackVmTools {
         [string]$ClusterName
     )
     begin {
-        $vi = Get-AnyStackConnection -Server $Server
         $ErrorActionPreference = 'Stop'
     }
     process {
+        $vi = Get-AnyStackConnection -Server $Server
         try {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Restarting VM tools on $($vi.Name)"
-            $filter = if ($VmName) { @{Name="*$VmName*"} } else { $null }
-            $vms = Invoke-AnyStackWithRetry -ScriptBlock { Get-View -Server $vi -ViewType VirtualMachine -Filter $filter -Property Name,Guest.ToolsRunningStatus,Guest.ToolsVersion }
+            $vms = Get-AnyStackVirtualMachineView -Server $vi -ClusterName $ClusterName -VmName $VmName -Property @('Name','Guest.ToolsRunningStatus','Guest.ToolsVersion')
             
             foreach ($vm in $vms) {
                 if ($vm.Guest.ToolsRunningStatus -eq 'guestToolsRunning') {
