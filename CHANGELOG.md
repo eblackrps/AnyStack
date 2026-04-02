@@ -1,5 +1,18 @@
 # AnyStack Changelog
 
+## Unreleased
+
+### Added
+- Added `tools/Invoke-SmokeTest.ps1` to exercise a real lab connection, verify `Get-AnyStackLicenseUsage`, and confirm `-WhatIf` behavior on high-risk snapshot flows before release
+
+### Changed
+- Updated `tools/FixAndPublish.ps1` to require live smoke-test inputs by default and only allow skipping that gate when the release is intentionally overridden
+- Refreshed the root README, module READMEs, support docs, and smoke-test documentation so the published guidance matches the current package layout and validation workflow
+
+### Fixed
+- Replaced dead documentation links with working repository, release, website, and PowerShell Gallery package URLs
+- Corrected stale per-module install examples in the Configuration-as-Code and Reporting module documentation
+
 ## v1.7.8 (2026-04-02)
 
 ### Added
