@@ -1,94 +1,133 @@
-<#
-.SYNOPSIS
-    Validates all AnyStack modules prior to PSGallery publication.
-#>
+[CmdletBinding()]
+param(
+    [string]$ExpectedVersion
+)
 
-$Modules = Get-ChildItem -Directory -Path "$PSScriptRoot\.." | Where-Object Name -match '^(AnyStack|VCF)'
+$ErrorActionPreference = 'Stop'
+
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+$metaManifestPath = Join-Path $repoRoot 'AnyStack\AnyStack.psd1'
+$env:PSModulePath = "$repoRoot$([System.IO.Path]::PathSeparator)$env:PSModulePath"
+
+if (-not (Test-Path $metaManifestPath)) {
+    throw "Could not find the AnyStack meta-module manifest at $metaManifestPath."
+}
+
+if (-not $ExpectedVersion) {
+    $ExpectedVersion = [string](Import-PowerShellDataFile -Path $metaManifestPath).ModuleVersion
+}
+
+$modules = Get-ChildItem -Directory -Path $repoRoot | Where-Object {
+    $_.Name -eq 'AnyStack' -or $_.Name -match '^(AnyStack|VCF)\.'
+} | Sort-Object Name
+
+try {
+    Import-Module PSScriptAnalyzer -MinimumVersion 1.21.0 -ErrorAction Stop
+}
+catch {
+    throw 'PSScriptAnalyzer is required for gallery validation. Install it with Install-Module PSScriptAnalyzer -Scope CurrentUser.'
+}
+
+$settingsPath = Join-Path $repoRoot 'PSScriptAnalyzerSettings.psd1'
 $failed = $false
 
-Write-Host "========================================"
-Write-Host "Starting Pre-Publish Gallery Validation"
-Write-Host "========================================"
+Write-Host '========================================' -ForegroundColor Cyan
+Write-Host 'Starting Pre-Publish Gallery Validation' -ForegroundColor Cyan
+Write-Host "Expected version: $ExpectedVersion" -ForegroundColor Cyan
+Write-Host '========================================' -ForegroundColor Cyan
 
-foreach ($mod in $Modules) {
-    Write-Host "`nValidating $($mod.Name)..." -ForegroundColor Cyan
-    $psd1 = Join-Path $mod.FullName "$($mod.Name).psd1"
+foreach ($module in $modules) {
+    Write-Host "`nValidating $($module.Name)..." -ForegroundColor Cyan
 
-    if (-not (Test-Path $psd1)) {
-        Write-Error "Missing manifest for $($mod.Name)"
+    $manifestPath = Join-Path $module.FullName "$($module.Name).psd1"
+    if (-not (Test-Path $manifestPath)) {
+        Write-Error "Missing manifest for $($module.Name)."
         $failed = $true
         continue
     }
 
-    # 1. Test-ModuleManifest
-    $test = Test-ModuleManifest -Path $psd1 -ErrorAction SilentlyContinue
-    if (-not $test) {
-        Write-Error "Test-ModuleManifest failed."
+    try {
+        $manifest = Import-PowerShellDataFile -Path $manifestPath
+        Test-ModuleManifest -Path $manifestPath | Out-Null
+        Write-Host '  [OK] Test-ModuleManifest passed.' -ForegroundColor Green
+    }
+    catch {
+        Write-Error "Test-ModuleManifest failed for $($module.Name): $($_.Exception.Message)"
         $failed = $true
-    } else {
-        Write-Host "  [OK] Test-ModuleManifest passed." -ForegroundColor Green
+        continue
     }
 
-    # 2. Check FunctionsToExport
-    $manifestContent = Get-Content $psd1 -Raw
-    if ($manifestContent -match "FunctionsToExport\s*=\s*'\*'") {
-        Write-Error "FunctionsToExport uses wildcard '*'. Needs explicit array."
-        $failed = $true
-    } else {
-        Write-Host "  [OK] FunctionsToExport is explicit." -ForegroundColor Green
+    $metadataIssues = New-Object System.Collections.Generic.List[string]
+
+    if ([string]$manifest.ModuleVersion -ne $ExpectedVersion) {
+        $metadataIssues.Add("ModuleVersion '$($manifest.ModuleVersion)' does not match expected version '$ExpectedVersion'.")
     }
 
-    # 3. Check metadata
-    $missingMeta = $false
-    if ($manifestContent -notmatch "ModuleVersion\s*=\s*'1.7.6'") { $missingMeta = $true; Write-Error "ModuleVersion not 1.7.6" }
-    if ($manifestContent -notmatch "Author\s*=\s*'The AnyStack Architect'") { $missingMeta = $true; Write-Error "Author incorrect" }
-    if ($manifestContent -notmatch "Tags\s*=\s*@\(") { $missingMeta = $true; Write-Error "Tags missing" }
-    if ($manifestContent -notmatch "ProjectUri") { $missingMeta = $true; Write-Error "ProjectUri missing" }
-    if ($manifestContent -notmatch "LicenseUri") { $missingMeta = $true; Write-Error "LicenseUri missing" }
-
-    if ($missingMeta) {
-        $failed = $true
-    } else {
-        Write-Host "  [OK] Metadata fields populated." -ForegroundColor Green
+    if ([string]::IsNullOrWhiteSpace([string]$manifest.Author)) {
+        $metadataIssues.Add('Author is missing.')
     }
 
-    # 4. Check for NotImplementedException
-    $codeFiles = Get-ChildItem -Path $mod.FullName -Recurse -Include *.psm1, *.ps1 -File
-    $stubs = $codeFiles | Select-String "NotImplementedException"
+    $psData = $manifest.PrivateData.PSData
+
+    if (-not $psData.Tags -or $psData.Tags.Count -eq 0) {
+        $metadataIssues.Add('Tags are missing.')
+    }
+
+    if ([string]::IsNullOrWhiteSpace([string]$psData.ProjectUri)) {
+        $metadataIssues.Add('ProjectUri is missing.')
+    }
+
+    if ([string]::IsNullOrWhiteSpace([string]$psData.LicenseUri)) {
+        $metadataIssues.Add('LicenseUri is missing.')
+    }
+
+    if ([string]::IsNullOrWhiteSpace([string]$manifest.Description)) {
+        $metadataIssues.Add('Description is missing.')
+    }
+
+    $functionsToExport = @($manifest.FunctionsToExport)
+    if ($functionsToExport.Count -eq 1 -and $functionsToExport[0] -eq '*') {
+        $metadataIssues.Add("FunctionsToExport uses wildcard '*'.")
+    }
+
+    if ($metadataIssues.Count -gt 0) {
+        foreach ($issue in $metadataIssues) {
+            Write-Error "  $issue"
+        }
+        $failed = $true
+    } else {
+        Write-Host '  [OK] Metadata fields are populated and version-aligned.' -ForegroundColor Green
+    }
+
+    $codeFiles = Get-ChildItem -Path $module.FullName -Recurse -File | Where-Object {
+        $_.Extension -in '.ps1', '.psm1'
+    }
+
+    $stubs = Select-String -Path $codeFiles.FullName -Pattern 'NotImplementedException' -SimpleMatch -ErrorAction SilentlyContinue
     if ($stubs) {
-        Write-Error "Found NotImplementedException in source files."
+        Write-Error '  Found NotImplementedException in source files.'
         $failed = $true
     } else {
-        Write-Host "  [OK] No NotImplementedException stubs found." -ForegroundColor Green
+        Write-Host '  [OK] No NotImplementedException stubs found.' -ForegroundColor Green
     }
 
-    # 5. Invoke-ScriptAnalyzer
-    $sa = Invoke-ScriptAnalyzer -Path $mod.FullName -Recurse -Severity Error -ErrorAction SilentlyContinue
-    if ($sa) {
-        Write-Error "PSScriptAnalyzer found $($sa.Count) issues."
-        $sa | ForEach-Object { Write-Error "  - $($_.RuleName): $($_.Message)" }
+    $analysisResults = Invoke-ScriptAnalyzer -Path $module.FullName -Recurse -Settings $settingsPath -Severity Error -ErrorAction Stop
+    if ($analysisResults) {
+        Write-Error "  PSScriptAnalyzer found $($analysisResults.Count) issues."
+        foreach ($result in $analysisResults) {
+            Write-Error "  - [$($result.RuleName)] $($result.ScriptName):$($result.Line) $($result.Message)"
+        }
         $failed = $true
     } else {
-        Write-Host "  [OK] PSScriptAnalyzer passed with 0 warnings/errors." -ForegroundColor Green
+        Write-Host '  [OK] PSScriptAnalyzer passed with 0 issues.' -ForegroundColor Green
     }
 }
 
-Write-Host "========================================"
+Write-Host '========================================' -ForegroundColor Cyan
 if ($failed) {
-    Write-Error "Validation FAILED. Please fix the above issues."
+    Write-Error 'Validation FAILED. Resolve the issues above before publishing.'
     exit 1
-} else {
-    Write-Host "Validation PASSED. All 28 modules v1.7.6 are ready for publication." -ForegroundColor Green
-    exit 0
 }
- 
 
-
-
-
-
-
-
-
-
-
+Write-Host "Validation PASSED. All $($modules.Count) modules are ready for publication." -ForegroundColor Green
+exit 0

@@ -6,17 +6,23 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install VCF.PowerCLI
+      - name: Install PowerShell dependencies
         shell: pwsh
         run: |
           Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
           Install-Module -Name Pester -MinimumVersion 5.0.0 -Scope CurrentUser -Force -AllowClobber
+          Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force -AllowClobber
           Install-Module -Name VCF.PowerCLI -Scope CurrentUser -Force -AllowClobber
       - name: Syntax Check
         shell: pwsh
         run: |
           Import-Module Pester -MinimumVersion 5.0.0 -Force
           .\test-syntax.ps1
+      - name: Static Analysis and Gallery Validation
+        shell: pwsh
+        run: |
+          Import-Module PSScriptAnalyzer -Force
+          .\tools\Validate-ForGallery.ps1
       - name: Build and Test
         shell: pwsh
         run: |

@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.AlarmManager.psm1'
-    ModuleVersion = '1.7.7'
+    ModuleVersion = '1.7.8'
     GUID = 'af0a8e65-7c68-4fea-96ae-65278bc5009e'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -9,7 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.7'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.8'}
     )
     FunctionsToExport = @('Get-AnyStackActiveAlarm')
     CmdletsToExport = @()

@@ -17,5 +17,3 @@ function Get-OldSnapshot {
     return $oldest
 }
  
-
-

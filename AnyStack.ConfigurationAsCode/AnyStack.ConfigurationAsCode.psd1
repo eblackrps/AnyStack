@@ -1,6 +1,6 @@
 @{
     RootModule = 'AnyStack.ConfigurationAsCode.psm1'
-    ModuleVersion = '1.7.7'
+    ModuleVersion = '1.7.8'
     GUID = 'b7d6c0fe-c4df-4761-b72d-dfdea8301311'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -9,7 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         'VCF.PowerCLI',
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion = '1.7.7'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion = '1.7.8'}
     )
     FunctionsToExport = @('Export-AnyStackConfiguration','Sync-AnyStackConfiguration')
     CmdletsToExport = @()
@@ -31,12 +31,3 @@
 
 
  
-
-
-
-
-
-
-
-
-

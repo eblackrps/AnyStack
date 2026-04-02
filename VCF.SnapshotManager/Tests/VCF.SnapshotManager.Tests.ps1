@@ -97,8 +97,65 @@ Describe "VCF.SnapshotManager Suite" {
     }
 
     Context "Optimize-AnyStackSnapshots" {
+        BeforeEach {
+            $script:consolidationRequests = 0
+
+            Mock Get-AnyStackConnection -ModuleName VCF.SnapshotManager {
+                [PSCustomObject]@{
+                    Name        = 'ResolvedVC'
+                    IsConnected = $true
+                }
+            }
+
+            Mock Get-AnyStackVirtualMachineView -ModuleName VCF.SnapshotManager {
+                @(
+                    [PSCustomObject]@{
+                        Name    = 'vm-needs-consolidation'
+                        Runtime = [PSCustomObject]@{
+                            ConsolidationNeeded = $true
+                        }
+                    },
+                    [PSCustomObject]@{
+                        Name    = 'vm-already-clean'
+                        Runtime = [PSCustomObject]@{
+                            ConsolidationNeeded = $false
+                        }
+                    }
+                )
+            }
+
+            Mock Invoke-AnyStackWithRetry -ModuleName VCF.SnapshotManager {
+                param($ScriptBlock)
+
+                if ($ScriptBlock.ToString() -like '*ConsolidateVMDisks_Task*') {
+                    $script:consolidationRequests++
+                    return [PSCustomObject]@{ Value = 'task-456' }
+                }
+
+                throw "Unexpected script block: $($ScriptBlock.ToString())"
+            }
+        }
+
         It "Should exist as an exported function" {
             Get-Command -Name 'Optimize-AnyStackSnapshots' | Should -Not -BeNullOrEmpty
+        }
+
+        It "Should queue consolidation only for VMs that need it" {
+            $result = Optimize-AnyStackSnapshots -Server 'InputVC' -ClusterName 'ClusterA' -Confirm:$false
+
+            @($result).Count | Should -Be 1
+            $result.Server | Should -Be 'ResolvedVC'
+            $result.VmName | Should -Be 'vm-needs-consolidation'
+            $result.TaskId | Should -Be 'task-456'
+            Assert-MockCalled Get-AnyStackVirtualMachineView -ModuleName VCF.SnapshotManager -Times 1 -ParameterFilter { $ClusterName -eq 'ClusterA' }
+            $script:consolidationRequests | Should -Be 1
+        }
+
+        It "Should not consolidate disks when -WhatIf is used" {
+            $result = @(Optimize-AnyStackSnapshots -Server 'InputVC' -ClusterName 'ClusterA' -WhatIf)
+
+            $result.Count | Should -Be 0
+            $script:consolidationRequests | Should -Be 0
         }
     }
 }

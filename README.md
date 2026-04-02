@@ -1,11 +1,11 @@
 # AnyStack Enterprise Module Suite
 
-**Version:** 1.7.7 | **Author:** The Any Stack Architect
+**Version:** 1.7.8 | **Author:** The Any Stack Architect
 
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/AnyStack.vSphere?style=flat-square&logo=powershell&label=AnyStack.vSphere)](https://www.powershellgallery.com/packages/AnyStack.vSphere)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-AnyStack is a production-ready, enterprise-grade PowerShell automation suite for VMware vSphere 8.0 U3 and VMware Cloud Foundation (VCF). It transforms imperative "click-ops" into scalable, declarative infrastructure management.
+AnyStack is a production-focused, enterprise-grade PowerShell automation suite for VMware vSphere 8.0 U3 and VMware Cloud Foundation (VCF). It transforms imperative "click-ops" into scalable, declarative infrastructure management and now ships with repo-level syntax, analyzer, and Pester validation for every release.
 
 ## 📸 Screenshots
 
@@ -25,7 +25,7 @@ AnyStack is a production-ready, enterprise-grade PowerShell automation suite for
 
 ## ⚠️ Dependency Notice — VCF.PowerCLI Required
 
-> **Important:** AnyStack v1.7.7 requires **`VCF.PowerCLI`**, not the legacy `VMware.PowerCLI` module.
+> **Important:** AnyStack v1.7.8 requires **`VCF.PowerCLI`**, not the legacy `VMware.PowerCLI` module.
 >
 > The AnyStack modules are built and tested against Broadcom's `VCF.PowerCLI` stack. If you see missing VMware cmdlets or connection-resolution failures, install `VCF.PowerCLI` first and import the AnyStack modules from the repo root or via the install script.
 >
@@ -64,7 +64,7 @@ Install-Module -Name VCF.PowerCLI -Scope CurrentUser -Force
 **From PowerShell Gallery (Recommended):**
 
 ```powershell
-Install-Module -Name AnyStack.vSphere -Scope CurrentUser
+Install-Module -Name AnyStack -Scope CurrentUser
 ```
 
 **From Source:**
@@ -73,7 +73,11 @@ Install-Module -Name AnyStack.vSphere -Scope CurrentUser
 .\Install-AnyStack.ps1 -Force
 ```
 
-*(To install for all users, run as Administrator and append `-Global`)*
+`Install-AnyStack.ps1` installs the complete suite, including the `AnyStack` meta-module, and supports both user-scope and all-users installs.
+
+On Linux and macOS, the source installer uses the standard per-user PowerShell module path under `$HOME/.local/share/powershell/Modules`.
+
+*(To install for all users, run as Administrator and append `-Global`.)*
 
 ---
 
@@ -103,6 +107,11 @@ Get-AnyStackLicenseUsage -Server 'vcenter.yourenv.local'
 💡 **Validate Before You Touch Production**
 
 Mutation cmdlets support `-WhatIf`. Run it first to see exactly what an operation will do before it executes against a live environment.
+
+```powershell
+Get-AnyStackHostLogBundle -HostName 'esx01.lab.local' -WhatIf
+Optimize-AnyStackSnapshots -ClusterName 'Prod-Cluster-A' -WhatIf
+```
 
 ---
 
@@ -322,8 +331,24 @@ Then run the repo checks from the repository root:
 
 ```powershell
 .\test-syntax.ps1
+.\tools\Validate-ForGallery.ps1
 .\build.ps1
-Invoke-Pester .\VCF.DRValidator\Tests\VCF.DRValidator.Tests.ps1
+```
+
+The CI workflow runs the same syntax, analyzer, gallery-validation, and Pester checks before merge.
+
+For a full pre-release pass, run:
+
+```powershell
+.\test-syntax.ps1
+.\tools\Validate-ForGallery.ps1
+.\build.ps1
+```
+
+For version bumps, use the repo tool instead of editing manifests by hand:
+
+```powershell
+.\tools\Set-Version.ps1 -Version 1.7.8
 ```
 
 ---
@@ -341,12 +366,3 @@ MIT License
 - [anystackarchitect.com](https://www.anystackarchitect.com)
 - [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
 - [Introducing AnyStack — blog post](https://www.anystackarchitect.com/introducing-anystack-powershell-automation-for-vsphere-and-vcf/)
-
-
-
-
-
-
-
-
-

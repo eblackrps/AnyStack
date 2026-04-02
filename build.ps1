@@ -1,18 +1,22 @@
 <#
 .SYNOPSIS
-    CI/CD Build Pipeline for the AnyStack Enterprise Module Suite v1.7.7.
+    CI/CD Build Pipeline for the AnyStack Enterprise Module Suite v1.7.8.
 .DESCRIPTION
-    Compiles, tests, and prepares all sub-modules for deployment.
+    Validates syntax, runs module tests, and prepares all sub-modules for deployment.
 #>
 $ErrorActionPreference = 'Stop'
 $env:PSModulePath = "$PSScriptRoot;$env:PSModulePath"
 
 Import-Module Pester -MinimumVersion 5.0.0 -Force
 
-$Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
+& (Join-Path $PSScriptRoot 'test-syntax.ps1')
+
+$Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object {
+    $_.Name -eq 'AnyStack' -or $_.Name -match '^(AnyStack|VCF)\.'
+} | Sort-Object @{ Expression = { if ($_.Name -eq 'AnyStack') { 1 } else { 0 } } }, Name | Select-Object -ExpandProperty Name
 
 Write-Host "=========================================" -ForegroundColor Green
-Write-Host "Starting AnyStack Enterprise Build Pipeline v1.7.7" -ForegroundColor Green
+Write-Host "Starting AnyStack Enterprise Build Pipeline v1.7.8" -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Green
 
 foreach ($mod in $Modules) {
@@ -50,11 +54,3 @@ Write-Host "=========================================" -ForegroundColor Green
 Write-Host "Build Complete. Modules are ready for distribution." -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Green
  
-
-
-
-
-
-
-
-

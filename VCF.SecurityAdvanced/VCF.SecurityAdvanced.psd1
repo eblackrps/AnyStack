@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.SecurityAdvanced.psm1'
-    ModuleVersion = '1.7.7'
+    ModuleVersion = '1.7.8'
     GUID = '3cd79541-f1c6-43cf-9ab8-5eba8e46cc7a'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -9,7 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.7'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.8'}
     )
     FunctionsToExport = @('Add-AnyStackNativeKeyProvider','Disable-AnyStackHostSsh','Enable-AnyStackHostSsh','Set-AnyStackEsxiLockdownMode')
     CmdletsToExport = @()

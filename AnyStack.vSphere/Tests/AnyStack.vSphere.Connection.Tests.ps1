@@ -121,4 +121,3 @@ Describe "AnyStack.vSphere Connection Helpers" {
         $result.DatabaseState | Should -Be 'Healthy'
     }
 }
-

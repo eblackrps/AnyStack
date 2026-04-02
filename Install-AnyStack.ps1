@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Installs the AnyStack Enterprise Module Suite v1.6.7 into your local PowerShell environment.
+    Installs the AnyStack Enterprise Module Suite v1.7.8 into your local PowerShell environment.
 #>
 [CmdletBinding()]
 param(
@@ -11,11 +11,28 @@ param(
 $ErrorActionPreference = 'Stop'
 
 if ($Global) {
-    $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-    if (-not $isAdmin) {
-        throw 'The -Global flag requires an elevated PowerShell session. Please restart PowerShell as Administrator and try again.'
+    if ($IsWindows) {
+        $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+        if (-not $isAdmin) {
+            throw 'The -Global flag requires an elevated PowerShell session. Please restart PowerShell as Administrator and try again.'
+        }
+    } else {
+        $isRoot = $false
+        try {
+            $isRoot = (& id -u) -eq '0'
+        }
+        catch {
+            $isRoot = $env:USER -eq 'root'
+        }
+
+        if (-not $isRoot) {
+            throw 'The -Global flag requires a root shell on Linux or macOS. Re-run with sudo or install without -Global.'
+        }
     }
 }
+
+$moduleVersion = '1.7.8'
+$dependencyScope = if ($Global) { 'AllUsers' } else { 'CurrentUser' }
 
 Write-Host "Checking for VCF.PowerCLI dependency..." -ForegroundColor Cyan
 if (-not (Get-Module -ListAvailable VCF.PowerCLI)) {
@@ -23,7 +40,7 @@ if (-not (Get-Module -ListAvailable VCF.PowerCLI)) {
     $response = Read-Host "Would you like to install it now from the PSGallery? (Y/N)"
     if ($response -eq 'Y') {
         Write-Host "Installing VCF.PowerCLI..." -ForegroundColor Cyan
-        Install-Module -Name VCF.PowerCLI -AllowClobber -Scope CurrentUser -Force
+        Install-Module -Name VCF.PowerCLI -AllowClobber -Scope $dependencyScope -Force
     } else {
         Write-Error "Cannot continue without VCF.PowerCLI."
     }
@@ -32,15 +49,25 @@ if (-not (Get-Module -ListAvailable VCF.PowerCLI)) {
 }
 
 Write-Host "=========================================" -ForegroundColor Green
-Write-Host "Installing AnyStack Enterprise Suite v1.6.7" -ForegroundColor Green
+Write-Host "Installing AnyStack Enterprise Suite v$moduleVersion" -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Green
 
-$Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object Name -match '^(AnyStack|VCF)\.' | Select-Object -ExpandProperty Name
+$Modules = Get-ChildItem -Directory -Path $PSScriptRoot | Where-Object {
+    $_.Name -eq 'AnyStack' -or $_.Name -match '^(AnyStack|VCF)\.'
+} | Sort-Object @{ Expression = { if ($_.Name -eq 'AnyStack') { 1 } else { 0 } } }, Name | Select-Object -ExpandProperty Name
 
 $targetPathBase = if ($Global) {
-    Join-Path $env:ProgramFiles "PowerShell\Modules"
+    if ($IsWindows) {
+        Join-Path $env:ProgramFiles "PowerShell\Modules"
+    } else {
+        "/usr/local/share/powershell/Modules"
+    }
 } else {
-    Join-Path ([Environment]::GetFolderPath('MyDocuments')) "PowerShell\Modules"
+    if ($IsWindows) {
+        Join-Path ([Environment]::GetFolderPath('MyDocuments')) "PowerShell\Modules"
+    } else {
+        Join-Path $HOME ".local/share/powershell/Modules"
+    }
 }
 
 if (-not (Test-Path $targetPathBase)) {
@@ -59,7 +86,7 @@ foreach ($mod in $Modules) {
         }
     }
     Copy-Item -Path (Join-Path $PSScriptRoot $mod) -Destination $targetPathBase -Recurse -Force
-    Write-Host "  [OK] Installed $mod v1.6.7" -ForegroundColor DarkCyan
+    Write-Host "  [OK] Installed $mod v$moduleVersion" -ForegroundColor DarkCyan
 }
 
 Write-Host "=========================================" -ForegroundColor Green
@@ -67,13 +94,3 @@ Write-Host "Installation Complete!" -ForegroundColor Green
 Write-Host "Run 'Import-Module AnyStack.vSphere' to begin." -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Green
  
-
-
-
-
-
-
-
-
-
-

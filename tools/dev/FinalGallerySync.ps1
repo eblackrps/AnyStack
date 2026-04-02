@@ -5,6 +5,8 @@ if (-not $ApiKey) {
     return
 }
 
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+$currentVersion = [string](Import-PowerShellDataFile -Path (Join-Path $repoRoot 'AnyStack\AnyStack.psd1')).ModuleVersion
 $GitHubUrl = "https://github.com/eblackrps/AnyStack"
 $LicenseUrl = "https://github.com/eblackrps/AnyStack/blob/main/LICENSE"
 
@@ -16,8 +18,8 @@ foreach ($mod in $Modules) {
         Write-Output "Updating metadata for $($mod.Name)..." -ForegroundColor Cyan
         $content = Get-Content $psd1Path -Raw
         
-        # 1. Bump version to 1.4.0.1
-        $content = $content -replace "ModuleVersion\s*=\s*'1.4.0.0'", "ModuleVersion = '1.4.0.1'"
+        # 1. Align the module version with the suite manifest
+        $content = $content -replace "ModuleVersion\s*=\s*'.*?'", "ModuleVersion = '$currentVersion'"
         
         # 2. Update ProjectUri
         $content = $content -replace "ProjectUri\s*=\s*'.*?'", "ProjectUri = '$GitHubUrl'"
@@ -34,7 +36,7 @@ foreach ($mod in $Modules) {
 Write-Output "Metadata update complete. Starting Gallery push..." -ForegroundColor Green
 
 foreach ($mod in $Modules) {
-    Write-Output ">>> Uploading $($mod.Name) v1.6.7.1..." -ForegroundColor Cyan
+    Write-Output ">>> Uploading $($mod.Name) v$currentVersion..." -ForegroundColor Cyan
     Publish-Module -Path $mod.FullName -NuGetApiKey $ApiKey -Verbose -Force
 }
 
@@ -42,11 +44,3 @@ Write-Output "Final Gallery Sync Complete! Your modules now point to your GitHub
 
 
  
-
-
-
-
-
-
-
-

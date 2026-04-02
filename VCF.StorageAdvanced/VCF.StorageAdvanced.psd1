@@ -1,6 +1,6 @@
 @{
     RootModule = 'VCF.StorageAdvanced.psm1'
-    ModuleVersion = '1.7.7'
+    ModuleVersion = '1.7.8'
     GUID = '486d7e59-50bd-42eb-8a5b-bab558129ddb'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
@@ -9,7 +9,7 @@
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.7'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.8'}
     )
     FunctionsToExport = @('Add-AnyStackNvmeInterface','Get-AnyStackNvmeDevice','Remove-AnyStackNvmeInterface','Set-AnyStackNvmeQueueDepth','Test-AnyStackNvmeConnectivity')
     CmdletsToExport = @()
