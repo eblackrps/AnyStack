@@ -2,7 +2,7 @@
 
 **Version:** 1.7.8 | **Author:** The Any Stack Architect
 
-[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/AnyStack.vSphere?style=flat-square&logo=powershell&label=AnyStack.vSphere)](https://www.powershellgallery.com/packages/AnyStack.vSphere)
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/AnyStack?style=flat-square&logo=powershell&label=AnyStack)](https://www.powershellgallery.com/packages/AnyStack)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 AnyStack is a production-focused, enterprise-grade PowerShell automation suite for VMware vSphere 8.0 U3 and VMware Cloud Foundation (VCF). It transforms imperative "click-ops" into scalable, declarative infrastructure management and now ships with repo-level syntax, analyzer, and Pester validation for every release.
@@ -333,6 +333,7 @@ Then run the repo checks from the repository root:
 .\test-syntax.ps1
 .\tools\Validate-ForGallery.ps1
 .\build.ps1
+.\tools\Invoke-SmokeTest.ps1 -Server 'vcenter.lab.local' -Credential (Get-Credential) -ClusterName 'Lab-Cluster'
 ```
 
 The CI workflow runs the same syntax, analyzer, gallery-validation, and Pester checks before merge.
@@ -363,6 +364,6 @@ All public cmdlets must support `-WhatIf` (via `[CmdletBinding(SupportsShouldPro
 
 MIT License
 
+- [PowerShell Gallery package](https://www.powershellgallery.com/packages/AnyStack)
+- [GitHub Releases](https://github.com/eblackrps/AnyStack/releases)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
-- [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
-- [Introducing AnyStack — blog post](https://www.anystackarchitect.com/introducing-anystack-powershell-automation-for-vsphere-and-vcf/)

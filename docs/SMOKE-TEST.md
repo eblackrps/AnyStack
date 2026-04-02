@@ -1,48 +1,38 @@
-# AnyStack Post-Publish Smoke Test
+# AnyStack Live Smoke Test
 
-Run these steps on a clean machine that has never had AnyStack installed.
+Run the smoke test against a non-production vCenter or VCF lab after `.\test-syntax.ps1`, `.\build.ps1`, and `.\tools\Validate-ForGallery.ps1` have already passed.
 
-## Step 1 — Fresh Install
+## Scripted Path
 ```powershell
-Install-Module AnyStack -Scope CurrentUser
-Import-Module AnyStack
+.\tools\Invoke-SmokeTest.ps1 -Server 'vcenter.lab.local' -Credential (Get-Credential) -ClusterName 'Lab-Cluster'
 ```
 
-## Step 2 — Verify Module Count
+The smoke runner verifies:
+
+- connection establishment through `Connect-AnyStackServer`
+- the resolved-connection path in `Get-AnyStackLicenseUsage`
+- safe read-only inventory and appliance queries
+- `-WhatIf` behavior on snapshot-oriented mutation cmdlets
+
+## Manual Verification Checklist
+
+If you need to step through it manually, run:
+
 ```powershell
-$modules = Get-Module -Name AnyStack* | Measure-Object
-Write-Host "Modules loaded: $($modules.Count) (expected: 28)"
+Import-Module AnyStack -Force
+$server = Connect-AnyStackServer -Server 'vcenter.lab.local' -Credential (Get-Credential)
 
-$cmdlets = Get-Command -Module (Get-Module AnyStack*) | Measure-Object
-Write-Host "Cmdlets available: $($cmdlets.Count) (expected: 117)"
-```
-
-## Step 3 — Connect and Run Read-Only Cmdlets
-```powershell
-Connect-AnyStackServer -Server 'your-vcenter.domain.local'
-
-# Safe read-only tests against a real environment
+Get-AnyStackLicenseUsage
 Get-AnyStackVcenterServices
 Get-AnyStackActiveAlarm
-Get-AnyStackUntaggedVm
-Get-AnyStackEsxiLockdownMode
-Test-AnyStackCertificates
-Test-AnyStackSecurityBaseline
-Get-AnyStackVsanHealth
 
-Disconnect-AnyStackServer
+Clear-AnyStackOrphanedSnapshots -ClusterName 'Lab-Cluster' -WhatIf
+Optimize-AnyStackSnapshots -ClusterName 'Lab-Cluster' -WhatIf
+
+Disconnect-AnyStackServer -Server $server -Confirm:$false
 ```
 
-## Step 4 — Verify WhatIf Works on Destructive Cmdlets
-These must produce NO changes — only `-WhatIf` output:
-```powershell
-Clear-AnyStackOrphanedSnapshots -WhatIf
-Remove-AnyStackOrphanedVmdk -WhatIf
-Invoke-AnyStackDatastoreUnmount -WhatIf
-Start-AnyStackHostEvacuation -WhatIf
-Repair-AnyStackComplianceDrift -WhatIf
-```
+## Release Gate
 
-## Step 5 — Warning Verification
-Confirm that the "Destructive Operations" warning is present in the `README.md` before executing any of the above without `-WhatIf`.
+Do not publish from `.\tools\FixAndPublish.ps1` until the live smoke test has passed, unless you intentionally provide `-SkipLiveSmokeTest` and accept the release risk.
  

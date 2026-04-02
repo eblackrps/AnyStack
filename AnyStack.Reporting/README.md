@@ -18,7 +18,7 @@ Generate HTML infrastructure reports covering cluster health, capacity utilizati
 Install-Module -Name AnyStack -Scope CurrentUser
 
 # Or install this module individually
-Install-Module -Name AnyStack.vSphere -Scope CurrentUser
+Install-Module -Name AnyStack.Reporting -Scope CurrentUser
 ```
 
 ## Cmdlets
@@ -43,6 +43,6 @@ All cmdlets support `-Verbose`, `-ErrorAction`, and `-WhatIf` where applicable.
 ## Links
 
 - [Full module suite on GitHub](https://github.com/eblackrps/AnyStack)
-- [PowerShell Gallery](https://www.powershellgallery.com/profiles/eblack099)
+- [PowerShell Gallery](https://www.powershellgallery.com/packages/AnyStack.Reporting)
 - [anystackarchitect.com](https://www.anystackarchitect.com)
  
