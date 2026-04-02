@@ -1,15 +1,15 @@
 @{
     RootModule = 'VCF.ClusterManager.psm1'
-    ModuleVersion = '1.7.8'
+    ModuleVersion = '1.7.9'
     GUID = '708bbcca-7018-4679-8365-001cd7e4fce4'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
-    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Copyright = '(c) 2026 The AnyStack Architect. Released under the MIT License.'
     Description = 'Enterprise module for VCF.ClusterManager automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.8'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.9'}
     )
     FunctionsToExport = @('Export-AnyStackClusterReport','Get-AnyStackHostFirmware','Get-AnyStackHostSensors','New-AnyStackHostProfile','Set-AnyStackDrsRule','Set-AnyStackHostPowerPolicy','Set-AnyStackVclsRetreatMode','Set-AnyStackVmAffinityRule','Test-AnyStackHaFailover','Test-AnyStackHostNtp','Test-AnyStackProactiveHa')
     CmdletsToExport = @()
@@ -31,3 +31,4 @@
 
 
  
+

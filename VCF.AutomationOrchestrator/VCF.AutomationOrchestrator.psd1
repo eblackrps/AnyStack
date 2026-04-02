@@ -1,15 +1,15 @@
 @{
     RootModule = 'VCF.AutomationOrchestrator.psm1'
-    ModuleVersion = '1.7.8'
+    ModuleVersion = '1.7.9'
     GUID = 'ee8c3b8f-e85f-40b6-b0fe-1040f9616353'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
-    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Copyright = '(c) 2026 The AnyStack Architect. Released under the MIT License.'
     Description = 'Enterprise module for VCF.AutomationOrchestrator automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.8'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.9'}
     )
     FunctionsToExport = @('Get-AnyStackFailedScheduledTask','New-AnyStackScheduledSnapshot','Set-AnyStackEventWebhook','Sync-AnyStackAutomationScripts')
     CmdletsToExport = @()
@@ -31,3 +31,4 @@
 
 
  
+

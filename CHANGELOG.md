@@ -1,6 +1,6 @@
 # AnyStack Changelog
 
-## Unreleased
+## v1.7.9 (2026-04-02)
 
 ### Added
 - Added `tools/Invoke-SmokeTest.ps1` to exercise a real lab connection, verify `Get-AnyStackLicenseUsage`, and confirm `-WhatIf` behavior on high-risk snapshot flows before release
@@ -12,6 +12,8 @@
 ### Fixed
 - Replaced dead documentation links with working repository, release, website, and PowerShell Gallery package URLs
 - Corrected stale per-module install examples in the Configuration-as-Code and Reporting module documentation
+- Aligned module manifest copyright text with the MIT-licensed repository metadata
+- Switched the README screenshot to a stable GitHub-hosted image URL so it renders outside the local checkout
 
 ## v1.7.8 (2026-04-02)
 

@@ -1,15 +1,15 @@
 @{
     RootModule = 'VCF.TagManager.psm1'
-    ModuleVersion = '1.7.8'
+    ModuleVersion = '1.7.9'
     GUID = '1c7dc7a6-a1ad-4bf2-bdb0-885ce8089e53'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
-    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Copyright = '(c) 2026 The AnyStack Architect. Released under the MIT License.'
     Description = 'Enterprise module for VCF.TagManager automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.8'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.9'}
     )
     FunctionsToExport = @('Get-AnyStackUntaggedVm','Remove-AnyStackStaleTag','Set-AnyStackResourceTag','Sync-AnyStackTagCategory')
     CmdletsToExport = @()
@@ -31,3 +31,4 @@
 
 
  
+

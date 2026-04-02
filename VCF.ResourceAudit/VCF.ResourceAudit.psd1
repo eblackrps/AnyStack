@@ -1,15 +1,15 @@
 @{
     RootModule = 'VCF.ResourceAudit.psm1'
-    ModuleVersion = '1.7.8'
+    ModuleVersion = '1.7.9'
     GUID = 'c4212e0c-bf47-4519-b333-aee9b0ed312e'
     Author = 'The AnyStack Architect'
     CompanyName = 'AnyStack'
-    Copyright = '(c) 2026 AnyStack. All rights reserved.'
+    Copyright = '(c) 2026 The AnyStack Architect. Released under the MIT License.'
     Description = 'Enterprise module for VCF.ResourceAudit automation and management.'
     PowerShellVersion = '7.2'
     RequiredModules = @(
         @{ModuleName='VCF.PowerCLI'; ModuleVersion='9.0'}
-        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.8'}
+        @{ModuleName='AnyStack.vSphere'; ModuleVersion='1.7.9'}
     )
     FunctionsToExport = @('Get-AnyStackHostMemoryUsage','Get-AnyStackOrphanedState','Get-AnyStackVmMigrationHistory','Get-AnyStackVmUptime','Move-AnyStackVmDatastore','Remove-AnyStackOldTemplates','Restart-AnyStackVmTools','Set-AnyStackVmResourcePool','Test-AnyStackVmCpuReady','Update-AnyStackVmHardware','Update-AnyStackVmTools')
     CmdletsToExport = @()
@@ -31,3 +31,4 @@
 
 
  
+

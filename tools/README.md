@@ -5,7 +5,7 @@ This directory contains utility scripts for AnyStack development, publishing, an
 The supported production workflow is:
 
 ```powershell
-.\tools\Set-Version.ps1 -Version 1.7.8
+.\tools\Set-Version.ps1 -Version 1.7.9
 .\test-syntax.ps1
 .\tools\Validate-ForGallery.ps1
 .\build.ps1
@@ -28,3 +28,4 @@ The supported production workflow is:
 - **Invoke-SmokeTest.ps1**: Connects to a real vCenter or VCF lab, exercises safe read-only cmdlets, and verifies `-WhatIf` behavior on high-risk commands before release.
 - **Set-Version.ps1**: Updates version references across manifests, docs, and build metadata without touching git history.
 - **Validate-ForGallery.ps1**: Pre-publish validation script to ensure all modules pass `Test-ModuleManifest`, PSScriptAnalyzer, and metadata checks.
+
